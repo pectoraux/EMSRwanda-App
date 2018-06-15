@@ -15,12 +15,17 @@ class QRCodeScanPage extends StatefulWidget {
 
 class QRCodeScanPageState extends State<QRCodeScanPage> {
   String result = "Hey there !";
-
+  String display = "Hey there !";
   Future _scanQR() async {
     try {
       String qrResult = await BarcodeScanner.scan();
       setState(() {
-        result = qrResult;
+        if(result == display){
+          result = qrResult;
+        }else{
+          result += "\n" + qrResult;
+        }
+
       });
     } on PlatformException catch (ex) {
       if (ex.code == BarcodeScanner.CameraAccessDenied) {
@@ -54,7 +59,34 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
           elevation: 2.0,
           backgroundColor: Colors.white,
           title: Text('QR CODE SCAN', style: TodoColors.textStyle6,
-          )),
+          ),
+          actions: <Widget>
+        [
+        Container
+        (
+        margin: EdgeInsets.only(right: 8.0),
+      child: Row
+        (
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>
+        [
+          new FloatingActionButton(
+            elevation: 200.0,
+            child: new Icon(Icons.save),
+            backgroundColor: TodoColors.baseColors[1],
+            onPressed: () {
+              if(result != "" && result != display) {
+                onTap();
+                showInSnackBar("Records Saved !!!", TodoColors.baseColors[1]);
+              }
+            },
+          ),
+        ],
+      ),
+    )
+    ],
+        ),
         body: StaggeredGridView.count(
           crossAxisCount: 2,
           crossAxisSpacing: 12.0,
@@ -115,11 +147,7 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
                     ]
                 ),
               ),
-              onTap:(){
-                setState(() {
-                  result = "";
-                });
-              },
+              onTap: onTap
             ),
           ],
           staggeredTiles: [
@@ -131,6 +159,18 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
     );
   }
 
+  void onTap (){
+    setState(() {
+      result = "";
+    });
+  }
+
+  void showInSnackBar(String value, Color c) {
+    Scaffold.of(context).showSnackBar(new SnackBar(
+      content: new Text(value),
+      backgroundColor: c,
+    ));
+  }
 
 
   Widget _buildTile(Widget child, {Function() onTap}) {

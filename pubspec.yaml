@@ -1,5 +1,5 @@
-name: flutterqrscan
-description: A new Flutter project.
+name: EMSRwanda
+description: Database Management Application for Laterite Ltd.
 
 dependencies:
   flutter:
@@ -9,6 +9,13 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
   barcode_scan:
+  date_utils: "^0.0.1"
+  flutter_sparkline: "^0.0.4"
+  flutter_staggered_grid_view: "^0.1.4"
+  intl: "^0.15.0"
+  tuple: "^1.0.1"
+  flutter_calendar: "^0.0.1"
+  font_awesome_flutter: "^6.0.0"
 
 dev_dependencies:
   flutter_test:
@@ -25,6 +32,25 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+
+  assets:
+   - assets/data/regular_units.json
+   - assets/icons/area.png
+   - assets/icons/currency.png
+   - assets/icons/digital_storage.png
+   - assets/icons/length.png
+   - assets/icons/mass.png
+   - assets/icons/power.png
+   - assets/icons/time.png
+   - assets/icons/volume.png
+   - assets/images/emma-watson.jpg
+   - assets/images/microphone.png
+   - assets/images/wallet.png
+   - assets/images/joystick.png
+   - assets/diamond.png
+   - assets/ipad.jpg
+   - assets/icons/availability.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

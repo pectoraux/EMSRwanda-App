@@ -1,69 +1,44 @@
-import 'dart:async';
+// Copyright 2017 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 
+// You can read about packages here: https://flutter.io/using-packages/
 import 'package:flutter/material.dart';
-import 'package:barcode_scan/barcode_scan.dart';
-import 'package:flutter/services.dart';
 
-void main() => runApp(MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: HomePage(),
-    ));
+// You can use a relative import, i.e. `import 'category_route.dart;'` or
+// a package import, as shown below.
+// More details at http://dart-lang.github.io/linter/lints/avoid_relative_lib_imports.html
+import 'category_route.dart';
 
-class HomePage extends StatefulWidget {
-  @override
-  HomePageState createState() {
-    return new HomePageState();
-  }
+/// The function that is called when main.dart is run.
+void main() {
+  runApp(UnitConverterApp());
 }
 
-class HomePageState extends State<HomePage> {
-  String result = "Hey there !";
-
-  Future _scanQR() async {
-    try {
-      String qrResult = await BarcodeScanner.scan();
-      setState(() {
-        result = qrResult;
-      });
-    } on PlatformException catch (ex) {
-      if (ex.code == BarcodeScanner.CameraAccessDenied) {
-        setState(() {
-          result = "Camera permission was denied";
-        });
-      } else {
-        setState(() {
-          result = "Unknown Error $ex";
-        });
-      }
-    } on FormatException {
-      setState(() {
-        result = "You pressed the back button before scanning anything";
-      });
-    } catch (ex) {
-      setState(() {
-        result = "Unknown Error $ex";
-      });
-    }
-  }
-
+/// This widget is the root of our application.
+///
+/// The first screen we see is a list [Categories], each of which
+/// has a list of [Unit]s.
+class UnitConverterApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("QR Scanner"),
-      ),
-      body: Center(
-        child: Text(
-          result,
-          style: new TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Unit Converter',
+      theme: ThemeData(
+        fontFamily: 'Raleway',
+        textTheme: Theme
+            .of(context)
+            .textTheme
+            .apply(
+          bodyColor: Colors.black,
+          displayColor: Colors.grey[600],
         ),
+        // This colors the [InputOutlineBorder] when it is selected
+        primaryColor: Colors.grey[500],
+        textSelectionHandleColor: Colors.green[500],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        icon: Icon(Icons.camera_alt),
-        label: Text("Scan"),
-        onPressed: _scanQR,
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      home: CategoryRoute(),
     );
   }
 }

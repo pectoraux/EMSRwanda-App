@@ -12,7 +12,6 @@ class StartingProjectPage extends StatefulWidget {
 }
 
 class StartingProjectPageState extends State<StartingProjectPage> {
-  static const _padding = EdgeInsets.all(5.0);
 
   @override
   Widget build(BuildContext context) {
@@ -31,9 +30,7 @@ class StartingProjectPageState extends State<StartingProjectPage> {
           leading: new BackButton(key: _bkey, color: Colors.black,),
           elevation: 2.0,
           backgroundColor: Colors.white,
-          title: Text('Search Results', style: TextStyle(color: Colors.black,
-              fontWeight: FontWeight.w700,
-              fontSize: 25.0)),
+          title: Text('Search Results', style: TodoColors.textStyle6),
           actions: <Widget>
           [
             Container
@@ -174,9 +171,7 @@ class StartingProjectPageState extends State<StartingProjectPage> {
                         [
                           Text('Kigali, Gisenyi',
                               style: TextStyle(color: TodoColors.baseColors[4])),
-                          Text('FSI', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('FSI', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -215,10 +210,7 @@ class StartingProjectPageState extends State<StartingProjectPage> {
                         [
                           Text('Remera, Gaculiro',
                               style: TextStyle(color: TodoColors.baseColors[4])),
-                          Text('CookStoves', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('CookStoves', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -257,9 +249,7 @@ class StartingProjectPageState extends State<StartingProjectPage> {
                         [
                           Text('Kacyiru, Kimironko',
                               style: TextStyle(color: TodoColors.baseColors[4])),
-                          Text('MISM', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('MISM', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -298,9 +288,7 @@ class StartingProjectPageState extends State<StartingProjectPage> {
                         [
                           Text('Kiyovu, Nyamirambo',
                               style: TextStyle(color: TodoColors.baseColors[4])),
-                          Text('PEPSI', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('PEPSI', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -339,10 +327,7 @@ class StartingProjectPageState extends State<StartingProjectPage> {
                         [
                           Text('Kigali, Gaculiro',
                               style: TextStyle(color: TodoColors.baseColors[4])),
-                          Text('Students Report', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Students Report', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -381,9 +366,7 @@ class StartingProjectPageState extends State<StartingProjectPage> {
                         [
                           Text('Kacyiru',
                               style: TextStyle(color: TodoColors.baseColors[4])),
-                          Text('MISM', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('MISM', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -422,10 +405,7 @@ class StartingProjectPageState extends State<StartingProjectPage> {
                         [
                           Text('Kiyovu',
                               style: TextStyle(color: TodoColors.baseColors[4])),
-                          Text('RRA Survey', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('RRA Survey', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -464,9 +444,7 @@ class StartingProjectPageState extends State<StartingProjectPage> {
                         [
                           Text('Gisenyi',
                               style: TextStyle(color: TodoColors.baseColors[4])),
-                          Text('ALI', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('ALI', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -505,9 +483,7 @@ class StartingProjectPageState extends State<StartingProjectPage> {
                         [
                           Text('Gaculiro',
                               style: TextStyle(color: TodoColors.baseColors[4])),
-                          Text('LATI', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('LATI', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -546,9 +522,7 @@ class StartingProjectPageState extends State<StartingProjectPage> {
                         [
                           Text('Remera',
                               style: TextStyle(color: TodoColors.baseColors[4])),
-                          Text('VINE', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('VINE', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material

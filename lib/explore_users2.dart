@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sparkline/flutter_sparkline.dart';
+import 'constants.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'accept_request.dart';
 
@@ -23,9 +23,7 @@ class ExploreUsersPageState extends State<ExploreUsersPage2> {
           leading: new BackButton(key: _bkey, color: Colors.black,),
           elevation: 2.0,
           backgroundColor: Colors.white,
-          title: Text('Search Results', style: TextStyle(color: Colors.black,
-              fontWeight: FontWeight.w700,
-              fontSize: 25.0)),
+          title: Text('Search Results', style: TodoColors.textStyle6),
           actions: <Widget>
           [
             Container
@@ -37,8 +35,6 @@ class ExploreUsersPageState extends State<ExploreUsersPage2> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>
                 [
-//                Text('TAP HERE', style: TextStyle(color: Colors.blue, fontWeight: FontWeight.w700, fontSize: 14.0)),
-//                Icon(Icons.search, color: Colors.black54)
                   new FloatingActionButton(
                     elevation: 200.0,
                     child: new Icon(Icons.search),
@@ -127,10 +123,7 @@ class ExploreUsersPageState extends State<ExploreUsersPage2> {
                         [
                           Text('Kigali',
                               style: TextStyle(color: Colors.blueAccent)),
-                          Text('Erin Niamkey', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Erin Niamkey', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -169,10 +162,7 @@ class ExploreUsersPageState extends State<ExploreUsersPage2> {
                         [
                           Text('Remera',
                               style: TextStyle(color: Colors.blueAccent)),
-                          Text('Bernard Nshima', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Bernard Nshima', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -211,10 +201,7 @@ class ExploreUsersPageState extends State<ExploreUsersPage2> {
                         [
                           Text('Kacyiru',
                               style: TextStyle(color: Colors.blueAccent)),
-                          Text('Celine Dion', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Celine Dion', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -253,10 +240,7 @@ class ExploreUsersPageState extends State<ExploreUsersPage2> {
                         [
                           Text('Kiyovu',
                               style: TextStyle(color: Colors.blueAccent)),
-                          Text('Eric Niamkey', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Eric Niamkey', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -295,10 +279,7 @@ class ExploreUsersPageState extends State<ExploreUsersPage2> {
                         [
                           Text('Gaculiro',
                               style: TextStyle(color: Colors.blueAccent)),
-                          Text('Kossi Koffi', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Kossi Koffi', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -337,10 +318,7 @@ class ExploreUsersPageState extends State<ExploreUsersPage2> {
                         [
                           Text('Kimironko',
                               style: TextStyle(color: Colors.blueAccent)),
-                          Text('Anne Judith', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Anne Judith', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -379,10 +357,7 @@ class ExploreUsersPageState extends State<ExploreUsersPage2> {
                         [
                           Text('Kiyovu',
                               style: TextStyle(color: Colors.blueAccent)),
-                          Text('Mariam Adah', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Mariam Adah', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -421,9 +396,7 @@ class ExploreUsersPageState extends State<ExploreUsersPage2> {
                         [
                           Text('Gisenyi',
                               style: TextStyle(color: Colors.blueAccent)),
-                          Text('Ali Jean', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Ali Jean', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -462,10 +435,7 @@ class ExploreUsersPageState extends State<ExploreUsersPage2> {
                         [
                           Text('Gaculiro',
                               style: TextStyle(color: Colors.blueAccent)),
-                          Text('Micheal Jackson', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Micheal Jackson', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -504,10 +474,7 @@ class ExploreUsersPageState extends State<ExploreUsersPage2> {
                         [
                           Text('Remera',
                               style: TextStyle(color: Colors.blueAccent)),
-                          Text('Ninegan Tchakpa', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Ninegan Tchakpa', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material

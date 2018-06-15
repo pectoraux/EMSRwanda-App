@@ -16,7 +16,6 @@ import 'backdrop.dart';
 import 'category.dart';
 import 'category_tile.dart';
 import 'unit.dart';
-import 'unit_converter.dart';
 import 'explore_requests.dart';
 import 'animated_list.dart';
 import 'profile_app.dart';

@@ -17,7 +17,6 @@ class UpdateTagPageState extends State<UpdateTagPage> {
   final _tagName = GlobalKey(debugLabel: 'Tag Name');
   final _tagTypeController = TextEditingController();
   final _tagType = GlobalKey(debugLabel: 'Tag Type');
-  final _padding = EdgeInsets.all(5.0);
 
   @override
   Widget build(BuildContext context) {

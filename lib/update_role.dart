@@ -15,7 +15,6 @@ class UpdateRolePage extends StatefulWidget {
 class UpdateRolePageState extends State<UpdateRolePage> {
   final _roleNameController = TextEditingController();
   final _roleName = GlobalKey(debugLabel: 'Role Name');
-  final _padding = EdgeInsets.all(5.0);
   bool _createUserPermission = false;
   bool _createProjectPermission = false;
   bool _createRolePermission = false;

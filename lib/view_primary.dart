@@ -13,27 +13,6 @@ class ViewPrimaryPage extends StatefulWidget {
 }
 
 class ViewPrimaryPageState extends State<ViewPrimaryPage> {
-  final _firstNameController = TextEditingController();
-  final _lastNameController = TextEditingController();
-  final _email1Controller = TextEditingController();
-  final _email2Controller = TextEditingController();
-  final _sexController = TextEditingController();
-  final _countryController = TextEditingController();
-  final _mainPhoneController = TextEditingController();
-  final _phone1Controller = TextEditingController();
-  final _phone2Controller = TextEditingController();
-  final _passportNoController = TextEditingController();
-  final _bankAcctNoController = TextEditingController();
-  final _bankNameController = TextEditingController();
-  final _insuranceController = TextEditingController();
-  final _insuranceNoController = TextEditingController();
-  final _insuranceCpyController = TextEditingController();
-  final _tinController = TextEditingController();
-  final _cvStatusElecController = TextEditingController();
-  final _dobController = TextEditingController();
-  final _nationalIDController = TextEditingController();
-  final _emergencyContactNameController = TextEditingController();
-  final _emergencyContactPhoneController = TextEditingController();
   final _userName = GlobalKey(debugLabel: 'Username');
   final _userStatus = GlobalKey(debugLabel: 'User Status');
   final _firstName = GlobalKey(debugLabel: 'First Name');
@@ -46,19 +25,11 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage> {
   final _phone1 = GlobalKey(debugLabel: 'Phone1');
   final _phone2 = GlobalKey(debugLabel: 'Phone2');
   final _passportNo = GlobalKey(debugLabel: 'Passport No');
-  final _bankAcctNo = GlobalKey(debugLabel: 'Banc Acct No');
-  final _bankName = GlobalKey(debugLabel: 'Bank Name');
-  final _insurance = GlobalKey(debugLabel: 'Insurance');
-  final _insuranceNo = GlobalKey(debugLabel: 'Insurance No');
-  final _insuranceCpy = GlobalKey(debugLabel: 'Insurance Copy');
   final _tin = GlobalKey(debugLabel: 'TIN');
   final _cvStatusElec = GlobalKey(debugLabel: 'CV Status Electronic');
   final _nationalID = GlobalKey(debugLabel: 'National ID');
   final _role = GlobalKey(debugLabel: 'Role');
   final _dob = GlobalKey(debugLabel: 'Date Of Birth');
-  final _emergencyContactName = GlobalKey(debugLabel: 'Emergency Contact Name');
-  final _emergencyContactPhone = GlobalKey(
-      debugLabel: 'Emergency Contact Phone');
   final _padding = EdgeInsets.all(5.0);
 
   @override

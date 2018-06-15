@@ -29,9 +29,7 @@ class ViewRolesPageState extends State<ViewRolesPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               SizedBox(height: 24.0,),
-              new Text('Available Roles', style: TextStyle(color: Colors.black,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 25.0)),
+              new Text('Available Roles', style: TodoColors.textStyle6),
             ],
           ),
           elevation: 2.0,
@@ -177,10 +175,7 @@ class ViewRolesPageState extends State<ViewRolesPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Field Supervisor', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Field Supervisor', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -217,10 +212,7 @@ class ViewRolesPageState extends State<ViewRolesPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Team Lead', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Team Lead', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -257,10 +249,7 @@ class ViewRolesPageState extends State<ViewRolesPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Administrator', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Administrator', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material

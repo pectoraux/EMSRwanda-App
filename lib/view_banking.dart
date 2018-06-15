@@ -13,7 +13,6 @@ class ViewBankingPage extends StatefulWidget {
 }
 
 class ViewBankingPageState extends State<ViewBankingPage> {
-  final _passportNo = GlobalKey(debugLabel: 'Passport No');
   final _bankAcctNo = GlobalKey(debugLabel: 'Banc Acct No');
   final _bankName = GlobalKey(debugLabel: 'Bank Name');
   final _padding = EdgeInsets.all(5.0);

@@ -29,9 +29,7 @@ class SearchProjectsPageState extends State<SearchProjectsPage> {
           leading: new BackButton(key: _bkey, color: Colors.black,),
           elevation: 2.0,
           backgroundColor: Colors.white,
-          title: Text('Search Results', style: TextStyle(color: Colors.black,
-              fontWeight: FontWeight.w700,
-              fontSize: 25.0)),
+          title: Text('Search Results', style: TodoColors.textStyle6),
           actions: <Widget>
           [
             Container
@@ -172,9 +170,7 @@ class SearchProjectsPageState extends State<SearchProjectsPage> {
                         [
                           Text('Kigali, Gisenyi',
                               style: TextStyle(color: TodoColors.baseColors[1])),
-                          Text('FSI', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('FSI', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -213,10 +209,7 @@ class SearchProjectsPageState extends State<SearchProjectsPage> {
                         [
                           Text('Remera, Gaculiro',
                               style: TextStyle(color: TodoColors.baseColors[1])),
-                          Text('CookStoves', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('CookStoves', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -255,9 +248,7 @@ class SearchProjectsPageState extends State<SearchProjectsPage> {
                         [
                           Text('Kacyiru, Kimironko',
                               style: TextStyle(color: TodoColors.baseColors[1])),
-                          Text('MISM', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('MISM', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -296,9 +287,7 @@ class SearchProjectsPageState extends State<SearchProjectsPage> {
                         [
                           Text('Kiyovu, Nyamirambo',
                               style: TextStyle(color: TodoColors.baseColors[1])),
-                          Text('PEPSI', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('PEPSI', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -337,10 +326,7 @@ class SearchProjectsPageState extends State<SearchProjectsPage> {
                         [
                           Text('Kigali, Gaculiro',
                               style: TextStyle(color: TodoColors.baseColors[1])),
-                          Text('Students Report', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Students Report', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -379,9 +365,7 @@ class SearchProjectsPageState extends State<SearchProjectsPage> {
                         [
                           Text('Kacyiru',
                               style: TextStyle(color: TodoColors.baseColors[1])),
-                          Text('MISM', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('MISM', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -420,10 +404,7 @@ class SearchProjectsPageState extends State<SearchProjectsPage> {
                         [
                           Text('Kiyovu',
                               style: TextStyle(color: TodoColors.baseColors[1])),
-                          Text('RRA Survey', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('RRA Survey', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -462,9 +443,7 @@ class SearchProjectsPageState extends State<SearchProjectsPage> {
                         [
                           Text('Gisenyi',
                               style: TextStyle(color: TodoColors.baseColors[1])),
-                          Text('ALI', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('ALI', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -503,9 +482,7 @@ class SearchProjectsPageState extends State<SearchProjectsPage> {
                         [
                           Text('Gaculiro',
                               style: TextStyle(color: TodoColors.baseColors[1])),
-                          Text('LATI', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('LATI', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -544,9 +521,7 @@ class SearchProjectsPageState extends State<SearchProjectsPage> {
                         [
                           Text('Remera',
                               style: TextStyle(color: TodoColors.baseColors[1])),
-                          Text('VINE', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('VINE', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material

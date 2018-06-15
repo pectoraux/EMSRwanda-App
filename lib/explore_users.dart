@@ -11,7 +11,6 @@ class ExploreUsersPage extends StatefulWidget {
 }
 
 class ExploreUsersPageState extends State<ExploreUsersPage> {
-  static const _padding = EdgeInsets.all(5.0);
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +33,7 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
           leading: new BackButton(key: _bkey, color: Colors.black,),
           elevation: 2.0,
           backgroundColor: Colors.white,
-          title: Text('Search Results', style: TextStyle(color: Colors.black,
-              fontWeight: FontWeight.w700,
-              fontSize: 25.0)),
+          title: Text('Search Results', style: TodoColors.textStyle6),
           actions: <Widget>
           [
             Container
@@ -199,10 +196,7 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                         [
                           Text('Kigali',
                               style: TextStyle(color: TodoColors.baseColors[5])),
-                          Text('Erin Niamkey', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Erin Niamkey', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -241,10 +235,7 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                         [
                           Text('Remera',
                               style: TextStyle(color: TodoColors.baseColors[5])),
-                          Text('Bernard Nshima', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Bernard Nshima', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -283,10 +274,7 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                         [
                           Text('Kacyiru',
                               style: TextStyle(color: TodoColors.baseColors[5])),
-                          Text('Celine Dion', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Celine Dion', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -325,10 +313,7 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                         [
                           Text('Kiyovu',
                               style: TextStyle(color: TodoColors.baseColors[5])),
-                          Text('Eric Niamkey', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Eric Niamkey', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -367,10 +352,7 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                         [
                           Text('Gaculiro',
                               style: TextStyle(color: TodoColors.baseColors[5])),
-                          Text('Kossi Koffi', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Kossi Koffi', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -409,10 +391,7 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                         [
                           Text('Kimironko',
                               style: TextStyle(color: TodoColors.baseColors[5])),
-                          Text('Anne Judith', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Anne Judith', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -451,10 +430,7 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                         [
                           Text('Kiyovu',
                               style: TextStyle(color: TodoColors.baseColors[5])),
-                          Text('Mariam Adah', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Mariam Adah', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -493,9 +469,7 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                         [
                           Text('Gisenyi',
                               style: TextStyle(color: TodoColors.baseColors[5])),
-                          Text('Ali Jean', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Ali Jean', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -534,10 +508,7 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                         [
                           Text('Gaculiro',
                               style: TextStyle(color: TodoColors.baseColors[5])),
-                          Text('Micheal Jackson', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Micheal Jackson', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -576,10 +547,7 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                         [
                           Text('Remera',
                               style: TextStyle(color: TodoColors.baseColors[5])),
-                          Text('Ninegan Tchakpa', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Ninegan Tchakpa', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material

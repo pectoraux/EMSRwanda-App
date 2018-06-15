@@ -155,7 +155,7 @@ class _AnimatedListSampleState extends State<AnimatedListSample> {
                 [
                   Icon(Icons.face, color: Colors.white),
                   SizedBox(width: 10.0),
-                  Text("Which weeks are \nyou available ?"),
+                  Text("Which weeks are \nyou available ?", style: TodoColors.textStyle7,),
 
                 ],
               )
@@ -264,10 +264,7 @@ class CardItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle textStyle = Theme
-        .of(context)
-        .textTheme
-        .display1;
+    TextStyle textStyle = TodoColors.textStyle6;
     if (selected)
       textStyle = textStyle.copyWith(color: Colors.lightGreenAccent[400]);
     return new Padding(

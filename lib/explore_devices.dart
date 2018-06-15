@@ -11,7 +11,6 @@ class ExploreDevicesPage extends StatefulWidget {
 }
 
 class ExploreDevicesPageState extends State<ExploreDevicesPage> {
-  static const _padding = EdgeInsets.all(5.0);
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +28,7 @@ class ExploreDevicesPageState extends State<ExploreDevicesPage> {
           leading: new BackButton(key: _bkey, color: Colors.black,),
           elevation: 2.0,
           backgroundColor: Colors.white,
-          title: Text('Search Results', style: TextStyle(color: Colors.black,
-              fontWeight: FontWeight.w700,
-              fontSize: 25.0)),
+          title: Text('Search Results', style: TodoColors.textStyle6),
           actions: <Widget>
           [
             Container
@@ -155,9 +152,7 @@ class ExploreDevicesPageState extends State<ExploreDevicesPage> {
                         [
                           Text('Available',
                               style: TextStyle(color: Colors.blueAccent)),
-                          Text('Ipad', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Ipad', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -196,9 +191,7 @@ class ExploreDevicesPageState extends State<ExploreDevicesPage> {
                         [
                           Text('In Use',
                               style: TextStyle(color: Colors.redAccent)),
-                          Text('Tablet', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Tablet', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -237,9 +230,7 @@ class ExploreDevicesPageState extends State<ExploreDevicesPage> {
                         [
                           Text('In Use',
                               style: TextStyle(color: Colors.redAccent)),
-                          Text('Phone', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Phone', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -278,9 +269,7 @@ class ExploreDevicesPageState extends State<ExploreDevicesPage> {
                         [
                           Text('Available',
                               style: TextStyle(color: Colors.blueAccent)),
-                          Text('Phone', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Phone', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -319,9 +308,7 @@ class ExploreDevicesPageState extends State<ExploreDevicesPage> {
                         [
                           Text('Available',
                               style: TextStyle(color: Colors.blueAccent)),
-                          Text('Ipad', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Ipad', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -360,9 +347,7 @@ class ExploreDevicesPageState extends State<ExploreDevicesPage> {
                         [
                           Text('Available',
                               style: TextStyle(color: Colors.blueAccent)),
-                          Text('Tablet', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Tablet', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -401,9 +386,7 @@ class ExploreDevicesPageState extends State<ExploreDevicesPage> {
                         [
                           Text('In Use',
                               style: TextStyle(color: Colors.redAccent)),
-                          Text('Phone', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Phone', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -442,9 +425,7 @@ class ExploreDevicesPageState extends State<ExploreDevicesPage> {
                         [
                           Text('Available',
                               style: TextStyle(color: Colors.blueAccent)),
-                          Text('Phone', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Phone', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -483,9 +464,7 @@ class ExploreDevicesPageState extends State<ExploreDevicesPage> {
                         [
                           Text('In Use',
                               style: TextStyle(color: Colors.redAccent)),
-                          Text('Ipad', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Ipad', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -524,9 +503,7 @@ class ExploreDevicesPageState extends State<ExploreDevicesPage> {
                         [
                           Text('Available',
                               style: TextStyle(color: Colors.blueAccent)),
-                          Text('Tablet', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Tablet', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material

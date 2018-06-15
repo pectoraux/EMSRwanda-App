@@ -27,25 +27,10 @@ class CalendarViewApp extends StatelessWidget {
           child: new ListView(
             shrinkWrap: true,
             children: <Widget>[
-//              new Text('The Default Calendar:'),
-//              new Calendar(
-//                onDateSelected: (date) => handleNewDate(date),
-//              ),
-//              new Divider(
-//                height: 50.0,
-//              ),
-//              new Text('The Expanded Calendar:'),
-//              new Calendar(
-//                isExpandable: true,
-//              ),
-//              new Divider(
-//                height: 50.0,
-//              ),
               new Text('Weekly Calendar:'),
               new Calendar(
                 onDateSelected: (date) => handleNewDate(date),
 
-//                onSelectedRangeChange: (range) => print(range),
                 isExpandable: true,
                 dayBuilder: (BuildContext context, DateTime day) {
                   return new InkWell(
@@ -56,16 +41,6 @@ class CalendarViewApp extends StatelessWidget {
                       child: new Text(
                         day.day.toString(),
                       ),
-//                      new InkWell(
-//
-//                        onTap: () {
-//                          stl = FontWeight.bold;
-//                        },
-//                        child: new Text(
-//                        day.day.toString(),
-//                          style: new TextStyle(fontWeight: stl,),
-//                      ),
-//                      ),
                     ),
                   );
                 },

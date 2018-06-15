@@ -26,9 +26,7 @@ class ViewTagsPageState extends State<ViewTagsPage> {
           leading: new BackButton(key: _bkey, color: Colors.black,),
           elevation: 2.0,
           backgroundColor: Colors.white,
-          title: Text('Available Tags', style: TextStyle(color: Colors.black,
-              fontWeight: FontWeight.w700,
-              fontSize: 25.0)),
+          title: Text('Available Tags', style: TodoColors.textStyle6),
           actions: <Widget>
           [
             Container
@@ -142,9 +140,7 @@ class ViewTagsPageState extends State<ViewTagsPage> {
                         [
                           Text('User Related Tag',
                               style: TextStyle(color: TodoColors.accent)),
-                          Text('Female', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Female', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -183,9 +179,7 @@ class ViewTagsPageState extends State<ViewTagsPage> {
                         [
                           Text('User Related Tag',
                               style: TextStyle(color: TodoColors.accent)),
-                          Text('Male', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Male', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -224,9 +218,7 @@ class ViewTagsPageState extends State<ViewTagsPage> {
                         [
                           Text('User Related Tag',
                               style: TextStyle(color: TodoColors.accent)),
-                          Text('Over 18', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Over 18', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -265,10 +257,7 @@ class ViewTagsPageState extends State<ViewTagsPage> {
                         [
                           Text('Project Related Tag',
                               style: TextStyle(color: TodoColors.accent)),
-                          Text('Humanitarian', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Humanitarian', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -307,10 +296,7 @@ class ViewTagsPageState extends State<ViewTagsPage> {
                         [
                           Text('Project Related Tag',
                               style: TextStyle(color: TodoColors.accent)),
-                          Text('Education', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Education', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -349,9 +335,7 @@ class ViewTagsPageState extends State<ViewTagsPage> {
                         [
                           Text('Project Related Tag',
                               style: TextStyle(color: TodoColors.accent)),
-                          Text('Digging', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Digging', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -390,10 +374,7 @@ class ViewTagsPageState extends State<ViewTagsPage> {
                         [
                           Text('Project Related Tag',
                               style: TextStyle(color: TodoColors.accent)),
-                          Text('Sensitive', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Sensitive', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material

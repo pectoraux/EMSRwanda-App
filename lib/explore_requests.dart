@@ -12,7 +12,6 @@ class ExploreRequestsPage extends StatefulWidget {
 }
 
 class ExploreRequestsPageState extends State<ExploreRequestsPage> {
-  static const _padding = EdgeInsets.all(5.0);
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +29,7 @@ class ExploreRequestsPageState extends State<ExploreRequestsPage> {
           leading: new BackButton(key: _bkey, color: Colors.black,),
           elevation: 2.0,
           backgroundColor: Colors.white,
-          title: Text('Search Results', style: TextStyle(color: Colors.black,
-              fontWeight: FontWeight.w700,
-              fontSize: 25.0)),
+          title: Text('Search Results', style: TodoColors.textStyle6),
           actions: <Widget>
           [
             Container
@@ -173,9 +170,7 @@ class ExploreRequestsPageState extends State<ExploreRequestsPage> {
                         [
                           Text('Made By You',
                               style: TextStyle(color: Colors.blueAccent)),
-                          Text('FSI', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('FSI', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -214,10 +209,7 @@ class ExploreRequestsPageState extends State<ExploreRequestsPage> {
                         [
                           Text('Made To You',
                               style: TextStyle(color: Colors.redAccent)),
-                          Text('CookStoves', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('CookStoves', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -256,9 +248,7 @@ class ExploreRequestsPageState extends State<ExploreRequestsPage> {
                         [
                           Text('Made To You',
                               style: TextStyle(color: Colors.redAccent)),
-                          Text('MISM', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('MISM', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -297,9 +287,7 @@ class ExploreRequestsPageState extends State<ExploreRequestsPage> {
                         [
                           Text('Made By You',
                               style: TextStyle(color: Colors.blueAccent)),
-                          Text('PEPSI', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('PEPSI', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -338,10 +326,7 @@ class ExploreRequestsPageState extends State<ExploreRequestsPage> {
                         [
                           Text('Made By You',
                               style: TextStyle(color: Colors.blueAccent)),
-                          Text('Students Report', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Students Report', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -380,9 +365,7 @@ class ExploreRequestsPageState extends State<ExploreRequestsPage> {
                         [
                           Text('Made By You',
                               style: TextStyle(color: Colors.blueAccent)),
-                          Text('LATI', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('LATI', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -421,9 +404,7 @@ class ExploreRequestsPageState extends State<ExploreRequestsPage> {
                         [
                           Text('Made To You',
                               style: TextStyle(color: Colors.redAccent)),
-                          Text('ALI', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('ALI', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -462,9 +443,7 @@ class ExploreRequestsPageState extends State<ExploreRequestsPage> {
                         [
                           Text('Made By You',
                               style: TextStyle(color: Colors.blueAccent)),
-                          Text('VINE', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('VINE', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -503,9 +482,7 @@ class ExploreRequestsPageState extends State<ExploreRequestsPage> {
                         [
                           Text('Made To You',
                               style: TextStyle(color: Colors.redAccent)),
-                          Text('MISM', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('MISM', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -544,9 +521,7 @@ class ExploreRequestsPageState extends State<ExploreRequestsPage> {
                         [
                           Text('Made By You',
                               style: TextStyle(color: Colors.blueAccent)),
-                          Text('CROS', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('CROS', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material

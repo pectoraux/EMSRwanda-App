@@ -296,9 +296,7 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
                         [
                           Text('Kigali, Gisenyi',
                               style: TextStyle(color: Colors.blueAccent)),
-                          Text('FSI', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 34.0))
+                          Text('FSI', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -341,9 +339,7 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
                           )
                       ),
                       Padding(padding: EdgeInsets.only(bottom: 16.0)),
-                      Text('General', style: TextStyle(color: Colors.black,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 24.0)),
+                      Text('General', style: TodoColors.textStyle6),
                       Expanded(child: Text('Staff & Stats\nScan QR Code',
                           style: TextStyle(color: Colors.black45)), flex: 1,),
                     ]

@@ -2,6 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'profile_fonts.dart';
 
@@ -53,6 +54,12 @@ class TodoColors {
   static final textStyle5 = new TextStyle(
       fontWeight: FontWeight.w900,
       fontSize: 20.0,
+      fontFamily: ProfileFontNames.TimeBurner);
+
+  static final textStyle6 = new TextStyle(
+      fontWeight: FontWeight.w700,
+      fontSize: 25.0,
+      color: Colors.black,
       fontFamily: ProfileFontNames.TimeBurner);
 
   static const baseColors = <ColorSwatch>[

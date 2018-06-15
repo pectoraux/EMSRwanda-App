@@ -82,3 +82,15 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.io/custom-fonts/#from-packages
+  fonts:
+   - family: Raleway
+     fonts:
+      - asset: third_party/Raleway-Regular.ttf
+   - family: LineAwesome
+     fonts:
+      - asset: assets/fonts/line-awesome.ttf
+   - family: Timeburner
+     fonts:
+      - asset: assets/fonts/timeburnernormal.ttf
+      - asset: assets/fonts/timeburnerbold.ttf
+        weight: 700

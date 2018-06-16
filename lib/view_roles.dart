@@ -28,7 +28,7 @@ class ViewRolesPageState extends State<ViewRolesPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              SizedBox(height: 24.0,),
+              SizedBox(height: 14.0,),
               new Text('Available Roles', style: TodoColors.textStyle6),
             ],
           ),
@@ -135,10 +135,7 @@ class ViewRolesPageState extends State<ViewRolesPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Enumerator', style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 25.0))
+                          Text('Enumerator', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material

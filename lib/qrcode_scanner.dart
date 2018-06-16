@@ -93,22 +93,6 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
           mainAxisSpacing: 12.0,
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           children: <Widget>[
-            _buildTile2(
-              Padding
-                (
-                padding: const EdgeInsets.all(8.0),
-                child: Row
-                  (
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>
-                    [
-                         Expanded( child:
-                          Text(result, style: TodoColors.textStyle6), flex: 1,)
-                    ]
-                ),
-              ),
-            ),
             _buildTile(
               Padding
                 (
@@ -128,6 +112,22 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
                 ),
               ),
               onTap: _scanQR,
+            ),
+            _buildTile2(
+              Padding
+                (
+                padding: const EdgeInsets.all(8.0),
+                child: Row
+                  (
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>
+                    [
+                      Expanded( child:
+                      Text(result, style: TodoColors.textStyle6), flex: 1,)
+                    ]
+                ),
+              ),
             ),
             _buildTile(
               Padding
@@ -151,8 +151,8 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
             ),
           ],
           staggeredTiles: [
-            StaggeredTile.extent(2, 310.0),
             StaggeredTile.extent(2, 110.0),
+            StaggeredTile.extent(2, 310.0),
             StaggeredTile.extent(2, 110.0),
           ],
         )

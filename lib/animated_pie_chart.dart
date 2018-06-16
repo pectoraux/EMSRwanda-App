@@ -12,10 +12,10 @@ final List<List<CircularStackEntry>> _quarterlyProfitPieData = [
   <CircularStackEntry>[
     new CircularStackEntry(
       <CircularSegmentEntry>[
-        new CircularSegmentEntry(500.0, Colors.red[200], rankKey: 'Q1'),
-        new CircularSegmentEntry(1000.0, Colors.green[200], rankKey: 'Q2'),
+        new CircularSegmentEntry(1000.0, Colors.red[200], rankKey: 'Q1'),
+        new CircularSegmentEntry(500.0, Colors.green[200], rankKey: 'Q2'),
       ],
-      rankKey: 'Recruited Staff:\t1000\nExpected Staff:\t500',
+      rankKey: 'Spots Filled:\t500\nSpots Left:\t1000',
     ),
   ],
 ];
@@ -101,8 +101,8 @@ class _AnimatedPieChartExampleState extends State<AnimatedPieChartExample> {
         title: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Expanded(child:Text("Recruited\nStaff", style: TextStyle(color: Colors.green[200]),), flex: 1,),
-            Expanded(child:Text("Expected\nStaff", style: TextStyle(color: Colors.red[200]),),flex: 1,),
+            Expanded(child:Text("Spots\nFilled", style: TextStyle(color: Colors.green[200]),), flex: 1,),
+            Expanded(child:Text("Spots\nLeft", style: TextStyle(color: Colors.red[200]),),flex: 1,),
           ],
         ),
         backgroundColor: TodoColors.baseColors[1],
@@ -159,7 +159,7 @@ class _AnimatedPieChartExampleState extends State<AnimatedPieChartExample> {
         builder: (BuildContext context) {
       return new AlertDialog(
         title: new Text(
-          'Recruited Staff vs Expected Staff', style: TextStyle(color: TodoColors.baseColors[1]),
+          'Spots Filled vs Spots Left', style: TextStyle(color: TodoColors.baseColors[1]),
         ),
         content: new SingleChildScrollView(
           child: new ListBody(

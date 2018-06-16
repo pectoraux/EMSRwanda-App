@@ -55,7 +55,7 @@ class SearchProjectsPageState extends State<SearchProjectsPage> {
                         builder: (BuildContext context) {
                           return new AlertDialog(
                             title: new Text(
-                              'SEARCH  PROJECTS', style: TodoColors.textStyle,),
+                              'Search  Projects', style: TodoColors.textStyle6,),
                             content: new SingleChildScrollView(
                               child: new ListBody(
                                 children: <Widget>[

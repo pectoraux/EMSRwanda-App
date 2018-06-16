@@ -55,7 +55,7 @@ class ExploreDevicesPageState extends State<ExploreDevicesPage> {
                         builder: (BuildContext context) {
                           return new AlertDialog(
                             title: new Text(
-                              'SEARCH  DEVICES', style: TodoColors.textStyle,),
+                              'Search  Devices', style: TodoColors.textStyle6,),
                             content: new SingleChildScrollView(
                               child: new ListBody(
                                 children: <Widget>[

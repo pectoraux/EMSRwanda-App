@@ -55,7 +55,7 @@ class ExploreRequestsPageState extends State<ExploreRequestsPage> {
                         builder: (BuildContext context) {
                           return new AlertDialog(
                             title: new Text(
-                              'SEARCH  REQUESTS', style: TodoColors.textStyle,),
+                              'Search  Requests', style: TodoColors.textStyle6,),
                             content: new SingleChildScrollView(
                               child: new ListBody(
                                 children: <Widget>[

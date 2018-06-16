@@ -297,9 +297,7 @@ class ClosedProjectDetailsPageState extends State<ClosedProjectDetailsPage> {
                         [
                           Text('Kigali, Gisenyi',
                               style: TextStyle(color: Colors.blueAccent)),
-                          Text('FSI', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 34.0))
+                          Text('FSI', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -342,9 +340,7 @@ class ClosedProjectDetailsPageState extends State<ClosedProjectDetailsPage> {
                           )
                       ),
                       Padding(padding: EdgeInsets.only(bottom: 16.0)),
-                      Text('General', style: TextStyle(color: Colors.black,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 24.0)),
+                      Text('General', style: TodoColors.textStyle6),
                       Expanded(child: Text('Staff & Stats\nScan QR Code',
                           style: TextStyle(color: Colors.black45)), flex: 1,),
                     ]
@@ -377,9 +373,7 @@ class ClosedProjectDetailsPageState extends State<ClosedProjectDetailsPage> {
                           )
                       ),
                       Padding(padding: EdgeInsets.only(bottom: 16.0)),
-                      Text('Alerts', style: TextStyle(color: Colors.black,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 24.0)),
+                      Text('Alerts', style: TodoColors.textStyle6),
                       Text('All ', style: TextStyle(color: Colors.black45)),
                     ]
                 ),
@@ -409,10 +403,7 @@ class ClosedProjectDetailsPageState extends State<ClosedProjectDetailsPage> {
                             [
                               Text('People Surveyed',
                                   style: TextStyle(color: Colors.green)),
-                              Text('${people_surveyed}', style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 34.0)),
+                              Text('${people_surveyed}', style: TodoColors.textStyle6),
                             ],
                           ),
                           DropdownButton
@@ -435,10 +426,7 @@ class ClosedProjectDetailsPageState extends State<ClosedProjectDetailsPage> {
                                 return DropdownMenuItem
                                   (
                                   value: title,
-                                  child: Text(title, style: TextStyle(
-                                      color: Colors.blue,
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 14.0)),
+                                  child: Text(title, style: TodoColors.textStyle6),
                                 );
                               }).toList()
                           )
@@ -473,9 +461,7 @@ class ClosedProjectDetailsPageState extends State<ClosedProjectDetailsPage> {
                         [
                           Text('Devices',
                               style: TextStyle(color: Colors.redAccent)),
-                          Text('173', style: TextStyle(color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 34.0))
+                          Text('173', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material

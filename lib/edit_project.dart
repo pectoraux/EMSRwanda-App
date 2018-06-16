@@ -180,7 +180,7 @@ class EditProjectPageState extends State<EditProjectPage> {
             onTap: () {
               setState(() {
                 if (_mcolors[i] == Colors.brown[500]) {
-                  _mcolors[i] = Colors.green[500];
+                  _mcolors[i] = TodoColors.baseColors[0];
                 } else {
                   _mcolors[i] = Colors.brown[500];
                 }
@@ -304,7 +304,7 @@ class EditProjectPageState extends State<EditProjectPage> {
 
   Color onTap(BuildContext context, Color c) {
     if (c == Colors.brown[500]) {
-      return Colors.green[500];
+      return TodoColors.baseColors[0];
     } else {
       return Colors.brown[500];
     }

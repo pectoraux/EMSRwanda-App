@@ -30,25 +30,25 @@ class ProfileAppState extends State<ProfileApp> {
     final navigationItems = <BottomNavigationBarItem>[
       new BottomNavigationBarItem(
           icon: new Icon(Icons.home, color: getColor(0)),
-          title: new Text("Home\nPage")),
+          title: new Text("Home\nPage",)),
       new BottomNavigationBarItem(
           icon: new Icon(Icons.library_add, color: getColor(1),),
-          title: new Text("Roles")),
+          title: new Text("Roles",)),
       new BottomNavigationBarItem(
           icon: new Icon(Icons.work, color: getColor(2),),
-          title: new Text("Projects")
+          title: new Text("Projects",)
       ),
       new BottomNavigationBarItem(
           icon: new Icon(Icons.title, color: getColor(3),),
-          title: new Text("Tags")
+          title: new Text("Tags",)
       ),
       new BottomNavigationBarItem(
           icon: new Icon(Icons.devices, color: getColor(4),),
-          title: new Text("Devices")
+          title: new Text("Devices",)
       ),
       new BottomNavigationBarItem(
           icon: new Icon(Icons.person, color: getColor(5),),
-          title: new Text("Users")
+          title: new Text("Users",)
       ),
     ];
 
@@ -120,7 +120,7 @@ class ProfileAppState extends State<ProfileApp> {
   Color getColor(int idx) {
     final iconColor = Color(0xEFCCCCCD);
     if (_page == idx) {
-      return TodoColors.primaryDark;
+      return TodoColors.baseColors[0];
     } else {
       return iconColor;
     }

@@ -61,7 +61,7 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                         builder: (BuildContext context) {
                           return new AlertDialog(
                             title: new Text(
-                              'SEARCH  USERS', style: TodoColors.textStyle,),
+                              'Search  Users', style: TodoColors.textStyle6,),
                             content: new SingleChildScrollView(
                               child: new ListBody(
                                 children: <Widget>[

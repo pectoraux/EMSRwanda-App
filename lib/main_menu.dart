@@ -4,6 +4,7 @@ import 'view_primary.dart';
 import 'view_banking.dart';
 import 'view_emergency.dart';
 import 'view_projects.dart';
+import 'constants.dart';
 
 class MainMenu extends StatelessWidget {
 
@@ -35,8 +36,7 @@ class MainMenu extends StatelessWidget {
   }
 
   Widget _buildListItem(String title, IconData iconData, VoidCallback action) {
-    final textStyle = new TextStyle(
-        color: Colors.black54, fontSize: 18.0, fontWeight: FontWeight.w600);
+    final textStyle = TodoColors.textStyle7;
 
     return new InkWell(
       onTap: action,
@@ -52,7 +52,7 @@ class MainMenu extends StatelessWidget {
               height: 35.0,
               margin: const EdgeInsets.only(right: 10.0),
               decoration: new BoxDecoration(
-                color: Colors.purple,
+                color: TodoColors.baseColors[0],
                 borderRadius: new BorderRadius.circular(5.0),
               ),
               alignment: Alignment.center,

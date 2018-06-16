@@ -7,7 +7,7 @@ import 'profile_header.dart';
 import 'quick_actions.dart';
 import 'constants.dart';
 import 'edit_device.dart';
-import 'edit_role.dart';
+import 'animated_pie_chart.dart';
 import 'explore_users.dart';
 import 'qrcode_scanner.dart';
 
@@ -46,7 +46,8 @@ class StaffNStatsPageState extends State<StaffNStatsPage> {
       resizeToAvoidBottomPadding: false,
       body: new PageView(
           children: [
-            new Container(color: Colors.grey,),
+//            new Container(color: Colors.grey,),
+          new AnimatedPieChartExample(),
             new ExploreUsersPage(),
             new QRCodeScanPage(),
           ],

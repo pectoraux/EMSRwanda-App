@@ -22,8 +22,8 @@ class ProfileHeader extends StatelessWidget {
       center: Alignment.topLeft,
       radius: 0.4,
       colors: <Color>[
-        const Color(0xFF8860EB),
-        const Color(0xFF8881EB),
+        const Color(0xFF0ABC9B),
+        const Color(0xFF6AB7A8),
       ],
       stops: <double>[
         0.4, 1.0,
@@ -53,7 +53,7 @@ class ProfileHeader extends StatelessWidget {
             decoration: new BoxDecoration(
               gradient: new LinearGradient(
                   colors: <Color>[ //7928D1
-                    const Color(0xFF7928D1), const Color(0xFF9A4DFF)],
+                    const Color(0xFF0ABC9B), const Color(0xFF6AB7A8)],
                   stops: <double>[0.3, 0.5],
                   begin: Alignment.topRight, end: Alignment.bottomLeft
               ),

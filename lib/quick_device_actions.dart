@@ -11,9 +11,9 @@ class QuickDeviceActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final blueGradient = const LinearGradient(
-        colors: const <Color>[
-          const Color(0xFF0075D1),
-          const Color(0xFF00A2E3),
+        colors: <Color>[
+          const Color(0xFF0ABC9B),
+          const Color(0xFF6AB7A8),
         ],
         stops: const <double>[0.4, 0.6],
         begin: Alignment.topRight,

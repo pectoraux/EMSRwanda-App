@@ -16,6 +16,7 @@ dependencies:
   tuple: "^1.0.1"
   flutter_calendar: "^0.0.1"
   font_awesome_flutter: "^6.0.0"
+  flutter_circular_chart:
 
 dev_dependencies:
   flutter_test:
@@ -94,3 +95,4 @@ flutter:
       - asset: assets/fonts/timeburnernormal.ttf
       - asset: assets/fonts/timeburnerbold.ttf
         weight: 700
+

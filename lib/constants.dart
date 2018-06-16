@@ -68,6 +68,12 @@ class TodoColors {
       color: Colors.black,
       fontFamily: ProfileFontNames.TimeBurner);
 
+  static final textStyle8 = new TextStyle(
+      fontWeight: FontWeight.w700,
+      fontSize: 10.0,
+      color: Colors.black,
+      fontFamily: ProfileFontNames.TimeBurner);
+
   static const baseColors = <ColorSwatch>[
     ColorSwatch(0xFF6AB7A8, {
       'highlight': Color(0xFF6AB7A8),

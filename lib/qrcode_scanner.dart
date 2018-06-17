@@ -7,6 +7,12 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'constants.dart';
 
 class QRCodeScanPage extends StatefulWidget {
+  final int colorIndex;
+
+  const QRCodeScanPage({
+    @required this.colorIndex,
+  }) : assert(colorIndex != null);
+
   @override
   QRCodeScanPageState createState() {
     return new QRCodeScanPageState();
@@ -14,13 +20,17 @@ class QRCodeScanPage extends StatefulWidget {
 }
 
 class QRCodeScanPageState extends State<QRCodeScanPage> {
+  final String display_welcome = "Hey there !";
+  final String display_permission_denied = "Camera permission was denied";
+  final String display_unknown = "Unknown Error";
+  final String display_no_scan = "You pressed the back button before scanning anything";
   String result = "Hey there !";
-  String display = "Hey there !";
   Future _scanQR() async {
     try {
       String qrResult = await BarcodeScanner.scan();
       setState(() {
-        if(result == display){
+        if(result == display_welcome || result == display_permission_denied ||
+          result == display_no_scan || result.startsWith(display_unknown)){
           result = qrResult;
         }else{
           result += "\n" + qrResult;
@@ -30,20 +40,20 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
     } on PlatformException catch (ex) {
       if (ex.code == BarcodeScanner.CameraAccessDenied) {
         setState(() {
-          result = "Camera permission was denied";
+          result = display_permission_denied;
         });
       } else {
         setState(() {
-          result = "Unknown Error $ex";
+          result = display_unknown + " $ex";
         });
       }
     } on FormatException {
       setState(() {
-        result = "You pressed the back button before scanning anything";
+        result = display_no_scan;
       });
     } catch (ex) {
       setState(() {
-        result = "Unknown Error $ex";
+        result = display_unknown + " $ex";
       });
     }
   }
@@ -74,11 +84,12 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
           new FloatingActionButton(
             elevation: 200.0,
             child: new Icon(Icons.save),
-            backgroundColor: TodoColors.baseColors[1],
+            backgroundColor: TodoColors.baseColors[widget.colorIndex],
             onPressed: () {
-              if(result != "" && result != display) {
+              if(result != "" && result != display_welcome && result != display_permission_denied &&
+                  result != display_no_scan && !result.startsWith(display_unknown)) {
                 onTap();
-                showInSnackBar("Records Saved !!!", TodoColors.baseColors[1]);
+                showInSnackBar("Records Saved !!!", TodoColors.baseColors[widget.colorIndex]);
               }
             },
           ),
@@ -163,6 +174,7 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
     setState(() {
       result = "";
     });
+    showInSnackBar("Scanner has been reset", TodoColors.baseColors[widget.colorIndex]);
   }
 
   void showInSnackBar(String value, Color c) {
@@ -178,7 +190,7 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
         elevation: 14.0,
         borderRadius: BorderRadius.circular(12.0),
         shadowColor: Color(0x802196F3),
-        color: TodoColors.baseColors[1],
+        color: TodoColors.baseColors[widget.colorIndex],
         child: InkWell
           (
           // Do onTap() if it isn't null, otherwise do print()

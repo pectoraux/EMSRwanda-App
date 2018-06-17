@@ -1,12 +1,13 @@
 import 'supplemental/cut_corners_border.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
-import 'explore_users.dart';
+import 'view_users.dart';
 import 'profile_fonts.dart';
 import 'constants.dart';
 
 /// QuickActions represents the horizontal list of rectangular buttons below the header
 class QuickUserActions extends StatelessWidget {
+  int _colorIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +131,6 @@ class QuickUserActions extends StatelessWidget {
   }
 
   void onTap(BuildContext context, String title) {
-    final _padding = EdgeInsets.all(5.0);
     final _userNameController = TextEditingController();
     final _userName = GlobalKey(debugLabel: 'User Name');
     final _userRoleController = TextEditingController();
@@ -144,23 +144,24 @@ class QuickUserActions extends StatelessWidget {
 
     if (title == "View\nUsers") {
       Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => ExploreUsersPage()));
+          MaterialPageRoute(builder: (_) => ViewUsersPage(colorIndex: _colorIndex,)));
     } else if (title == "Update\nUser") {
       new Container(
         width: 450.0,
       );
-
       showDialog<Null>(
         context: context,
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return new AlertDialog(
-            title: new Text('SEARCH  USERS', style: TodoColors.textStyle,),
+            title: new Text('Search User To Update', style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),),
             content: new SingleChildScrollView(
               child: new ListBody(
                 children: <Widget>[
                   SizedBox(height: 12.0),
-                  TextField(
+              PrimaryColorOverride(
+                color: TodoColors.baseColors[_colorIndex],
+                child: TextField(
                     key: _userName,
                     controller: _userNameController,
                     decoration: InputDecoration(
@@ -169,8 +170,11 @@ class QuickUserActions extends StatelessWidget {
                       border: CutCornersBorder(),
                     ),
                   ),
+              ),
                   SizedBox(height: 12.0),
-                  TextField(
+              PrimaryColorOverride(
+                color: TodoColors.baseColors[_colorIndex],
+                child: TextField(
                     key: _userRole,
                     controller: _userRoleController,
                     decoration: InputDecoration(
@@ -179,8 +183,11 @@ class QuickUserActions extends StatelessWidget {
                       border: CutCornersBorder(),
                     ),
                   ),
+              ),
                   SizedBox(height: 12.0),
-                  TextField(
+              PrimaryColorOverride(
+                color: TodoColors.baseColors[_colorIndex],
+                child: TextField(
                     key: _userStatus,
                     controller: _userStatusController,
                     decoration: InputDecoration(
@@ -189,8 +196,11 @@ class QuickUserActions extends StatelessWidget {
                       border: CutCornersBorder(),
                     ),
                   ),
+              ),
                   SizedBox(height: 12.0),
-                  TextField(
+              PrimaryColorOverride(
+                color: TodoColors.baseColors[_colorIndex],
+                child: TextField(
                     key: _userLocations,
                     controller: _userLocationsController,
                     decoration: InputDecoration(
@@ -199,8 +209,10 @@ class QuickUserActions extends StatelessWidget {
                       border: CutCornersBorder(),
                     ),
                   ),
+              ),
                   RaisedButton(
                     child: Text('ADD LOCATION'),
+                    textColor: TodoColors.baseColors[_colorIndex],
                     elevation: 8.0,
                     shape: BeveledRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(7.0)),
@@ -208,7 +220,9 @@ class QuickUserActions extends StatelessWidget {
                     onPressed: () {},
                   ),
                   SizedBox(height: 12.0),
-                  TextField(
+              PrimaryColorOverride(
+                color: TodoColors.baseColors[_colorIndex],
+                child: TextField(
                     key: _tags,
                     controller: _tagsController,
                     decoration: InputDecoration(
@@ -217,8 +231,10 @@ class QuickUserActions extends StatelessWidget {
                       border: CutCornersBorder(),
                     ),
                   ),
+              ),
                   RaisedButton(
                     child: Text('ADD TAG'),
+                    textColor: TodoColors.baseColors[_colorIndex],
                     elevation: 8.0,
                     shape: BeveledRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(7.0)),
@@ -234,6 +250,7 @@ class QuickUserActions extends StatelessWidget {
             actions: <Widget>[
               FlatButton(
                 child: Text('CANCEL'),
+                textColor: TodoColors.baseColors[_colorIndex],
                 shape: BeveledRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(7.0)),
                 ),
@@ -244,6 +261,7 @@ class QuickUserActions extends StatelessWidget {
 
               RaisedButton(
                 child: Text('SEARCH'),
+                textColor: TodoColors.baseColors[_colorIndex],
                 elevation: 8.0,
                 shape: BeveledRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(7.0)),
@@ -273,4 +291,20 @@ class _BackgroundImageClipper extends CustomClipper<Path> {
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 
+}
+
+class PrimaryColorOverride extends StatelessWidget {
+  const PrimaryColorOverride({Key key, this.color, this.child})
+      : super(key: key);
+
+  final Color color;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+      child: child,
+      data: Theme.of(context).copyWith(primaryColor: color),
+    );
+  }
 }

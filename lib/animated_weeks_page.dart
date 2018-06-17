@@ -3,12 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:date_utils/date_utils.dart';
 import 'constants.dart';
 
-class AnimatedListSample extends StatefulWidget {
+class AnimatedWeeksPage extends StatefulWidget {
+  final int colorIndex;
+
+  const AnimatedWeeksPage({
+    @required this.colorIndex,
+  }) : assert(colorIndex != null);
+
   @override
-  _AnimatedListSampleState createState() => new _AnimatedListSampleState();
+  _AnimatedWeeksPageState createState() => new _AnimatedWeeksPageState();
 }
 
-class _AnimatedListSampleState extends State<AnimatedListSample> {
+class _AnimatedWeeksPageState extends State<AnimatedWeeksPage> {
   final GlobalKey<AnimatedListState> _listKey = new GlobalKey<
       AnimatedListState>();
   final GlobalKey<AnimatedListState> _listKey2 = new GlobalKey<
@@ -290,6 +296,6 @@ class CardItem extends StatelessWidget {
   }
 }
 
-void main() {
-  runApp(new AnimatedListSample());
-}
+//void main() {
+//  runApp(new AnimatedListSample());
+//}

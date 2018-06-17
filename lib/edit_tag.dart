@@ -17,7 +17,7 @@ class EditTagPageState extends State<EditTagPage> {
   final _tagName = GlobalKey(debugLabel: 'Tag Name');
   final _tagType = GlobalKey(debugLabel: 'Tag Type');
   final _tagDescription = GlobalKey(debugLabel: 'Tag Description');
-  final _padding = EdgeInsets.all(5.0);
+  int _colorIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -33,15 +33,14 @@ class EditTagPageState extends State<EditTagPage> {
               SizedBox(height: 16.0),
               Text(
                 'Create A New Tag',
-                style: TodoColors.textStyle,
+                style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),
               ),
             ],
           ),
 
           SizedBox(height: 12.0),
           PrimaryColorOverride(
-            color: TodoColors.accent,
-
+            color: TodoColors.baseColors[_colorIndex],
             child: TextField(
               key: _tagName,
               controller: _tagNameController,
@@ -55,8 +54,7 @@ class EditTagPageState extends State<EditTagPage> {
           const SizedBox(height: 12.0),
 
           PrimaryColorOverride(
-            color: TodoColors.accent,
-
+            color: TodoColors.baseColors[_colorIndex],
             child: TextField(
               key: _tagType,
               controller: _tagTypeController,
@@ -69,8 +67,7 @@ class EditTagPageState extends State<EditTagPage> {
           const SizedBox(height: 12.0),
 
           PrimaryColorOverride(
-            color: TodoColors.accent,
-
+            color: TodoColors.baseColors[_colorIndex],
             child: TextField(
               key: _tagDescription,
               controller: _tagDescriptionController,
@@ -85,6 +82,7 @@ class EditTagPageState extends State<EditTagPage> {
             children: <Widget>[
               FlatButton(
                 child: Text('CANCEL'),
+                textColor: TodoColors.baseColors[_colorIndex],
                 shape: BeveledRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(7.0)),
                 ),
@@ -96,6 +94,7 @@ class EditTagPageState extends State<EditTagPage> {
               ),
               RaisedButton(
                 child: Text('CREATE'),
+                textColor: TodoColors.baseColors[_colorIndex],
                 elevation: 8.0,
                 shape: BeveledRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(7.0)),

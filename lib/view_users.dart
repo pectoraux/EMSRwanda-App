@@ -3,24 +3,35 @@ import 'supplemental/cut_corners_border.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'constants.dart';
 
-import 'device_rating_page.dart';
+import 'user_rating_page.dart';
 
-class ExploreDevicesPage extends StatefulWidget {
+class ViewUsersPage extends StatefulWidget {
+  final int colorIndex;
+
+  const ViewUsersPage({
+    @required this.colorIndex,
+  }) : assert(colorIndex != null);
+
   @override
-  ExploreDevicesPageState createState() => ExploreDevicesPageState();
+  ViewUsersPageState createState() => ViewUsersPageState();
 }
 
-class ExploreDevicesPageState extends State<ExploreDevicesPage> {
+class ViewUsersPageState extends State<ViewUsersPage> {
 
   @override
   Widget build(BuildContext context) {
     final _bkey = GlobalKey(debugLabel: 'Back Key');
-    final _deviceNameController = TextEditingController();
-    final _deviceName = GlobalKey(debugLabel: 'Device Name');
-    final _deviceTypeController = TextEditingController();
-    final _deviceType = GlobalKey(debugLabel: 'Device Type');
-    final _deviceConditionController = TextEditingController();
-    final _deviceCondition = GlobalKey(debugLabel: 'Device Condition');
+    final _userNameController = TextEditingController();
+    final _userName = GlobalKey(debugLabel: 'User Name');
+    final _userRoleController = TextEditingController();
+    final _userRole = GlobalKey(debugLabel: 'User Role');
+    final _userStatusController = TextEditingController();
+    final _userStatus = GlobalKey(debugLabel: 'User Status');
+    final _userLocationsController = TextEditingController();
+    final _tagsController = TextEditingController();
+    final _userLocations = GlobalKey(debugLabel: 'Users Locations');
+    final _tags = GlobalKey(debugLabel: 'Project or User Related Tags');
+
     return Scaffold
       (
         appBar: AppBar
@@ -40,10 +51,11 @@ class ExploreDevicesPageState extends State<ExploreDevicesPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>
                 [
+
                   new FloatingActionButton(
                     elevation: 200.0,
                     child: new Icon(Icons.search),
-                    backgroundColor: TodoColors.baseColors[6],
+                    backgroundColor: TodoColors.baseColors[widget.colorIndex],
                     onPressed: () {
                       new Container(
                         width: 450.0,
@@ -55,39 +67,94 @@ class ExploreDevicesPageState extends State<ExploreDevicesPage> {
                         builder: (BuildContext context) {
                           return new AlertDialog(
                             title: new Text(
-                              'Search  Devices', style: TodoColors.textStyle6,),
+                              'Search  Users To Update', style: TodoColors.textStyle.apply(color: TodoColors.baseColors[widget.colorIndex]),),
                             content: new SingleChildScrollView(
                               child: new ListBody(
                                 children: <Widget>[
                                   SizedBox(height: 12.0),
-                                  TextField(
-                                    key: _deviceName,
-                                    controller: _deviceNameController,
+                              PrimaryColorOverride(
+                                color: TodoColors.baseColors[widget.colorIndex],
+                                child: TextField(
+                                    key: _userName,
+                                    controller: _userNameController,
                                     decoration: InputDecoration(
-                                      labelText: 'Device Name',
+                                      labelText: 'User Name',
                                       labelStyle: TodoColors.textStyle2,
                                       border: CutCornersBorder(),
                                     ),
                                   ),
+                              ),
                                   SizedBox(height: 12.0),
-                                  TextField(
-                                    key: _deviceType,
-                                    controller: _deviceTypeController,
+                              PrimaryColorOverride(
+                                color: TodoColors.baseColors[widget.colorIndex],
+                                child: TextField(
+                                    key: _userRole,
+                                    controller: _userRoleController,
                                     decoration: InputDecoration(
-                                      labelText: 'Device Type',
+                                      labelText: 'User Role',
                                       labelStyle: TodoColors.textStyle2,
                                       border: CutCornersBorder(),
                                     ),
                                   ),
+                              ),
                                   SizedBox(height: 12.0),
-                                  TextField(
-                                    key: _deviceCondition,
-                                    controller: _deviceConditionController,
+                              PrimaryColorOverride(
+                                color: TodoColors.baseColors[widget.colorIndex],
+                                child: TextField(
+                                    key: _userStatus,
+                                    controller: _userStatusController,
                                     decoration: InputDecoration(
-                                      labelText: 'Device Condition',
+                                      labelText: 'User Status',
                                       labelStyle: TodoColors.textStyle2,
                                       border: CutCornersBorder(),
                                     ),
+                                  ),
+                              ),
+                                  SizedBox(height: 12.0),
+                              PrimaryColorOverride(
+                                color: TodoColors.baseColors[widget.colorIndex],
+                                child: TextField(
+                                    key: _userLocations,
+                                    controller: _userLocationsController,
+                                    decoration: InputDecoration(
+                                      labelText: 'User Location',
+                                      labelStyle: TodoColors.textStyle2,
+                                      border: CutCornersBorder(),
+                                    ),
+                                  ),
+                              ),
+                                  RaisedButton(
+                                    child: Text('ADD LOCATION'),
+                                    textColor: TodoColors.baseColors[widget.colorIndex],
+                                    elevation: 8.0,
+                                    shape: BeveledRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(7.0)),
+                                    ),
+                                    onPressed: () {},
+                                  ),
+                                  SizedBox(height: 12.0),
+                              PrimaryColorOverride(
+                                color: TodoColors.baseColors[widget.colorIndex],
+                                child: TextField(
+                                    key: _tags,
+                                    controller: _tagsController,
+                                    decoration: InputDecoration(
+                                      labelText: 'Project or User Related Tags',
+                                      labelStyle: TodoColors.textStyle2,
+                                      border: CutCornersBorder(),
+                                    ),
+                                  ),
+                              ),
+                                  RaisedButton(
+                                    child: Text('ADD TAG'),
+                                    textColor: TodoColors.baseColors[widget.colorIndex],
+                                    elevation: 8.0,
+                                    shape: BeveledRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(7.0)),
+                                    ),
+                                    onPressed: () {},
                                   ),
                                   SizedBox(height: 12.0,),
                                 ],
@@ -98,6 +165,7 @@ class ExploreDevicesPageState extends State<ExploreDevicesPage> {
                             actions: <Widget>[
                               FlatButton(
                                 child: Text('CANCEL'),
+                                textColor: TodoColors.baseColors[widget.colorIndex],
                                 shape: BeveledRectangleBorder(
                                   borderRadius: BorderRadius.all(
                                       Radius.circular(7.0)),
@@ -110,6 +178,7 @@ class ExploreDevicesPageState extends State<ExploreDevicesPage> {
                               RaisedButton(
                                 child: Text('SEARCH'),
                                 elevation: 8.0,
+                                textColor: TodoColors.baseColors[widget.colorIndex],
                                 shape: BeveledRectangleBorder(
                                   borderRadius: BorderRadius.all(
                                       Radius.circular(7.0)),
@@ -150,14 +219,14 @@ class ExploreDevicesPageState extends State<ExploreDevicesPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Available',
-                              style: TextStyle(color: Colors.blueAccent)),
-                          Text('Ipad', style: TodoColors.textStyle6)
+                          Text('Kigali',
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
+                          Text('Erin Niamkey', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[6],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -189,14 +258,14 @@ class ExploreDevicesPageState extends State<ExploreDevicesPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('In Use',
-                              style: TextStyle(color: Colors.redAccent)),
-                          Text('Tablet', style: TodoColors.textStyle6)
+                          Text('Remera',
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
+                          Text('Bernard Nshima', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[6],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -228,14 +297,14 @@ class ExploreDevicesPageState extends State<ExploreDevicesPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('In Use',
-                              style: TextStyle(color: Colors.redAccent)),
-                          Text('Phone', style: TodoColors.textStyle6)
+                          Text('Kacyiru',
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
+                          Text('Celine Dion', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[6],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -267,14 +336,14 @@ class ExploreDevicesPageState extends State<ExploreDevicesPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Available',
-                              style: TextStyle(color: Colors.blueAccent)),
-                          Text('Phone', style: TodoColors.textStyle6)
+                          Text('Kiyovu',
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
+                          Text('Eric Niamkey', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[6],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -306,14 +375,14 @@ class ExploreDevicesPageState extends State<ExploreDevicesPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Available',
-                              style: TextStyle(color: Colors.blueAccent)),
-                          Text('Ipad', style: TodoColors.textStyle6)
+                          Text('Gaculiro',
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
+                          Text('Kossi Koffi', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[6],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -345,14 +414,14 @@ class ExploreDevicesPageState extends State<ExploreDevicesPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Available',
-                              style: TextStyle(color: Colors.blueAccent)),
-                          Text('Tablet', style: TodoColors.textStyle6)
+                          Text('Kimironko',
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
+                          Text('Anne Judith', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[6],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -384,14 +453,14 @@ class ExploreDevicesPageState extends State<ExploreDevicesPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('In Use',
-                              style: TextStyle(color: Colors.redAccent)),
-                          Text('Phone', style: TodoColors.textStyle6)
+                          Text('Kiyovu',
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
+                          Text('Mariam Adah', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[6],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -423,14 +492,14 @@ class ExploreDevicesPageState extends State<ExploreDevicesPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Available',
-                              style: TextStyle(color: Colors.blueAccent)),
-                          Text('Phone', style: TodoColors.textStyle6)
+                          Text('Gisenyi',
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
+                          Text('Ali Jean', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[6],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -462,14 +531,14 @@ class ExploreDevicesPageState extends State<ExploreDevicesPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('In Use',
-                              style: TextStyle(color: Colors.redAccent)),
-                          Text('Ipad', style: TodoColors.textStyle6)
+                          Text('Gaculiro',
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
+                          Text('Micheal Jackson', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[6],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -501,14 +570,14 @@ class ExploreDevicesPageState extends State<ExploreDevicesPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Available',
-                              style: TextStyle(color: Colors.blueAccent)),
-                          Text('Tablet', style: TodoColors.textStyle6)
+                          Text('Remera',
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
+                          Text('Ninegan Tchakpa', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[6],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -553,9 +622,25 @@ class ExploreDevicesPageState extends State<ExploreDevicesPage> {
           // Do onTap() if it isn't null, otherwise do print()
             onTap: () =>
                 Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => DeviceRatingPage())),
+                    MaterialPageRoute(builder: (_) => UserRatingPage())),
             child: child
         )
+    );
+  }
+}
+
+class PrimaryColorOverride extends StatelessWidget {
+  const PrimaryColorOverride({Key key, this.color, this.child})
+      : super(key: key);
+
+  final Color color;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+      child: child,
+      data: Theme.of(context).copyWith(primaryColor: color),
     );
   }
 }

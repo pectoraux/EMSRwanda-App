@@ -3,9 +3,15 @@ import 'package:flutter_sparkline/flutter_sparkline.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'constants.dart';
 import 'staffs_stats.dart';
-import 'explore_devices.dart';
+import 'view_devices.dart';
 
 class ProjectDetailsPage extends StatefulWidget {
+  final int colorIndex;
+
+  const ProjectDetailsPage({
+    @required this.colorIndex,
+  }) : assert(colorIndex != null);
+
   @override
   ProjectDetailsPageState createState() => ProjectDetailsPageState();
 }
@@ -243,7 +249,7 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
               Icon(Icons.person, color: Colors.black54, size: 20.0,),
               SizedBox(width: 2.0,),
               new Expanded(child:
-              new Text('Anirudh\nRajashekar', style: TodoColors.textStyle),
+              new Text('Anirudh\nRajashekar', style: TodoColors.textStyle4),
                 flex: 1,
               )
             ],
@@ -347,7 +353,7 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
               ),
               onTap: () =>
                   Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => StaffNStatsPage())),
+                      MaterialPageRoute(builder: (_) => StaffNStatsPage(colorIndex: widget.colorIndex,))),
             ),
             _buildTile(
               Padding
@@ -482,7 +488,7 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
               ),
               onTap: () =>
                   Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => ExploreDevicesPage())),
+                      MaterialPageRoute(builder: (_) => ViewDevicesPage(colorIndex: widget.colorIndex,))),
             )
           ],
           staggeredTiles: [

@@ -31,6 +31,7 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage> {
   final _role = GlobalKey(debugLabel: 'Role');
   final _dob = GlobalKey(debugLabel: 'Date Of Birth');
   final _padding = EdgeInsets.all(5.0);
+  int _colorIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +49,7 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage> {
               SizedBox(height: 16.0),
               Text(
                 'Your Primary Details',
-                style: TodoColors.textStyle,
+                style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),
               ),
             ],
           ),
@@ -295,6 +296,7 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage> {
             children: <Widget>[
               FlatButton(
                 child: Text('BACK'),
+                textColor: TodoColors.baseColors[_colorIndex],
                 shape: BeveledRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(7.0)),
                 ),
@@ -304,6 +306,7 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage> {
               ),
               RaisedButton(
                 child: Text('EDIT'),
+                textColor: TodoColors.baseColors[_colorIndex],
                 elevation: 8.0,
                 shape: BeveledRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(7.0)),

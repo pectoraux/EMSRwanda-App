@@ -8,10 +8,15 @@ import 'quick_actions.dart';
 import 'constants.dart';
 import 'edit_device.dart';
 import 'animated_pie_chart.dart';
-import 'explore_users.dart';
+import 'view_users.dart';
 import 'qrcode_scanner.dart';
 
 class StaffNStatsPage extends StatefulWidget {
+  final int colorIndex;
+
+  const StaffNStatsPage({
+    @required this.colorIndex,
+  }) : assert(colorIndex != null);
 
   @override
   StaffNStatsPageState createState() => StaffNStatsPageState();
@@ -46,10 +51,9 @@ class StaffNStatsPageState extends State<StaffNStatsPage> {
       resizeToAvoidBottomPadding: false,
       body: new PageView(
           children: [
-//            new Container(color: Colors.grey,),
-          new AnimatedPieChartExample(),
-            new ExploreUsersPage(),
-            new QRCodeScanPage(),
+            new AnimatedPieChartPage(colorIndex: 1,),
+            new ViewUsersPage(colorIndex: 1,),
+            new QRCodeScanPage(colorIndex: widget.colorIndex,),
           ],
           controller: _pageController,
           onPageChanged: onPageChanged
@@ -99,7 +103,7 @@ class StaffNStatsPageState extends State<StaffNStatsPage> {
   Color getColor(int idx) {
     final iconColor = Color(0xEFCCCCCD);
     if (_page == idx) {
-      return TodoColors.primaryDark;
+      return TodoColors.baseColors[widget.colorIndex];
     } else {
       return iconColor;
     }

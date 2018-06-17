@@ -1,6 +1,4 @@
-import 'profile_icons.dart';
 import 'package:flutter/material.dart';
-
 import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
 import 'quick_device_actions.dart';
@@ -18,7 +16,7 @@ class EditDevicePageState extends State<EditDevicePage> {
   final _deviceName = GlobalKey(debugLabel: 'Device Name');
   final _deviceType = GlobalKey(debugLabel: 'Device Type');
   final _deviceCondition = GlobalKey(debugLabel: 'Device Condition');
-  final _padding = EdgeInsets.all(5.0);
+  int _colorIndex = 0;
 
 
   @override
@@ -35,15 +33,14 @@ class EditDevicePageState extends State<EditDevicePage> {
             SizedBox(height: 16.0),
             Text(
               'Create A New Device',
-              style: TodoColors.textStyle,
+              style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),
             ),
           ],
         ),
 
         SizedBox(height: 12.0),
         PrimaryColorOverride(
-          color: TodoColors.accent,
-
+          color: TodoColors.baseColors[_colorIndex],
           child: TextField(
             key: _deviceName,
             controller: _deviceNameController,
@@ -56,8 +53,7 @@ class EditDevicePageState extends State<EditDevicePage> {
 
         SizedBox(height: 12.0),
         PrimaryColorOverride(
-          color: TodoColors.accent,
-
+          color: TodoColors.baseColors[_colorIndex],
           child: TextField(
             key: _deviceType,
             controller: _deviceTypeController,
@@ -70,8 +66,7 @@ class EditDevicePageState extends State<EditDevicePage> {
 
         SizedBox(height: 12.0),
         PrimaryColorOverride(
-          color: TodoColors.accent,
-
+          color: TodoColors.baseColors[_colorIndex],
           child: TextField(
             key: _deviceCondition,
             controller: _deviceConditionController,
@@ -90,6 +85,7 @@ class EditDevicePageState extends State<EditDevicePage> {
           children: <Widget>[
             FlatButton(
               child: Text('CANCEL'),
+              textColor: TodoColors.baseColors[_colorIndex],
               shape: BeveledRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),
               ),
@@ -101,6 +97,7 @@ class EditDevicePageState extends State<EditDevicePage> {
             ),
             RaisedButton(
               child: Text('CREATE'),
+              textColor: TodoColors.baseColors[_colorIndex],
               elevation: 8.0,
               shape: BeveledRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),
@@ -110,7 +107,7 @@ class EditDevicePageState extends State<EditDevicePage> {
                     _deviceTypeController.value.text.trim() != "" &&
                     _deviceConditionController.value.text.trim() != "") {
                   showInSnackBar(
-                      "Device Created Successfully", TodoColors.accent);
+                      "Device Created Successfully", TodoColors.baseColors[_colorIndex]);
                 } else {
                   showInSnackBar("Please Specify A Device For All Fields",
                       Colors.redAccent);

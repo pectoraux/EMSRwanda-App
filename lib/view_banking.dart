@@ -16,6 +16,7 @@ class ViewBankingPageState extends State<ViewBankingPage> {
   final _bankAcctNo = GlobalKey(debugLabel: 'Banc Acct No');
   final _bankName = GlobalKey(debugLabel: 'Bank Name');
   final _padding = EdgeInsets.all(5.0);
+  int _colorIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +34,7 @@ class ViewBankingPageState extends State<ViewBankingPage> {
               SizedBox(height: 16.0),
               Text(
                 'Your Banking Details',
-                style: TodoColors.textStyle,
+                style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),
               ),
             ],
           ),
@@ -71,6 +72,7 @@ class ViewBankingPageState extends State<ViewBankingPage> {
             children: <Widget>[
               FlatButton(
                 child: Text('BACK'),
+                textColor: TodoColors.baseColors[_colorIndex],
                 shape: BeveledRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(7.0)),
                 ),
@@ -80,6 +82,7 @@ class ViewBankingPageState extends State<ViewBankingPage> {
               ),
               RaisedButton(
                 child: Text('EDIT'),
+                textColor: TodoColors.baseColors[_colorIndex],
                 elevation: 8.0,
                 shape: BeveledRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(7.0)),

@@ -81,7 +81,7 @@ class MainMenu extends StatelessWidget {
           MaterialPageRoute(builder: (_) => ViewInsurancePage()));
     } else if (command == "Project Details") {
       Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => ViewProjectsPage()));
+          MaterialPageRoute(builder: (_) => ViewProjectsPage(colorIndex: 0,)));
     } else if (command == "Emergency Details") {
       Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => ViewEmergencyPage()));

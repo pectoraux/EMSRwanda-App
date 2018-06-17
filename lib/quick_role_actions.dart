@@ -7,6 +7,7 @@ import 'supplemental/cut_corners_border.dart';
 
 /// QuickActions represents the horizontal list of rectangular buttons below the header
 class QuickRoleActions extends StatelessWidget {
+  int _colorIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -133,7 +134,7 @@ class QuickRoleActions extends StatelessWidget {
     final _padding = EdgeInsets.all(5.0);
     if (title == "View\nRoles") {
       Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => ViewRolesPage()));
+          MaterialPageRoute(builder: (_) => ViewRolesPage(colorIndex: 0,)));
     } else if (title == "Update\nRole") {
       showSearchDialog(context);
     }
@@ -152,12 +153,14 @@ class QuickRoleActions extends StatelessWidget {
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return new AlertDialog(
-          title: new Text('SEARCH  ROLES', style: TodoColors.textStyle,),
+          title: new Text('Search Role to Update', style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),),
           content: new SingleChildScrollView(
             child: new ListBody(
               children: <Widget>[
                 SizedBox(height: 12.0),
-                TextField(
+            PrimaryColorOverride(
+              color: TodoColors.baseColors[_colorIndex],
+              child: TextField(
                   key: _roleName,
                   controller: _roleNameController,
                   decoration: InputDecoration(
@@ -166,6 +169,7 @@ class QuickRoleActions extends StatelessWidget {
                     border: CutCornersBorder(),
                   ),
                 ),
+            ),
                 SizedBox(height: 12.0,),
               ],
             ),
@@ -175,6 +179,7 @@ class QuickRoleActions extends StatelessWidget {
           actions: <Widget>[
             FlatButton(
               child: Text('CANCEL'),
+              textColor: TodoColors.baseColors[_colorIndex],
               shape: BeveledRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),
               ),
@@ -185,6 +190,7 @@ class QuickRoleActions extends StatelessWidget {
 
             RaisedButton(
               child: Text('SEARCH'),
+              textColor: TodoColors.baseColors[_colorIndex],
               elevation: 8.0,
               shape: BeveledRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),
@@ -213,4 +219,20 @@ class _BackgroundImageClipper extends CustomClipper<Path> {
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 
+}
+
+class PrimaryColorOverride extends StatelessWidget {
+  const PrimaryColorOverride({Key key, this.color, this.child})
+      : super(key: key);
+
+  final Color color;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+      child: child,
+      data: Theme.of(context).copyWith(primaryColor: color),
+    );
+  }
 }

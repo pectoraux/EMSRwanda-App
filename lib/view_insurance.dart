@@ -17,6 +17,7 @@ class ViewInsurancePageState extends State<ViewInsurancePage> {
   final _insuranceNo = GlobalKey(debugLabel: 'Insurance No');
   final _insuranceCpy = GlobalKey(debugLabel: 'Insurance Copy');
   final _padding = EdgeInsets.all(5.0);
+  int _colorIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +35,7 @@ class ViewInsurancePageState extends State<ViewInsurancePage> {
               SizedBox(height: 16.0),
               Text(
                 'Your Insurance Details',
-                style: TodoColors.textStyle,
+                style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),
               ),
             ],
           ),
@@ -85,6 +86,7 @@ class ViewInsurancePageState extends State<ViewInsurancePage> {
             children: <Widget>[
               FlatButton(
                 child: Text('BACK'),
+                textColor: TodoColors.baseColors[_colorIndex],
                 shape: BeveledRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(7.0)),
                 ),
@@ -94,6 +96,7 @@ class ViewInsurancePageState extends State<ViewInsurancePage> {
               ),
               RaisedButton(
                 child: Text('EDIT'),
+                textColor: TodoColors.baseColors[_colorIndex],
                 elevation: 8.0,
                 shape: BeveledRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(7.0)),

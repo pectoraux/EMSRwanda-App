@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-
 import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
-import 'quick_user_actions.dart';
 
 
 class EditPasswordPage extends StatefulWidget {
@@ -18,7 +16,7 @@ class EditPasswordPageState extends State<EditPasswordPage> {
   final _newPassword = GlobalKey(debugLabel: 'New Password');
   final _newPasswordConfirmation = GlobalKey(
       debugLabel: 'New Password Confirmation');
-
+  int _colorIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -33,14 +31,14 @@ class EditPasswordPageState extends State<EditPasswordPage> {
             SizedBox(height: 16.0),
             Text(
               'Change Your Password',
-              style: TodoColors.textStyle,
+              style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),
             ),
           ],
         ),
 
         SizedBox(height: 12.0),
         PrimaryColorOverride(
-          color: TodoColors.accent,
+          color: TodoColors.baseColors[_colorIndex],
           child: TextField(
             key: _oldPassword,
             controller: _oldPasswordController,
@@ -53,7 +51,7 @@ class EditPasswordPageState extends State<EditPasswordPage> {
 
         SizedBox(height: 12.0),
         PrimaryColorOverride(
-          color: TodoColors.accent,
+          color: TodoColors.baseColors[_colorIndex],
           child: TextField(
             key: _newPassword,
             controller: _newPasswordController,
@@ -66,7 +64,7 @@ class EditPasswordPageState extends State<EditPasswordPage> {
 
         SizedBox(height: 12.0),
         PrimaryColorOverride(
-          color: TodoColors.accent,
+          color: TodoColors.baseColors[_colorIndex],
           child: TextField(
             key: _newPasswordConfirmation,
             controller: _newPasswordConfirmationController,
@@ -84,6 +82,7 @@ class EditPasswordPageState extends State<EditPasswordPage> {
           children: <Widget>[
             FlatButton(
               child: Text('CANCEL'),
+              textColor: TodoColors.baseColors[_colorIndex],
               shape: BeveledRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),
               ),
@@ -96,6 +95,7 @@ class EditPasswordPageState extends State<EditPasswordPage> {
             ),
             RaisedButton(
               child: Text('CHANGE'),
+              textColor: TodoColors.baseColors[_colorIndex],
               elevation: 8.0,
               shape: BeveledRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),

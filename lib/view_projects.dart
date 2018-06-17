@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'staffs_stats.dart';
 import 'constants.dart';
-import 'shop_items_page.dart';
 
 class ViewProjectsPage extends StatefulWidget {
+  final int colorIndex;
+
+  const ViewProjectsPage({
+    @required this.colorIndex,
+  }) : assert(colorIndex != null);
+
   @override
   ViewProjectsPageState createState() => ViewProjectsPageState();
 }
 
 class ViewProjectsPageState extends State<ViewProjectsPage> {
-  static const _padding = EdgeInsets.all(5.0);
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +48,7 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
                   new FloatingActionButton(
                     elevation: 200.0,
                     child: new Icon(Icons.search),
-                    backgroundColor: TodoColors.accent,
+                    backgroundColor: TodoColors.baseColors[widget.colorIndex],
                     onPressed: () {
                       new Container(
                         width: 450.0,
@@ -56,12 +59,14 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
                         builder: (BuildContext context) {
                           return new AlertDialog(
                             title: new Text(
-                              'SEARCH  PROJECTS', style: TodoColors.textStyle6,),
+                              'Search Projects To Delete', style: TodoColors.textStyle.apply(color: TodoColors.baseColors[widget.colorIndex]),),
                             content: new SingleChildScrollView(
                               child: new ListBody(
                                 children: <Widget>[
                                   SizedBox(height: 12.0),
-                                  TextField(
+                              PrimaryColorOverride(
+                                color: TodoColors.baseColors[widget.colorIndex],
+                                child: TextField(
                                     key: _projectTitle,
                                     controller: _projectTitleController,
                                     decoration: InputDecoration(
@@ -70,8 +75,11 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
                                       border: CutCornersBorder(),
                                     ),
                                   ),
+                              ),
                                   SizedBox(height: 12.0),
-                                  TextField(
+                              PrimaryColorOverride(
+                                color: TodoColors.baseColors[widget.colorIndex],
+                                child: TextField(
                                     key: _projectLocations,
                                     controller: _projectLocationsController,
                                     decoration: InputDecoration(
@@ -80,8 +88,10 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
                                       border: CutCornersBorder(),
                                     ),
                                   ),
+                              ),
                                   RaisedButton(
                                     child: Text('ADD LOCATION'),
+                                    textColor: TodoColors.baseColors[widget.colorIndex],
                                     elevation: 8.0,
                                     shape: BeveledRectangleBorder(
                                       borderRadius: BorderRadius.all(
@@ -90,7 +100,9 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
                                     onPressed: () {},
                                   ),
                                   SizedBox(height: 12.0),
-                                  TextField(
+                              PrimaryColorOverride(
+                                color: TodoColors.baseColors[widget.colorIndex],
+                                child: TextField(
                                     key: _projectTags,
                                     controller: _projectTagsController,
                                     decoration: InputDecoration(
@@ -99,8 +111,10 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
                                       border: CutCornersBorder(),
                                     ),
                                   ),
+                              ),
                                   RaisedButton(
                                     child: Text('ADD TAG'),
+                                    textColor: TodoColors.baseColors[widget.colorIndex],
                                     elevation: 8.0,
                                     shape: BeveledRectangleBorder(
                                       borderRadius: BorderRadius.all(
@@ -117,6 +131,7 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
                             actions: <Widget>[
                               FlatButton(
                                 child: Text('CANCEL'),
+                                textColor: TodoColors.baseColors[widget.colorIndex],
                                 shape: BeveledRectangleBorder(
                                   borderRadius: BorderRadius.all(
                                       Radius.circular(7.0)),
@@ -128,6 +143,7 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
 
                               RaisedButton(
                                 child: Text('SEARCH'),
+                                textColor: TodoColors.baseColors[widget.colorIndex],
                                 elevation: 8.0,
                                 shape: BeveledRectangleBorder(
                                   borderRadius: BorderRadius.all(
@@ -170,13 +186,13 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
                         children: <Widget>
                         [
                           Text('Kigali, Gisenyi',
-                              style: TextStyle(color: TodoColors.accent)),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('FSI', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.accent,
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -210,13 +226,13 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
                         children: <Widget>
                         [
                           Text('Remera, Gaculiro',
-                              style: TextStyle(color: TodoColors.accent)),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('CookStoves', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.accent,
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -250,13 +266,13 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
                         children: <Widget>
                         [
                           Text('Kacyiru, Kimironko',
-                              style: TextStyle(color: TodoColors.accent)),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('MISM', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.accent,
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -290,13 +306,13 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
                         children: <Widget>
                         [
                           Text('Kiyovu, Nyamirambo',
-                              style: TextStyle(color: TodoColors.accent)),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('PEPSI', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.accent,
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -330,13 +346,13 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
                         children: <Widget>
                         [
                           Text('Kigali, Gaculiro',
-                              style: TextStyle(color: TodoColors.accent)),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('Students Report', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.accent,
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -370,13 +386,13 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
                         children: <Widget>
                         [
                           Text('Kacyiru',
-                              style: TextStyle(color: TodoColors.accent)),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('MISM', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.accent,
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -410,13 +426,13 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
                         children: <Widget>
                         [
                           Text('Kiyovu',
-                              style: TextStyle(color: TodoColors.accent)),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('RRA Survey', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.accent,
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -450,13 +466,13 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
                         children: <Widget>
                         [
                           Text('Gisenyi',
-                              style: TextStyle(color: TodoColors.accent)),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('ALI', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.accent,
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -490,13 +506,13 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
                         children: <Widget>
                         [
                           Text('Gaculiro',
-                              style: TextStyle(color: TodoColors.accent)),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('LATI', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.accent,
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -530,13 +546,13 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
                         children: <Widget>
                         [
                           Text('Remera',
-                              style: TextStyle(color: TodoColors.accent)),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('VINE', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.accent,
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -581,7 +597,7 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return new AlertDialog(
-          title: new Text('DELETE  PROJECT', style: TodoColors.textStyle3,
+          title: new Text('DELETE  PROJECT', style: TodoColors.textStyle3.apply(color: TodoColors.baseColors[widget.colorIndex]),
           ),
           content: new SingleChildScrollView(
             child: new ListBody(
@@ -594,6 +610,7 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
           actions: <Widget>[
             RaisedButton(
               child: Text('CANCEL'),
+              textColor: TodoColors.baseColors[widget.colorIndex],
               elevation: 8.0,
               shape: BeveledRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),
@@ -605,6 +622,7 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
 
             FlatButton(
               child: Text('YES'),
+              textColor: TodoColors.baseColors[widget.colorIndex],
               shape: BeveledRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),
               ),
@@ -634,4 +652,20 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
   }
 
 
+}
+
+class PrimaryColorOverride extends StatelessWidget {
+  const PrimaryColorOverride({Key key, this.color, this.child})
+      : super(key: key);
+
+  final Color color;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+      child: child,
+      data: Theme.of(context).copyWith(primaryColor: color),
+    );
+  }
 }

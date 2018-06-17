@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sparkline/flutter_sparkline.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'constants.dart';
-import 'explore_devices.dart';
+import 'view_devices.dart';
 import 'staffs_stats.dart';
 
 class ClosedProjectDetailsPage extends StatefulWidget {
@@ -348,7 +348,7 @@ class ClosedProjectDetailsPageState extends State<ClosedProjectDetailsPage> {
               ),
               onTap: () =>
                   Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => StaffNStatsPage())),
+                      MaterialPageRoute(builder: (_) => StaffNStatsPage(colorIndex: 5,))),
             ),
             _buildTile(
               Padding
@@ -483,7 +483,7 @@ class ClosedProjectDetailsPageState extends State<ClosedProjectDetailsPage> {
               ),
               onTap: () =>
                   Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => ExploreDevicesPage())),
+                      MaterialPageRoute(builder: (_) => ViewDevicesPage(colorIndex: 0,))),
             )
           ],
           staggeredTiles: [

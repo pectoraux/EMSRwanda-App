@@ -1,10 +1,8 @@
 import 'profile_icons.dart';
 import 'package:flutter/material.dart';
-
 import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
 import 'quick_project_actions.dart';
-import 'profile_fonts.dart';
 
 
 class EditProjectPage extends StatefulWidget {
@@ -37,6 +35,8 @@ class EditProjectPageState extends State<EditProjectPage> {
     "Dictaphone",
     "Phone",
   ];
+  int _colorIndex = 0;
+
   List devices_values = [false, false, false, false];
   List<Color> _mcolors = [
     Colors.brown[500], Colors.brown[500], Colors.brown[500], Colors.brown[500]];
@@ -56,15 +56,14 @@ class EditProjectPageState extends State<EditProjectPage> {
             SizedBox(height: 16.0),
             Text(
               'Create A New Project',
-              style: TodoColors.textStyle,
+              style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),
             ),
           ],
         ),
 
         SizedBox(height: 12.0),
         PrimaryColorOverride(
-          color: TodoColors.accent,
-
+          color: TodoColors.baseColors[_colorIndex],
           child: TextField(
             key: _projectTitle,
             controller: _projectTitleController,
@@ -78,8 +77,7 @@ class EditProjectPageState extends State<EditProjectPage> {
 
         const SizedBox(height: 12.0),
         PrimaryColorOverride(
-          color: TodoColors.accent,
-
+          color: TodoColors.baseColors[_colorIndex],
           child: TextField(
             key: _projectDescription,
             controller: _projectDescriptionController,
@@ -93,8 +91,7 @@ class EditProjectPageState extends State<EditProjectPage> {
 
         const SizedBox(height: 12.0),
         PrimaryColorOverride(
-          color: TodoColors.accent,
-
+          color: TodoColors.baseColors[_colorIndex],
           child: TextField(
             key: _projectLocations,
             controller: _projectLocationsController,
@@ -109,6 +106,7 @@ class EditProjectPageState extends State<EditProjectPage> {
 
         RaisedButton(
           child: Text('ADD LOCATION'),
+          textColor: TodoColors.baseColors[_colorIndex],
           elevation: 6.0,
           shape: BeveledRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(7.0)),
@@ -116,7 +114,7 @@ class EditProjectPageState extends State<EditProjectPage> {
           onPressed: () {
             if (_projectLocationsController.value.text.trim() != "") {
               _projectLocationsController.clear();
-              showInSnackBar("Location Added Successfully", TodoColors.accent);
+              showInSnackBar("Location Added Successfully", TodoColors.baseColors[_colorIndex]);
             } else {
               showInSnackBar(
                   "Please Specify A Location Before Clicking This Button",
@@ -127,8 +125,7 @@ class EditProjectPageState extends State<EditProjectPage> {
 
         const SizedBox(height: 12.0),
         PrimaryColorOverride(
-          color: TodoColors.accent,
-
+          color: TodoColors.baseColors[_colorIndex],
           child: TextField(
             key: _projectTags,
             controller: _projectTagsController,
@@ -142,6 +139,7 @@ class EditProjectPageState extends State<EditProjectPage> {
 
         RaisedButton(
           child: Text('ADD TAG'),
+          textColor: TodoColors.baseColors[_colorIndex],
           elevation: 6.0,
           shape: BeveledRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(7.0)),
@@ -149,7 +147,7 @@ class EditProjectPageState extends State<EditProjectPage> {
           onPressed: () {
             if (_projectTagsController.value.text.trim() != "") {
               _projectTagsController.clear();
-              showInSnackBar("Tag Added Successfully", TodoColors.accent);
+              showInSnackBar("Tag Added Successfully", TodoColors.baseColors[_colorIndex]);
             } else {
               showInSnackBar("Please Specify A Tag Before Clicking This Button",
                   Colors.redAccent);
@@ -159,7 +157,7 @@ class EditProjectPageState extends State<EditProjectPage> {
 
         const SizedBox(height: 12.0),
         PrimaryColorOverride(
-          color: TodoColors.accent,
+          color: TodoColors.baseColors[_colorIndex],
           child: TextField(
             key: _projectStaffRoles,
             controller: _projectStaffRolesController,
@@ -180,7 +178,7 @@ class EditProjectPageState extends State<EditProjectPage> {
             onTap: () {
               setState(() {
                 if (_mcolors[i] == Colors.brown[500]) {
-                  _mcolors[i] = TodoColors.baseColors[0];
+                  _mcolors[i] = TodoColors.baseColors[_colorIndex];
                 } else {
                   _mcolors[i] = Colors.brown[500];
                 }
@@ -202,6 +200,7 @@ class EditProjectPageState extends State<EditProjectPage> {
         const SizedBox(height: 12.0),
         RaisedButton(
           child: Text('ADD'),
+          textColor: TodoColors.baseColors[_colorIndex],
           elevation: 6.0,
           shape: BeveledRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(7.0)),
@@ -216,7 +215,7 @@ class EditProjectPageState extends State<EditProjectPage> {
                 }
               });
               showInSnackBar(
-                  "Devices Added Successfully To Role", TodoColors.accent);
+                  "Devices Added Successfully To Role", TodoColors.baseColors[_colorIndex]);
             } else {
               showInSnackBar(
                   "Please Specify A Role and At Least One Device Before Clicking This Button",
@@ -232,19 +231,21 @@ class EditProjectPageState extends State<EditProjectPage> {
         new CheckboxListTile(
           title: Text('Send Requests', style: TodoColors.textStyle2,),
           value: _sendRequestToAvailableUsers,
+          activeColor: TodoColors.baseColors[_colorIndex],
           onChanged: (bool permission) {
             setState(() {
               _sendRequestToAvailableUsers = permission;
             });
           },
           secondary: new Icon(
-            LineAwesomeIcons.user, color: TodoColors.accent, size: 30.0,),
+            LineAwesomeIcons.user, color: TodoColors.baseColors[_colorIndex], size: 30.0,),
         ),
 
         ButtonBar(
           children: <Widget>[
             FlatButton(
               child: Text('CANCEL'),
+              textColor: TodoColors.baseColors[_colorIndex],
               shape: BeveledRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),
               ),
@@ -259,6 +260,7 @@ class EditProjectPageState extends State<EditProjectPage> {
 
             RaisedButton(
               child: Text('CREATE'),
+              textColor: TodoColors.baseColors[_colorIndex],
               elevation: 8.0,
               shape: BeveledRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),
@@ -267,7 +269,7 @@ class EditProjectPageState extends State<EditProjectPage> {
                 if (_projectTitleController.value.text.trim() != "" &&
                     _projectDescriptionController.value.text.trim() != "") {
                   showInSnackBar(
-                      "Project Created Successfully", TodoColors.accent);
+                      "Project Created Successfully", TodoColors.baseColors[_colorIndex]);
                 } else {
                   showInSnackBar("Please Specify A Value For All Fields",
                       Colors.redAccent);
@@ -304,7 +306,7 @@ class EditProjectPageState extends State<EditProjectPage> {
 
   Color onTap(BuildContext context, Color c) {
     if (c == Colors.brown[500]) {
-      return TodoColors.baseColors[0];
+      return TodoColors.baseColors[_colorIndex];
     } else {
       return Colors.brown[500];
     }

@@ -16,7 +16,7 @@ class EditUserPageState extends State<EditUserPage> {
   final _userName = GlobalKey(debugLabel: 'User Name');
   final _userRole = GlobalKey(debugLabel: 'User Role');
   final _userPassword = GlobalKey(debugLabel: 'User Password');
-  final _padding = EdgeInsets.all(5.0);
+  int _colorIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -32,14 +32,14 @@ class EditUserPageState extends State<EditUserPage> {
             SizedBox(height: 16.0),
             Text(
               'Create A New User',
-              style: TodoColors.textStyle,
+              style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),
             ),
           ],
         ),
 
         SizedBox(height: 12.0),
         PrimaryColorOverride(
-          color: TodoColors.accent,
+          color: TodoColors.baseColors[_colorIndex],
           child: TextField(
             key: _userName,
             controller: _userNameController,
@@ -52,7 +52,7 @@ class EditUserPageState extends State<EditUserPage> {
 
         SizedBox(height: 12.0),
         PrimaryColorOverride(
-          color: TodoColors.accent,
+          color: TodoColors.baseColors[_colorIndex],
           child: TextField(
             key: _userRole,
             controller: _userRoleController,
@@ -83,6 +83,7 @@ class EditUserPageState extends State<EditUserPage> {
           children: <Widget>[
             FlatButton(
               child: Text('CANCEL'),
+              textColor: TodoColors.baseColors[_colorIndex],
               shape: BeveledRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),
               ),
@@ -93,6 +94,7 @@ class EditUserPageState extends State<EditUserPage> {
             ),
             RaisedButton(
               child: Text('CREATE'),
+              textColor: TodoColors.baseColors[_colorIndex],
               elevation: 8.0,
               shape: BeveledRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),

@@ -5,6 +5,12 @@ import 'update_tag.dart';
 import 'constants.dart';
 
 class ViewTagsPage extends StatefulWidget {
+  final int colorIndex;
+
+  const ViewTagsPage({
+    @required this.colorIndex,
+  }) : assert(colorIndex != null);
+
   @override
   ViewTagsPageState createState() => ViewTagsPageState();
 }
@@ -41,7 +47,7 @@ class ViewTagsPageState extends State<ViewTagsPage> {
                   new FloatingActionButton(
                     elevation: 200.0,
                     child: new Icon(Icons.search),
-                    backgroundColor: TodoColors.accent,
+                    backgroundColor: TodoColors.baseColors[widget.colorIndex],
                     onPressed: () {
                       new Container(
                         width: 450.0,
@@ -53,12 +59,14 @@ class ViewTagsPageState extends State<ViewTagsPage> {
                         builder: (BuildContext context) {
                           return new AlertDialog(
                             title: new Text(
-                              'SEARCH  TAGS', style: TodoColors.textStyle,),
+                              'Search Tag To Update', style: TodoColors.textStyle.apply(color: TodoColors.baseColors[widget.colorIndex]),),
                             content: new SingleChildScrollView(
                               child: new ListBody(
                                 children: <Widget>[
                                   SizedBox(height: 12.0),
-                                  TextField(
+                              PrimaryColorOverride(
+                                color: TodoColors.baseColors[widget.colorIndex],
+                                child: TextField(
                                     key: _tagName,
                                     controller: _tagNameController,
                                     decoration: InputDecoration(
@@ -67,8 +75,11 @@ class ViewTagsPageState extends State<ViewTagsPage> {
                                       border: CutCornersBorder(),
                                     ),
                                   ),
+                              ),
                                   SizedBox(height: 12.0),
-                                  TextField(
+                              PrimaryColorOverride(
+                                color: TodoColors.baseColors[widget.colorIndex],
+                                child: TextField(
                                     key: _tagType,
                                     controller: _tagTypeController,
                                     decoration: InputDecoration(
@@ -77,6 +88,7 @@ class ViewTagsPageState extends State<ViewTagsPage> {
                                       border: CutCornersBorder(),
                                     ),
                                   ),
+                              ),
                                   SizedBox(height: 12.0,),
                                 ],
                               ),
@@ -86,6 +98,7 @@ class ViewTagsPageState extends State<ViewTagsPage> {
                             actions: <Widget>[
                               FlatButton(
                                 child: Text('CANCEL'),
+                                textColor: TodoColors.baseColors[widget.colorIndex],
                                 shape: BeveledRectangleBorder(
                                   borderRadius: BorderRadius.all(
                                       Radius.circular(7.0)),
@@ -97,6 +110,7 @@ class ViewTagsPageState extends State<ViewTagsPage> {
 
                               RaisedButton(
                                 child: Text('SEARCH'),
+                                textColor: TodoColors.baseColors[widget.colorIndex],
                                 elevation: 8.0,
                                 shape: BeveledRectangleBorder(
                                   borderRadius: BorderRadius.all(
@@ -139,13 +153,13 @@ class ViewTagsPageState extends State<ViewTagsPage> {
                         children: <Widget>
                         [
                           Text('User Related Tag',
-                              style: TextStyle(color: TodoColors.accent)),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('Female', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.accent,
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -178,13 +192,13 @@ class ViewTagsPageState extends State<ViewTagsPage> {
                         children: <Widget>
                         [
                           Text('User Related Tag',
-                              style: TextStyle(color: TodoColors.accent)),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('Male', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.accent,
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -217,13 +231,13 @@ class ViewTagsPageState extends State<ViewTagsPage> {
                         children: <Widget>
                         [
                           Text('User Related Tag',
-                              style: TextStyle(color: TodoColors.accent)),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('Over 18', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.accent,
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -256,13 +270,13 @@ class ViewTagsPageState extends State<ViewTagsPage> {
                         children: <Widget>
                         [
                           Text('Project Related Tag',
-                              style: TextStyle(color: TodoColors.accent)),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('Humanitarian', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.accent,
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -295,13 +309,13 @@ class ViewTagsPageState extends State<ViewTagsPage> {
                         children: <Widget>
                         [
                           Text('Project Related Tag',
-                              style: TextStyle(color: TodoColors.accent)),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('Education', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.accent,
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -334,13 +348,13 @@ class ViewTagsPageState extends State<ViewTagsPage> {
                         children: <Widget>
                         [
                           Text('Project Related Tag',
-                              style: TextStyle(color: TodoColors.accent)),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('Digging', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.accent,
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -373,13 +387,13 @@ class ViewTagsPageState extends State<ViewTagsPage> {
                         children: <Widget>
                         [
                           Text('Project Related Tag',
-                              style: TextStyle(color: TodoColors.accent)),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('Sensitive', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.accent,
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (

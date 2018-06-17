@@ -7,6 +7,7 @@ import 'view_projects.dart';
 
 /// QuickActions represents the horizontal list of rectangular buttons below the header
 class QuickProjectActions extends StatelessWidget {
+  int _colorIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -140,7 +141,7 @@ class QuickProjectActions extends StatelessWidget {
 
     if (title == "View\nProjects") {
       Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => ViewProjectsPage()));
+          MaterialPageRoute(builder: (_) => ViewProjectsPage(colorIndex: _colorIndex,)));
     } else if (title == "Delete\nProject") {
       new Container(
         width: 450.0,
@@ -150,12 +151,14 @@ class QuickProjectActions extends StatelessWidget {
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return new AlertDialog(
-            title: new Text('SEARCH  PROJECTS', style: TodoColors.textStyle,),
+            title: new Text('Search Project To Delete', style: TodoColors.textStyle.apply(color: TodoColors.baseColors[0]),),
             content: new SingleChildScrollView(
               child: new ListBody(
                 children: <Widget>[
                   SizedBox(height: 12.0),
-                  TextField(
+              PrimaryColorOverride(
+                color: TodoColors.baseColors[_colorIndex],
+                child: TextField(
                     key: _projectTitle,
                     controller: _projectTitleController,
                     decoration: InputDecoration(
@@ -164,8 +167,11 @@ class QuickProjectActions extends StatelessWidget {
                       border: CutCornersBorder(),
                     ),
                   ),
+              ),
                   SizedBox(height: 12.0),
-                  TextField(
+              PrimaryColorOverride(
+                color: TodoColors.baseColors[_colorIndex],
+                child: TextField(
                     key: _projectLocations,
                     controller: _projectLocationsController,
                     decoration: InputDecoration(
@@ -174,8 +180,10 @@ class QuickProjectActions extends StatelessWidget {
                       border: CutCornersBorder(),
                     ),
                   ),
+              ),
                   RaisedButton(
                     child: Text('ADD LOCATION'),
+                    textColor: TodoColors.baseColors[_colorIndex],
                     elevation: 8.0,
                     shape: BeveledRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(7.0)),
@@ -183,7 +191,9 @@ class QuickProjectActions extends StatelessWidget {
                     onPressed: () {},
                   ),
                   SizedBox(height: 12.0),
-                  TextField(
+              PrimaryColorOverride(
+                color: TodoColors.baseColors[_colorIndex],
+                child: TextField(
                     key: _projectTags,
                     controller: _projectTagsController,
                     decoration: InputDecoration(
@@ -192,8 +202,10 @@ class QuickProjectActions extends StatelessWidget {
                       border: CutCornersBorder(),
                     ),
                   ),
+              ),
                   RaisedButton(
                     child: Text('ADD TAG'),
+                    textColor: TodoColors.baseColors[_colorIndex],
                     elevation: 8.0,
                     shape: BeveledRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(7.0)),
@@ -203,12 +215,12 @@ class QuickProjectActions extends StatelessWidget {
                   SizedBox(height: 12.0),
                 ],
               ),
-
             ),
 
             actions: <Widget>[
               FlatButton(
                 child: Text('CANCEL'),
+                textColor: TodoColors.baseColors[_colorIndex],
                 shape: BeveledRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(7.0)),
                 ),
@@ -219,13 +231,13 @@ class QuickProjectActions extends StatelessWidget {
 
               RaisedButton(
                 child: Text('SEARCH'),
+                textColor: TodoColors.baseColors[_colorIndex],
                 elevation: 8.0,
                 shape: BeveledRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(7.0)),
                 ),
                 onPressed: () {},
               ),
-
             ],
           );
         },

@@ -10,13 +10,18 @@ import 'edit_device.dart';
 import 'edit_role.dart';
 import 'edit_user.dart';
 
-class ProfileApp extends StatefulWidget {
+class ProfilePage extends StatefulWidget {
+  final int colorIndex;
+
+  const ProfilePage({
+    @required this.colorIndex,
+  }) : assert(colorIndex != null);
 
   @override
-  ProfileAppState createState() => ProfileAppState();
+  _ProfilePageState createState() => _ProfilePageState();
 }
 
-class ProfileAppState extends State<ProfileApp> {
+class _ProfilePageState extends State<ProfilePage> {
 
   /// This controller can be used to programmatically
   /// set the current displayed page

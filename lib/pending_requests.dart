@@ -1,31 +1,40 @@
 import 'package:flutter/material.dart';
-import 'supplemental/cut_corners_border.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'project_details.dart';
+import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
 
-import 'user_rating_page.dart';
 
-class ExploreUsersPage extends StatefulWidget {
+class PendingRequestsPage extends StatefulWidget {
+  final int colorIndex;
+
+  const PendingRequestsPage({
+    @required this.colorIndex,
+  }) : assert(colorIndex != null);
+
   @override
-  ExploreUsersPageState createState() => ExploreUsersPageState();
+  PendingRequestsPageState createState() => PendingRequestsPageState();
 }
 
-class ExploreUsersPageState extends State<ExploreUsersPage> {
+class PendingRequestsPageState extends State<PendingRequestsPage> {
+
+  bool _isMadeByYou;
+
+  @override
+  void initState() {
+    _isMadeByYou = false;
+  }
 
   @override
   Widget build(BuildContext context) {
     final _bkey = GlobalKey(debugLabel: 'Back Key');
-    final _userNameController = TextEditingController();
-    final _userName = GlobalKey(debugLabel: 'User Name');
-    final _userRoleController = TextEditingController();
-    final _userRole = GlobalKey(debugLabel: 'User Role');
-    final _userStatusController = TextEditingController();
-    final _userStatus = GlobalKey(debugLabel: 'User Status');
-    final _userLocationsController = TextEditingController();
-    final _tagsController = TextEditingController();
-    final _userLocations = GlobalKey(debugLabel: 'Users Locations');
-    final _tags = GlobalKey(debugLabel: 'Project or User Related Tags');
-
+    final _projectTitleController = TextEditingController();
+    final _projectTitle = GlobalKey(debugLabel: 'Project Title');
+    final _projectLocationsController = TextEditingController();
+    final _projectTagsController = TextEditingController();
+    final _projectLocations = GlobalKey(debugLabel: 'Project Locations');
+    final _projectTags = GlobalKey(debugLabel: 'Project Tags');
+    String project_description = "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld";
     return Scaffold
       (
         appBar: AppBar
@@ -45,68 +54,53 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>
                 [
-
                   new FloatingActionButton(
                     elevation: 200.0,
                     child: new Icon(Icons.search),
-                    backgroundColor: TodoColors.baseColors[5],
+                    backgroundColor: TodoColors.baseColors[widget.colorIndex],
                     onPressed: () {
                       new Container(
                         width: 450.0,
                       );
-
                       showDialog<Null>(
                         context: context,
                         barrierDismissible: false, // user must tap button!
                         builder: (BuildContext context) {
                           return new AlertDialog(
                             title: new Text(
-                              'Search  Users', style: TodoColors.textStyle6,),
+                              'Search  Requests', style: TodoColors.textStyle6,),
                             content: new SingleChildScrollView(
                               child: new ListBody(
                                 children: <Widget>[
                                   SizedBox(height: 12.0),
-                                  TextField(
-                                    key: _userName,
-                                    controller: _userNameController,
+                              PrimaryColorOverride(
+                                color: TodoColors.baseColors[widget.colorIndex],
+                                child: TextField(
+                                    key: _projectTitle,
+                                    controller: _projectTitleController,
                                     decoration: InputDecoration(
-                                      labelText: 'User Name',
+                                      labelText: 'Project Title',
                                       labelStyle: TodoColors.textStyle2,
                                       border: CutCornersBorder(),
                                     ),
                                   ),
+                              ),
                                   SizedBox(height: 12.0),
-                                  TextField(
-                                    key: _userRole,
-                                    controller: _userRoleController,
+                              PrimaryColorOverride(
+                                color: TodoColors.baseColors[widget.colorIndex],
+                                child: TextField(
+                                    key: _projectLocations,
+                                    controller: _projectLocationsController,
                                     decoration: InputDecoration(
-                                      labelText: 'User Role',
+                                      labelText: 'Project Location',
                                       labelStyle: TodoColors.textStyle2,
                                       border: CutCornersBorder(),
                                     ),
                                   ),
-                                  SizedBox(height: 12.0),
-                                  TextField(
-                                    key: _userStatus,
-                                    controller: _userStatusController,
-                                    decoration: InputDecoration(
-                                      labelText: 'User Status',
-                                      labelStyle: TodoColors.textStyle2,
-                                      border: CutCornersBorder(),
-                                    ),
-                                  ),
-                                  SizedBox(height: 12.0),
-                                  TextField(
-                                    key: _userLocations,
-                                    controller: _userLocationsController,
-                                    decoration: InputDecoration(
-                                      labelText: 'User Location',
-                                      labelStyle: TodoColors.textStyle2,
-                                      border: CutCornersBorder(),
-                                    ),
-                                  ),
+                              ),
                                   RaisedButton(
                                     child: Text('ADD LOCATION'),
+                                    textColor: TodoColors.baseColors[widget.colorIndex],
                                     elevation: 8.0,
                                     shape: BeveledRectangleBorder(
                                       borderRadius: BorderRadius.all(
@@ -115,17 +109,21 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                                     onPressed: () {},
                                   ),
                                   SizedBox(height: 12.0),
-                                  TextField(
-                                    key: _tags,
-                                    controller: _tagsController,
+                              PrimaryColorOverride(
+                                color: TodoColors.baseColors[widget.colorIndex],
+                                child: TextField(
+                                    key: _projectTags,
+                                    controller: _projectTagsController,
                                     decoration: InputDecoration(
-                                      labelText: 'Project or User Related Tags',
+                                      labelText: 'Project Tag',
                                       labelStyle: TodoColors.textStyle2,
                                       border: CutCornersBorder(),
                                     ),
                                   ),
+                              ),
                                   RaisedButton(
                                     child: Text('ADD TAG'),
+                                    textColor: TodoColors.baseColors[widget.colorIndex],
                                     elevation: 8.0,
                                     shape: BeveledRectangleBorder(
                                       borderRadius: BorderRadius.all(
@@ -133,7 +131,7 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                                     ),
                                     onPressed: () {},
                                   ),
-                                  SizedBox(height: 12.0,),
+                                  SizedBox(height: 12.0),
                                 ],
                               ),
 
@@ -142,6 +140,7 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                             actions: <Widget>[
                               FlatButton(
                                 child: Text('CANCEL'),
+                                textColor: TodoColors.baseColors[widget.colorIndex],
                                 shape: BeveledRectangleBorder(
                                   borderRadius: BorderRadius.all(
                                       Radius.circular(7.0)),
@@ -153,6 +152,7 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
 
                               RaisedButton(
                                 child: Text('SEARCH'),
+                                textColor: TodoColors.baseColors[widget.colorIndex],
                                 elevation: 8.0,
                                 shape: BeveledRectangleBorder(
                                   borderRadius: BorderRadius.all(
@@ -194,14 +194,14 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Kigali',
-                              style: TextStyle(color: TodoColors.baseColors[5])),
-                          Text('Erin Niamkey', style: TodoColors.textStyle6)
+                          Text('Made By You',
+                              style: TextStyle(color: Colors.blueAccent)),
+                          Text('FSI', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[5],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -216,6 +216,9 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                     ]
                 ),
               ),
+                'Made By You',
+              "FSI",
+              project_description
             ),
             _buildTile(
               Padding
@@ -233,14 +236,14 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Remera',
-                              style: TextStyle(color: TodoColors.baseColors[5])),
-                          Text('Bernard Nshima', style: TodoColors.textStyle6)
+                          Text('Made To You',
+                              style: TextStyle(color: Colors.redAccent)),
+                          Text('CookStoves', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[5],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -255,6 +258,9 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                     ]
                 ),
               ),
+                'Made To You',
+              "CookStoves",
+              project_description
             ),
             _buildTile(
               Padding
@@ -272,14 +278,14 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Kacyiru',
-                              style: TextStyle(color: TodoColors.baseColors[5])),
-                          Text('Celine Dion', style: TodoColors.textStyle6)
+                          Text('Made To You',
+                              style: TextStyle(color: Colors.redAccent)),
+                          Text('MISM', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[5],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -294,6 +300,9 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                     ]
                 ),
               ),
+                'Made To You',
+              "MISM",
+              project_description
             ),
             _buildTile(
               Padding
@@ -311,14 +320,14 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Kiyovu',
-                              style: TextStyle(color: TodoColors.baseColors[5])),
-                          Text('Eric Niamkey', style: TodoColors.textStyle6)
+                          Text('Made By You',
+                              style: TextStyle(color: Colors.blueAccent)),
+                          Text('PEPSI', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[5],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -333,6 +342,9 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                     ]
                 ),
               ),
+                'Made By You',
+              "PEPSI",
+              project_description
             ),
             _buildTile(
               Padding
@@ -350,14 +362,14 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Gaculiro',
-                              style: TextStyle(color: TodoColors.baseColors[5])),
-                          Text('Kossi Koffi', style: TodoColors.textStyle6)
+                          Text('Made By You',
+                              style: TextStyle(color: Colors.blueAccent)),
+                          Text('Students Report', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[5],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -372,6 +384,9 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                     ]
                 ),
               ),
+                'Made By You',
+                'Students Report',
+              project_description
             ),
             _buildTile(
               Padding
@@ -389,14 +404,14 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Kimironko',
-                              style: TextStyle(color: TodoColors.baseColors[5])),
-                          Text('Anne Judith', style: TodoColors.textStyle6)
+                          Text('Made By You',
+                              style: TextStyle(color: Colors.blueAccent)),
+                          Text('LATI', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[5],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -411,6 +426,9 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                     ]
                 ),
               ),
+                'Made By You',
+              "LATI",
+              project_description
             ),
             _buildTile(
               Padding
@@ -428,14 +446,14 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Kiyovu',
-                              style: TextStyle(color: TodoColors.baseColors[5])),
-                          Text('Mariam Adah', style: TodoColors.textStyle6)
+                          Text('Made To You',
+                              style: TextStyle(color: Colors.redAccent)),
+                          Text('ALI', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[5],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -450,6 +468,9 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                     ]
                 ),
               ),
+                'Made To You',
+              "ALI",
+              project_description
             ),
             _buildTile(
               Padding
@@ -467,14 +488,14 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Gisenyi',
-                              style: TextStyle(color: TodoColors.baseColors[5])),
-                          Text('Ali Jean', style: TodoColors.textStyle6)
+                          Text('Made By You',
+                              style: TextStyle(color: Colors.blueAccent)),
+                          Text('VINE', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[5],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -489,6 +510,9 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                     ]
                 ),
               ),
+                'Made By You',
+              "VINE",
+              project_description
             ),
             _buildTile(
               Padding
@@ -506,14 +530,14 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Gaculiro',
-                              style: TextStyle(color: TodoColors.baseColors[5])),
-                          Text('Micheal Jackson', style: TodoColors.textStyle6)
+                          Text('Made To You',
+                              style: TextStyle(color: Colors.redAccent)),
+                          Text('MISM', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[5],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -528,6 +552,9 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                     ]
                 ),
               ),
+                'Made To You',
+              "MISM",
+              project_description
             ),
             _buildTile(
               Padding
@@ -545,14 +572,14 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Remera',
-                              style: TextStyle(color: TodoColors.baseColors[5])),
-                          Text('Ninegan Tchakpa', style: TodoColors.textStyle6)
+                          Text('Made By You',
+                              style: TextStyle(color: Colors.blueAccent)),
+                          Text('CROS', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[5],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -567,6 +594,9 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
                     ]
                 ),
               ),
+                'Made By You',
+              "CROS",
+              project_description
             ),
 
 
@@ -587,7 +617,7 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
     );
   }
 
-  Widget _buildTile(Widget child, {Function() onTap}) {
+  Widget _buildTile(Widget child, String type, String title, String description) {
     return Material(
         elevation: 14.0,
         borderRadius: BorderRadius.circular(12.0),
@@ -595,11 +625,110 @@ class ExploreUsersPageState extends State<ExploreUsersPage> {
         child: InkWell
           (
           // Do onTap() if it isn't null, otherwise do print()
-            onTap: () =>
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => UserRatingPage())),
+            onTap:() {showTile(type, title, description);},
             child: child
         )
+    );
+  }
+
+
+  void showTile(String type, String title, String description){
+    String Status;
+    title = title.toUpperCase();
+    setState(() {
+      if(type == "Made By You") {
+        _isMadeByYou = true;
+        Status = "CANCELLED";
+      }else if (type == "Made To You"){
+        _isMadeByYou = false;
+        Status = "REJECTED";
+      }
+    });
+
+    showDialog<Null>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return new AlertDialog(
+          content: new SingleChildScrollView(
+            child: new ListBody(
+              children: <Widget>[
+                new Card(
+                  child: new Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      ListTile(
+                        title: Text(title),
+                        subtitle: Text(description),
+                      ),
+                      new ButtonTheme.bar( // make buttons use the appropriate styles for cards
+                        child: new ButtonBar(
+                          children: <Widget>[
+                            BackButton(),
+                            new FlatButton(
+                              child: Text(
+                                  _isMadeByYou ? "CANCEL" : "REJECT"
+                              ),
+                              onPressed: () {
+                                showInSnackBar("WORK REQUEST FOR PROJECT $title HAS BEEN $Status", TodoColors.baseColors[widget.colorIndex]);
+                                Navigator.of(context).pop(); },
+                            ),
+                            new FlatButton(
+                              child: Text(
+                                  _isMadeByYou ? "" : "ACCEPT"
+                              ),
+                              onPressed: () { showInSnackBar("YOU ACCEPTED TO WORK ON PROJECT $title", TodoColors.baseColors[widget.colorIndex]);
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+          ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+  void showInSnackBar(String value, Color c) {
+    Scaffold.of(context).showSnackBar(new SnackBar(
+      content: new Text(value),
+      backgroundColor: c,
+      action: new SnackBarAction(
+        label: 'Undo',
+        onPressed: () {
+          // Some code to undo the change!
+          showInSnackBar2("Previous Action Successfully Undone", TodoColors.baseColors[widget.colorIndex]);
+        },
+      ),
+      duration: kTabScrollDuration*100,
+    ));
+  }
+
+  void showInSnackBar2(String value, Color c) {
+    Scaffold.of(context).showSnackBar(new SnackBar(
+      content: new Text(value),
+      backgroundColor: c,
+    ));
+  }
+}
+
+class PrimaryColorOverride extends StatelessWidget {
+  const PrimaryColorOverride({Key key, this.color, this.child})
+      : super(key: key);
+
+  final Color color;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+      child: child,
+      data: Theme.of(context).copyWith(primaryColor: color),
     );
   }
 }

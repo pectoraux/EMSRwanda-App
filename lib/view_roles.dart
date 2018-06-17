@@ -5,6 +5,12 @@ import 'constants.dart';
 import 'supplemental/cut_corners_border.dart';
 
 class ViewRolesPage extends StatefulWidget {
+  final int colorIndex;
+
+  const ViewRolesPage({
+    @required this.colorIndex,
+  }) : assert(colorIndex != null);
+
   @override
   ViewRolesPageState createState() => ViewRolesPageState();
 }
@@ -48,7 +54,7 @@ class ViewRolesPageState extends State<ViewRolesPage> {
                   new FloatingActionButton(
                     elevation: 200.0,
                     child: new Icon(Icons.search),
-                    backgroundColor: TodoColors.accent,
+                    backgroundColor: TodoColors.baseColors[widget.colorIndex],
                     onPressed: () {
                       new Container(
                         width: 450.0,
@@ -60,12 +66,14 @@ class ViewRolesPageState extends State<ViewRolesPage> {
                         builder: (BuildContext context) {
                           return new AlertDialog(
                             title: new Text(
-                              'SEARCH  ROLES', style: TodoColors.textStyle,),
+                              'Search Roles to Update', style: TodoColors.textStyle.apply(color: TodoColors.baseColors[widget.colorIndex]),),
                             content: new SingleChildScrollView(
                               child: new ListBody(
                                 children: <Widget>[
                                   SizedBox(height: 12.0),
-                                  TextField(
+                              PrimaryColorOverride(
+                                color: TodoColors.baseColors[widget.colorIndex],
+                                child: TextField(
                                     key: _roleName,
                                     controller: _roleNameController,
                                     decoration: InputDecoration(
@@ -74,6 +82,7 @@ class ViewRolesPageState extends State<ViewRolesPage> {
                                       border: CutCornersBorder(),
                                     ),
                                   ),
+                              ),
                                   SizedBox(height: 12.0,),
                                 ],
                               ),
@@ -83,6 +92,7 @@ class ViewRolesPageState extends State<ViewRolesPage> {
                             actions: <Widget>[
                               FlatButton(
                                 child: Text('CANCEL'),
+                                textColor: TodoColors.baseColors[widget.colorIndex],
                                 shape: BeveledRectangleBorder(
                                   borderRadius: BorderRadius.all(
                                       Radius.circular(7.0)),
@@ -94,6 +104,7 @@ class ViewRolesPageState extends State<ViewRolesPage> {
 
                               RaisedButton(
                                 child: Text('SEARCH'),
+                                textColor: TodoColors.baseColors[widget.colorIndex],
                                 elevation: 8.0,
                                 shape: BeveledRectangleBorder(
                                   borderRadius: BorderRadius.all(
@@ -140,7 +151,7 @@ class ViewRolesPageState extends State<ViewRolesPage> {
                       ),
                       Material
                         (
-                          color: TodoColors.accent,
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -177,7 +188,7 @@ class ViewRolesPageState extends State<ViewRolesPage> {
                       ),
                       Material
                         (
-                          color: TodoColors.accent,
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -214,7 +225,7 @@ class ViewRolesPageState extends State<ViewRolesPage> {
                       ),
                       Material
                         (
-                          color: TodoColors.accent,
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -251,7 +262,7 @@ class ViewRolesPageState extends State<ViewRolesPage> {
                       ),
                       Material
                         (
-                          color: TodoColors.accent,
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (

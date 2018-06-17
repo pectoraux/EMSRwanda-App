@@ -5,6 +5,12 @@ import 'project_details.dart';
 import 'constants.dart';
 
 class StartedProjectPage extends StatefulWidget {
+  final int colorIndex;
+
+  const StartedProjectPage({
+    @required this.colorIndex,
+  }) : assert(colorIndex != null);
+
   @override
   StartedProjectPageState createState() => StartedProjectPageState();
 }
@@ -44,7 +50,7 @@ class StartedProjectPageState extends State<StartedProjectPage> {
                   new FloatingActionButton(
                     elevation: 200.0,
                     child: new Icon(Icons.search),
-                    backgroundColor: TodoColors.baseColors[3],
+                    backgroundColor: TodoColors.baseColors[widget.colorIndex],
                     onPressed: () {
                       new Container(
                         width: 450.0,
@@ -169,13 +175,13 @@ class StartedProjectPageState extends State<StartedProjectPage> {
                         children: <Widget>
                         [
                           Text('Kigali, Gisenyi',
-                              style: TextStyle(color: TodoColors.baseColors[3])),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('FSI', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[3],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -208,13 +214,13 @@ class StartedProjectPageState extends State<StartedProjectPage> {
                         children: <Widget>
                         [
                           Text('Remera, Gaculiro',
-                              style: TextStyle(color: TodoColors.baseColors[3])),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('CookStoves', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[3],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -247,13 +253,13 @@ class StartedProjectPageState extends State<StartedProjectPage> {
                         children: <Widget>
                         [
                           Text('Kacyiru, Kimironko',
-                              style: TextStyle(color: TodoColors.baseColors[3])),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('MISM', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[3],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -286,13 +292,13 @@ class StartedProjectPageState extends State<StartedProjectPage> {
                         children: <Widget>
                         [
                           Text('Kiyovu, Nyamirambo',
-                              style: TextStyle(color: TodoColors.baseColors[3])),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('PEPSI', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[3],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -325,13 +331,13 @@ class StartedProjectPageState extends State<StartedProjectPage> {
                         children: <Widget>
                         [
                           Text('Kigali, Gaculiro',
-                              style: TextStyle(color: TodoColors.baseColors[3])),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('Students Report', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[3],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -364,13 +370,13 @@ class StartedProjectPageState extends State<StartedProjectPage> {
                         children: <Widget>
                         [
                           Text('Kacyiru',
-                              style: TextStyle(color: TodoColors.baseColors[3])),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('MISM', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[3],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -403,13 +409,13 @@ class StartedProjectPageState extends State<StartedProjectPage> {
                         children: <Widget>
                         [
                           Text('Kiyovu',
-                              style: TextStyle(color: TodoColors.baseColors[3])),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('RRA Survey', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[3],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -442,13 +448,13 @@ class StartedProjectPageState extends State<StartedProjectPage> {
                         children: <Widget>
                         [
                           Text('Gisenyi',
-                              style: TextStyle(color: TodoColors.baseColors[3])),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('ALI', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[3],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -481,13 +487,13 @@ class StartedProjectPageState extends State<StartedProjectPage> {
                         children: <Widget>
                         [
                           Text('Gaculiro',
-                              style: TextStyle(color: TodoColors.baseColors[3])),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('LATI', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[3],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -520,13 +526,13 @@ class StartedProjectPageState extends State<StartedProjectPage> {
                         children: <Widget>
                         [
                           Text('Remera',
-                              style: TextStyle(color: TodoColors.baseColors[3])),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('VINE', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[3],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -571,7 +577,7 @@ class StartedProjectPageState extends State<StartedProjectPage> {
           // Do onTap() if it isn't null, otherwise do print()
             onTap: () =>
                 Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => ProjectDetailsPage())),
+                    MaterialPageRoute(builder: (_) => ProjectDetailsPage(colorIndex: widget.colorIndex,))),
             child: child
         )
     );

@@ -1,27 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'project_details.dart';
 import 'supplemental/cut_corners_border.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'constants.dart';
 
 import 'device_rating_page.dart';
 
-class ExploreRequestsPage extends StatefulWidget {
+class ViewDevicesPage extends StatefulWidget {
+  final int colorIndex;
+
+  const ViewDevicesPage({
+    @required this.colorIndex,
+  }) : assert(colorIndex != null);
+
   @override
-  ExploreRequestsPageState createState() => ExploreRequestsPageState();
+  ViewDevicesPageState createState() => ViewDevicesPageState();
 }
 
-class ExploreRequestsPageState extends State<ExploreRequestsPage> {
+class ViewDevicesPageState extends State<ViewDevicesPage> {
 
   @override
   Widget build(BuildContext context) {
     final _bkey = GlobalKey(debugLabel: 'Back Key');
-    final _projectTitleController = TextEditingController();
-    final _projectTitle = GlobalKey(debugLabel: 'Project Title');
-    final _projectLocationsController = TextEditingController();
-    final _projectTagsController = TextEditingController();
-    final _projectLocations = GlobalKey(debugLabel: 'Project Locations');
-    final _projectTags = GlobalKey(debugLabel: 'Project Tags');
+    final _deviceNameController = TextEditingController();
+    final _deviceName = GlobalKey(debugLabel: 'Device Name');
+    final _deviceTypeController = TextEditingController();
+    final _deviceType = GlobalKey(debugLabel: 'Device Type');
+    final _deviceConditionController = TextEditingController();
+    final _deviceCondition = GlobalKey(debugLabel: 'Device Condition');
+
     return Scaffold
       (
         appBar: AppBar
@@ -44,70 +50,62 @@ class ExploreRequestsPageState extends State<ExploreRequestsPage> {
                   new FloatingActionButton(
                     elevation: 200.0,
                     child: new Icon(Icons.search),
-                    backgroundColor: TodoColors.baseColors[2],
+                    backgroundColor: TodoColors.baseColors[widget.colorIndex],
                     onPressed: () {
                       new Container(
                         width: 450.0,
                       );
+
                       showDialog<Null>(
                         context: context,
                         barrierDismissible: false, // user must tap button!
                         builder: (BuildContext context) {
                           return new AlertDialog(
                             title: new Text(
-                              'Search  Requests', style: TodoColors.textStyle6,),
+                              'Search  Devices To Update', style: TodoColors.textStyle.apply(color: TodoColors.baseColors[widget.colorIndex]),),
                             content: new SingleChildScrollView(
                               child: new ListBody(
                                 children: <Widget>[
                                   SizedBox(height: 12.0),
-                                  TextField(
-                                    key: _projectTitle,
-                                    controller: _projectTitleController,
+                              PrimaryColorOverride(
+                                color: TodoColors.baseColors[widget.colorIndex],
+                                child: TextField(
+                                    key: _deviceName,
+                                    controller: _deviceNameController,
                                     decoration: InputDecoration(
-                                      labelText: 'Project Title',
+                                      labelText: 'Device Name',
                                       labelStyle: TodoColors.textStyle2,
                                       border: CutCornersBorder(),
                                     ),
                                   ),
+                              ),
                                   SizedBox(height: 12.0),
-                                  TextField(
-                                    key: _projectLocations,
-                                    controller: _projectLocationsController,
+                              PrimaryColorOverride(
+                                color: TodoColors.baseColors[widget.colorIndex],
+                                child: TextField(
+                                    key: _deviceType,
+                                    controller: _deviceTypeController,
                                     decoration: InputDecoration(
-                                      labelText: 'Project Location',
+                                      labelText: 'Device Type',
                                       labelStyle: TodoColors.textStyle2,
                                       border: CutCornersBorder(),
                                     ),
                                   ),
-                                  RaisedButton(
-                                    child: Text('ADD LOCATION'),
-                                    elevation: 8.0,
-                                    shape: BeveledRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(7.0)),
-                                    ),
-                                    onPressed: () {},
-                                  ),
+                              ),
                                   SizedBox(height: 12.0),
-                                  TextField(
-                                    key: _projectTags,
-                                    controller: _projectTagsController,
+                                PrimaryColorOverride(
+                                  color: TodoColors.baseColors[widget.colorIndex],
+                                  child: TextField(
+                                    key: _deviceCondition,
+                                    controller: _deviceConditionController,
                                     decoration: InputDecoration(
-                                      labelText: 'Project Tag',
+                                      labelText: 'Device Condition',
                                       labelStyle: TodoColors.textStyle2,
                                       border: CutCornersBorder(),
                                     ),
                                   ),
-                                  RaisedButton(
-                                    child: Text('ADD TAG'),
-                                    elevation: 8.0,
-                                    shape: BeveledRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(7.0)),
-                                    ),
-                                    onPressed: () {},
-                                  ),
-                                  SizedBox(height: 12.0),
+                              ),
+                                  SizedBox(height: 12.0,),
                                 ],
                               ),
 
@@ -116,6 +114,7 @@ class ExploreRequestsPageState extends State<ExploreRequestsPage> {
                             actions: <Widget>[
                               FlatButton(
                                 child: Text('CANCEL'),
+                                textColor: TodoColors.baseColors[widget.colorIndex],
                                 shape: BeveledRectangleBorder(
                                   borderRadius: BorderRadius.all(
                                       Radius.circular(7.0)),
@@ -127,6 +126,7 @@ class ExploreRequestsPageState extends State<ExploreRequestsPage> {
 
                               RaisedButton(
                                 child: Text('SEARCH'),
+                                textColor: TodoColors.baseColors[widget.colorIndex],
                                 elevation: 8.0,
                                 shape: BeveledRectangleBorder(
                                   borderRadius: BorderRadius.all(
@@ -168,14 +168,14 @@ class ExploreRequestsPageState extends State<ExploreRequestsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Made By You',
-                              style: TextStyle(color: Colors.blueAccent)),
-                          Text('FSI', style: TodoColors.textStyle6)
+                          Text('Available',
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
+                          Text('Ipad', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[2],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -207,14 +207,14 @@ class ExploreRequestsPageState extends State<ExploreRequestsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Made To You',
-                              style: TextStyle(color: Colors.redAccent)),
-                          Text('CookStoves', style: TodoColors.textStyle6)
+                          Text('In Use',
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
+                          Text('Tablet', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[2],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -246,14 +246,14 @@ class ExploreRequestsPageState extends State<ExploreRequestsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Made To You',
-                              style: TextStyle(color: Colors.redAccent)),
-                          Text('MISM', style: TodoColors.textStyle6)
+                          Text('In Use',
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
+                          Text('Phone', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[2],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -285,14 +285,14 @@ class ExploreRequestsPageState extends State<ExploreRequestsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Made By You',
-                              style: TextStyle(color: Colors.blueAccent)),
-                          Text('PEPSI', style: TodoColors.textStyle6)
+                          Text('Available',
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
+                          Text('Phone', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[2],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -324,14 +324,14 @@ class ExploreRequestsPageState extends State<ExploreRequestsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Made By You',
-                              style: TextStyle(color: Colors.blueAccent)),
-                          Text('Students Report', style: TodoColors.textStyle6)
+                          Text('Available',
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
+                          Text('Ipad', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[2],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -363,14 +363,14 @@ class ExploreRequestsPageState extends State<ExploreRequestsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Made By You',
-                              style: TextStyle(color: Colors.blueAccent)),
-                          Text('LATI', style: TodoColors.textStyle6)
+                          Text('Available',
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
+                          Text('Tablet', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[2],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -402,14 +402,14 @@ class ExploreRequestsPageState extends State<ExploreRequestsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Made To You',
-                              style: TextStyle(color: Colors.redAccent)),
-                          Text('ALI', style: TodoColors.textStyle6)
+                          Text('In Use',
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
+                          Text('Phone', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[2],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -441,14 +441,14 @@ class ExploreRequestsPageState extends State<ExploreRequestsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Made By You',
-                              style: TextStyle(color: Colors.blueAccent)),
-                          Text('VINE', style: TodoColors.textStyle6)
+                          Text('Available',
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
+                          Text('Phone', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[2],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -480,14 +480,14 @@ class ExploreRequestsPageState extends State<ExploreRequestsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Made To You',
-                              style: TextStyle(color: Colors.redAccent)),
-                          Text('MISM', style: TodoColors.textStyle6)
+                          Text('In Use',
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
+                          Text('Ipad', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[2],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -519,14 +519,14 @@ class ExploreRequestsPageState extends State<ExploreRequestsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Made By You',
-                              style: TextStyle(color: Colors.blueAccent)),
-                          Text('CROS', style: TodoColors.textStyle6)
+                          Text('Available',
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
+                          Text('Tablet', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[2],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -571,9 +571,25 @@ class ExploreRequestsPageState extends State<ExploreRequestsPage> {
           // Do onTap() if it isn't null, otherwise do print()
             onTap: () =>
                 Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => ProjectDetailsPage())),
+                    MaterialPageRoute(builder: (_) => DeviceRatingPage())),
             child: child
         )
+    );
+  }
+}
+
+class PrimaryColorOverride extends StatelessWidget {
+  const PrimaryColorOverride({Key key, this.color, this.child})
+      : super(key: key);
+
+  final Color color;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+      child: child,
+      data: Theme.of(context).copyWith(primaryColor: color),
     );
   }
 }

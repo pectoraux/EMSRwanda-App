@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 
 import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
-import 'quick_role_actions.dart';
-import 'profile_fonts.dart';
 
 
 class UpdateRolePage extends StatefulWidget {
@@ -20,6 +18,7 @@ class UpdateRolePageState extends State<UpdateRolePage> {
   bool _createRolePermission = false;
   bool _createTagPermission = false;
   bool _grantUserPermission = false;
+  int _colorIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +33,7 @@ class UpdateRolePageState extends State<UpdateRolePage> {
             SizedBox(height: 16.0),
             Text(
               'Update Enumerator Role',
-              style: TodoColors.textStyle,
+              style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex],),
             ),
           ],
         ),
@@ -48,9 +47,9 @@ class UpdateRolePageState extends State<UpdateRolePage> {
 
             decoration: InputDecoration(
               hintText: "Enumerator",
-              hintStyle: TodoColors.textStyle,
+              hintStyle: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),
               helperText: "Enumerator",
-              helperStyle: TodoColors.textStyle,
+              helperStyle: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),
               labelText: 'Role Name',
               labelStyle: TodoColors.textStyle2,
               border: CutCornersBorder(),
@@ -62,57 +61,62 @@ class UpdateRolePageState extends State<UpdateRolePage> {
         new CheckboxListTile(
           title: Text('Can Create User', style: TodoColors.textStyle2,),
           value: _createUserPermission,
+          activeColor: TodoColors.baseColors[_colorIndex],
           onChanged: (bool permission) {
             setState(() {
               _createUserPermission = permission;
             });
           },
           secondary: new Icon(
-            LineAwesomeIcons.user, color: TodoColors.accent, size: 30.0,),
+            LineAwesomeIcons.user, color: TodoColors.baseColors[_colorIndex], size: 30.0,),
         ),
         new CheckboxListTile(
           title: Text('Can Create Project', style: TodoColors.textStyle2,),
           value: _createProjectPermission,
+          activeColor: TodoColors.baseColors[_colorIndex],
           onChanged: (bool permission) {
             setState(() {
               _createProjectPermission = permission;
             });
           },
           secondary: new Icon(
-            Icons.work, color: TodoColors.accent, size: 30.0,),
+            Icons.work, color: TodoColors.baseColors[_colorIndex], size: 30.0,),
         ),
         new CheckboxListTile(
           title: Text('Can Create Role', style: TodoColors.textStyle2,),
           value: _createRolePermission,
+          activeColor: TodoColors.baseColors[_colorIndex],
           onChanged: (bool permission) {
             setState(() {
               _createRolePermission = permission;
             });
           },
           secondary: new Icon(
-            Icons.library_add, color: TodoColors.accent, size: 30.0,),
+            Icons.library_add, color: TodoColors.baseColors[_colorIndex], size: 30.0,),
         ),
         new CheckboxListTile(
           title: Text('Can Create Tag', style: TodoColors.textStyle2,),
           value: _createTagPermission,
+          activeColor: TodoColors.baseColors[_colorIndex],
           onChanged: (bool permission) {
             setState(() {
               _createTagPermission = permission;
             });
           },
           secondary: new Icon(
-            Icons.title, color: TodoColors.accent, size: 30.0,),
+            Icons.title, color: TodoColors.baseColors[_colorIndex], size: 30.0,),
         ),
         new CheckboxListTile(
           title: Text('Can Grant Permission', style: TodoColors.textStyle2,),
           value: _grantUserPermission,
+          activeColor: TodoColors.baseColors[_colorIndex],
           onChanged: (bool permission) {
             setState(() {
               _grantUserPermission = permission;
             });
           },
           secondary: new Icon(
-            LineAwesomeIcons.thumbsUp, color: TodoColors.accent, size: 30.0,),
+            LineAwesomeIcons.thumbsUp, color: TodoColors.baseColors[_colorIndex], size: 30.0,),
         ),
 
 
@@ -120,6 +124,7 @@ class UpdateRolePageState extends State<UpdateRolePage> {
           children: <Widget>[
             FlatButton(
               child: Text('CANCEL'),
+              textColor: TodoColors.baseColors[_colorIndex],
               shape: BeveledRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),
               ),
@@ -137,6 +142,7 @@ class UpdateRolePageState extends State<UpdateRolePage> {
             ),
             RaisedButton(
               child: Text('UPDATE'),
+              textColor: TodoColors.baseColors[_colorIndex],
               elevation: 8.0,
               shape: BeveledRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),

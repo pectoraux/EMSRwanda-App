@@ -166,6 +166,7 @@ class QuickActions extends StatelessWidget {
             actions: <Widget>[
               RaisedButton(
                 child: Text('CANCEL'),
+                textColor: TodoColors.baseColors[0],
                 elevation: 8.0,
                 shape: BeveledRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(7.0)),
@@ -177,6 +178,7 @@ class QuickActions extends StatelessWidget {
 
               FlatButton(
                 child: Text('YES'),
+                textColor: TodoColors.baseColors[0],
                 shape: BeveledRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(7.0)),
                 ),

@@ -1,10 +1,6 @@
-import 'profile_icons.dart';
 import 'package:flutter/material.dart';
-
 import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
-import 'quick_role_actions.dart';
-import 'profile_fonts.dart';
 
 
 class UpdateTagPage extends StatefulWidget {
@@ -17,6 +13,7 @@ class UpdateTagPageState extends State<UpdateTagPage> {
   final _tagName = GlobalKey(debugLabel: 'Tag Name');
   final _tagTypeController = TextEditingController();
   final _tagType = GlobalKey(debugLabel: 'Tag Type');
+  int _colorIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -31,23 +28,23 @@ class UpdateTagPageState extends State<UpdateTagPage> {
             SizedBox(height: 16.0),
             Text(
               'Update Female Tag',
-              style: TodoColors.textStyle,
+              style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),
             ),
           ],
         ),
 
         SizedBox(height: 12.0),
         PrimaryColorOverride(
-          color: TodoColors.accent,
+          color: TodoColors.baseColors[_colorIndex],
           child: TextField(
             key: _tagName,
             controller: _tagNameController,
 
             decoration: InputDecoration(
               hintText: "Female",
-              hintStyle: TodoColors.textStyle,
+              hintStyle: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),
               helperText: "Female",
-              helperStyle: TodoColors.textStyle,
+              helperStyle: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),
               labelText: 'Tag Name',
               labelStyle: TodoColors.textStyle2,
               border: CutCornersBorder(),
@@ -64,9 +61,9 @@ class UpdateTagPageState extends State<UpdateTagPage> {
 
             decoration: InputDecoration(
               hintText: "User Related Tag",
-              hintStyle: TodoColors.textStyle,
+              hintStyle: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),
               helperText: "User Related Tag",
-              helperStyle: TodoColors.textStyle,
+              helperStyle: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),
               labelText: 'Tag Type',
               labelStyle: TodoColors.textStyle2,
               border: CutCornersBorder(),
@@ -78,6 +75,7 @@ class UpdateTagPageState extends State<UpdateTagPage> {
           children: <Widget>[
             FlatButton(
               child: Text('CANCEL'),
+              textColor: TodoColors.baseColors[_colorIndex],
               shape: BeveledRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),
               ),
@@ -89,6 +87,7 @@ class UpdateTagPageState extends State<UpdateTagPage> {
             ),
             RaisedButton(
               child: Text('UPDATE'),
+              textColor: TodoColors.baseColors[_colorIndex],
               elevation: 8.0,
               shape: BeveledRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),

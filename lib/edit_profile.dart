@@ -59,6 +59,7 @@ class EditProfilePageState extends State<EditProfilePage> {
   final _emergencyContactPhone = GlobalKey(
       debugLabel: 'Emergency Contact Phone');
   final _padding = EdgeInsets.all(5.0);
+  int _colorIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +77,7 @@ class EditProfilePageState extends State<EditProfilePage> {
               SizedBox(height: 16.0),
               Text(
                 'Edit Your Profile',
-                style: TodoColors.textStyle,
+                style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex],),
               ),
             ],
           ),
@@ -125,7 +126,7 @@ class EditProfilePageState extends State<EditProfilePage> {
 
           const SizedBox(height: 12.0),
           PrimaryColorOverride(
-            color: TodoColors.accent,
+            color: TodoColors.baseColors[_colorIndex],
             child: TextField(
               key: _firstName,
               controller: _firstNameController,
@@ -138,7 +139,7 @@ class EditProfilePageState extends State<EditProfilePage> {
 
           const SizedBox(height: 12.0),
           PrimaryColorOverride(
-            color: TodoColors.accent,
+            color: TodoColors.baseColors[_colorIndex],
             child: TextField(
               key: _lastName,
               controller: _lastNameController,
@@ -151,7 +152,7 @@ class EditProfilePageState extends State<EditProfilePage> {
 
           const SizedBox(height: 12.0),
           PrimaryColorOverride(
-            color: TodoColors.accent,
+            color: TodoColors.baseColors[_colorIndex],
             child: TextField(
               key: _dob,
               controller: _dobController,
@@ -164,7 +165,7 @@ class EditProfilePageState extends State<EditProfilePage> {
 
           const SizedBox(height: 12.0),
           PrimaryColorOverride(
-            color: TodoColors.accent,
+            color: TodoColors.baseColors[_colorIndex],
             child: TextField(
               key: _country,
               controller: _countryController,
@@ -177,7 +178,7 @@ class EditProfilePageState extends State<EditProfilePage> {
 
           const SizedBox(height: 12.0),
           PrimaryColorOverride(
-            color: TodoColors.accent,
+            color: TodoColors.baseColors[_colorIndex],
             child: TextField(
               key: _nationalID,
               controller: _nationalIDController,
@@ -190,7 +191,7 @@ class EditProfilePageState extends State<EditProfilePage> {
 
           const SizedBox(height: 12.0),
           PrimaryColorOverride(
-            color: TodoColors.accent,
+            color: TodoColors.baseColors[_colorIndex],
             child: TextField(
               key: _passportNo,
               controller: _passportNoController,
@@ -203,7 +204,7 @@ class EditProfilePageState extends State<EditProfilePage> {
 
           const SizedBox(height: 12.0),
           PrimaryColorOverride(
-            color: TodoColors.accent,
+            color: TodoColors.baseColors[_colorIndex],
             child: TextField(
               key: _sex,
               controller: _sexController,
@@ -216,7 +217,7 @@ class EditProfilePageState extends State<EditProfilePage> {
 
           const SizedBox(height: 12.0),
           PrimaryColorOverride(
-            color: TodoColors.accent,
+            color: TodoColors.baseColors[_colorIndex],
             child: TextField(
               key: _mainPhone,
               controller: _mainPhoneController,
@@ -229,7 +230,7 @@ class EditProfilePageState extends State<EditProfilePage> {
 
           const SizedBox(height: 12.0),
           PrimaryColorOverride(
-            color: TodoColors.accent,
+            color: TodoColors.baseColors[_colorIndex],
             child: TextField(
               key: _phone1,
               controller: _phone1Controller,
@@ -242,7 +243,7 @@ class EditProfilePageState extends State<EditProfilePage> {
 
           const SizedBox(height: 12.0),
           PrimaryColorOverride(
-            color: TodoColors.accent,
+            color: TodoColors.baseColors[_colorIndex],
             child: TextField(
               key: _phone2,
               controller: _phone2Controller,
@@ -255,7 +256,7 @@ class EditProfilePageState extends State<EditProfilePage> {
 
           const SizedBox(height: 12.0),
           PrimaryColorOverride(
-            color: TodoColors.accent,
+            color: TodoColors.baseColors[_colorIndex],
             child: TextField(
               key: _email1,
               controller: _email1Controller,
@@ -268,7 +269,7 @@ class EditProfilePageState extends State<EditProfilePage> {
 
           const SizedBox(height: 12.0),
           PrimaryColorOverride(
-            color: TodoColors.accent,
+            color: TodoColors.baseColors[_colorIndex],
             child: TextField(
               key: _email2,
               controller: _email2Controller,
@@ -281,7 +282,7 @@ class EditProfilePageState extends State<EditProfilePage> {
 
           const SizedBox(height: 12.0),
           PrimaryColorOverride(
-            color: TodoColors.accent,
+            color: TodoColors.baseColors[_colorIndex],
             child: TextField(
               key: _bankName,
               controller: _bankNameController,
@@ -294,7 +295,7 @@ class EditProfilePageState extends State<EditProfilePage> {
 
           const SizedBox(height: 12.0),
           PrimaryColorOverride(
-            color: TodoColors.accent,
+            color: TodoColors.baseColors[_colorIndex],
             child: TextField(
               key: _bankAcctNo,
               controller: _bankAcctNoController,
@@ -307,7 +308,7 @@ class EditProfilePageState extends State<EditProfilePage> {
 
           const SizedBox(height: 12.0),
           PrimaryColorOverride(
-            color: TodoColors.accent,
+            color: TodoColors.baseColors[_colorIndex],
             child: TextField(
               key: _insurance,
               controller: _insuranceController,
@@ -320,7 +321,7 @@ class EditProfilePageState extends State<EditProfilePage> {
 
           const SizedBox(height: 12.0),
           PrimaryColorOverride(
-            color: TodoColors.accent,
+            color: TodoColors.baseColors[_colorIndex],
             child: TextField(
               key: _insuranceNo,
               controller: _insuranceNoController,
@@ -333,7 +334,7 @@ class EditProfilePageState extends State<EditProfilePage> {
 
           const SizedBox(height: 12.0),
           PrimaryColorOverride(
-            color: TodoColors.accent,
+            color: TodoColors.baseColors[_colorIndex],
             child: TextField(
               key: _insuranceCpy,
               controller: _insuranceCpyController,
@@ -346,7 +347,7 @@ class EditProfilePageState extends State<EditProfilePage> {
 
           const SizedBox(height: 12.0),
           PrimaryColorOverride(
-            color: TodoColors.accent,
+            color: TodoColors.baseColors[_colorIndex],
             child: TextField(
               key: _tin,
               controller: _tinController,
@@ -359,7 +360,7 @@ class EditProfilePageState extends State<EditProfilePage> {
 
           const SizedBox(height: 12.0),
           PrimaryColorOverride(
-            color: TodoColors.accent,
+            color: TodoColors.baseColors[_colorIndex],
             child: TextField(
               key: _cvStatusElec,
               controller: _cvStatusElecController,
@@ -372,7 +373,7 @@ class EditProfilePageState extends State<EditProfilePage> {
 
           const SizedBox(height: 12.0),
           PrimaryColorOverride(
-            color: TodoColors.accent,
+            color: TodoColors.baseColors[_colorIndex],
             child: TextField(
               key: _emergencyContactName,
               controller: _emergencyContactNameController,
@@ -385,7 +386,7 @@ class EditProfilePageState extends State<EditProfilePage> {
 
           const SizedBox(height: 12.0),
           PrimaryColorOverride(
-            color: TodoColors.accent,
+            color: TodoColors.baseColors[_colorIndex],
             child: TextField(
               key: _emergencyContactPhone,
               controller: _emergencyContactPhoneController,
@@ -401,6 +402,7 @@ class EditProfilePageState extends State<EditProfilePage> {
             children: <Widget>[
               FlatButton(
                 child: Text('CANCEL'),
+                textColor: TodoColors.baseColors[_colorIndex],
                 shape: BeveledRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(7.0)),
                 ),
@@ -410,6 +412,7 @@ class EditProfilePageState extends State<EditProfilePage> {
               ),
               RaisedButton(
                 child: Text('UPDATE'),
+                textColor: TodoColors.baseColors[_colorIndex],
                 elevation: 8.0,
                 shape: BeveledRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(7.0)),

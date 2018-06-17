@@ -7,8 +7,8 @@ import 'dart:convert';
 import 'closed_projects.dart';
 import 'started_projects.dart';
 import 'starting_projects.dart';
-import 'explore_users.dart';
-import 'explore_devices.dart';
+import 'view_users.dart';
+import 'view_devices.dart';
 import 'package:flutter/material.dart';
 import 'search_projects.dart';
 import 'api.dart';
@@ -16,9 +16,9 @@ import 'backdrop.dart';
 import 'category.dart';
 import 'category_tile.dart';
 import 'unit.dart';
-import 'explore_requests.dart';
-import 'animated_list.dart';
-import 'profile_app.dart';
+import 'pending_requests.dart';
+import 'animated_weeks_page.dart';
+import 'profile_page.dart';
 import 'constants.dart';
 import 'qrcode_scanner.dart';
 
@@ -196,15 +196,13 @@ class _CategoryRouteState extends State<CategoryRoute> {
   Widget condition(Category c)
 
   {
-//    c = _currentCategory;
   if(c.name == "Profile"){
-//  return EditProfilePage();
   return MaterialApp
   (
   title: 'Projects',
   debugShowCheckedModeBanner: false,
   theme: ThemeData(primarySwatch: Colors.blue),
-  home: ProfileApp(),
+  home: ProfilePage(colorIndex: 0,),
   );
 
   }else
@@ -214,8 +212,8 @@ class _CategoryRouteState extends State<CategoryRoute> {
   title: 'Projects',
   debugShowCheckedModeBanner: false,
   theme: ThemeData(primarySwatch: Colors.blue),
-  home: SearchProjectsPage(),
-  ); //UnitConverter(category: _currentCategory);
+  home: SearchProjectsPage(colorIndex: 1,),
+  );
   }else
   if (c.name == "Pending Requests"){
   return MaterialApp
@@ -223,7 +221,7 @@ class _CategoryRouteState extends State<CategoryRoute> {
   title: 'Pending Requests',
   debugShowCheckedModeBanner: false,
   theme: ThemeData(primarySwatch: Colors.blue),
-  home: ExploreRequestsPage(),
+  home: PendingRequestsPage(colorIndex: 2,),
   );
   }else
   if (c.name == "Started Projects"){
@@ -232,7 +230,7 @@ class _CategoryRouteState extends State<CategoryRoute> {
   title: 'Started Project Details',
   debugShowCheckedModeBanner: false,
   theme: ThemeData(primarySwatch: Colors.blue),
-  home: StartedProjectPage(),
+  home: StartedProjectPage(colorIndex: 3,),
   );
   }else
   if (c.name == "Starting Projects"){
@@ -241,7 +239,7 @@ class _CategoryRouteState extends State<CategoryRoute> {
   title: 'Starting Project Details',
   debugShowCheckedModeBanner: false,
   theme: ThemeData(primarySwatch: Colors.blue),
-  home: StartingProjectPage(),
+  home: StartingProjectPage(colorIndex: 4,),
   );
   }else
   if (c.name == "Explore Users"){
@@ -250,7 +248,7 @@ class _CategoryRouteState extends State<CategoryRoute> {
   title: 'Explore Users',
   debugShowCheckedModeBanner: false,
   theme: ThemeData(primarySwatch: Colors.blue),
-  home: ExploreUsersPage(),
+  home: ViewUsersPage(colorIndex: 5,),
   );
   }else
   if (c.name == "Explore Devices"){
@@ -259,7 +257,7 @@ class _CategoryRouteState extends State<CategoryRoute> {
   title: 'Explore Devices',
   debugShowCheckedModeBanner: false,
   theme: ThemeData(primarySwatch: Colors.blue),
-  home: ExploreDevicesPage(),
+  home: ViewDevicesPage(colorIndex: 6,),
   );
   }else
   if (c.name == "Closed Projects"){
@@ -268,7 +266,7 @@ class _CategoryRouteState extends State<CategoryRoute> {
   title: 'Closed Project Details',
   debugShowCheckedModeBanner: false,
   theme: ThemeData(primarySwatch: Colors.blue),
-  home: ClosedProjectPage(),
+  home: ClosedProjectPage(colorIndex: 7,),
   );
   }else {
   return MaterialApp
@@ -276,7 +274,7 @@ class _CategoryRouteState extends State<CategoryRoute> {
   title: 'Closed Project Details',
   debugShowCheckedModeBanner: false,
   theme: ThemeData(primarySwatch: Colors.blue),
-  home: AnimatedListSample(),
+  home: AnimatedWeeksPage(colorIndex: 8,),
   );
   }
   }

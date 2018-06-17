@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'supplemental/cut_corners_border.dart';
 import 'profile_fonts.dart';
-import 'explore_devices.dart';
+import 'view_devices.dart';
 import 'constants.dart';
 
 /// QuickActions represents the horizontal list of rectangular buttons below the header
@@ -137,10 +137,11 @@ class QuickDeviceActions extends StatelessWidget {
     final _deviceType = GlobalKey(debugLabel: 'Device Type');
     final _deviceConditionController = TextEditingController();
     final _deviceCondition = GlobalKey(debugLabel: 'Device Condition');
+    int _colorIndex = 0;
 
     if (title == "View\nDevices") {
       Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => ExploreDevicesPage()));
+          MaterialPageRoute(builder: (_) => ViewDevicesPage(colorIndex: _colorIndex,)));
     } else if (title == "Update\nDevice") {
       new Container(
         width: 450.0,
@@ -151,12 +152,14 @@ class QuickDeviceActions extends StatelessWidget {
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return new AlertDialog(
-            title: new Text('SEARCH  DEVICES', style: TodoColors.textStyle,),
+            title: new Text('Search Device To Update', style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),),
             content: new SingleChildScrollView(
               child: new ListBody(
                 children: <Widget>[
                   SizedBox(height: 12.0),
-                  TextField(
+              PrimaryColorOverride(
+                color: TodoColors.baseColors[_colorIndex],
+                child: TextField(
                     key: _deviceName,
                     controller: _deviceNameController,
                     decoration: InputDecoration(
@@ -165,8 +168,11 @@ class QuickDeviceActions extends StatelessWidget {
                       border: CutCornersBorder(),
                     ),
                   ),
+              ),
                   SizedBox(height: 12.0),
-                  TextField(
+              PrimaryColorOverride(
+                color: TodoColors.baseColors[_colorIndex],
+                child: TextField(
                     key: _deviceType,
                     controller: _deviceTypeController,
                     decoration: InputDecoration(
@@ -175,8 +181,11 @@ class QuickDeviceActions extends StatelessWidget {
                       border: CutCornersBorder(),
                     ),
                   ),
+              ),
                   SizedBox(height: 12.0),
-                  TextField(
+              PrimaryColorOverride(
+                color: TodoColors.baseColors[_colorIndex],
+                child: TextField(
                     key: _deviceCondition,
                     controller: _deviceConditionController,
                     decoration: InputDecoration(
@@ -185,6 +194,7 @@ class QuickDeviceActions extends StatelessWidget {
                       border: CutCornersBorder(),
                     ),
                   ),
+              ),
                   SizedBox(height: 12.0,),
                 ],
               ),
@@ -194,6 +204,7 @@ class QuickDeviceActions extends StatelessWidget {
             actions: <Widget>[
               FlatButton(
                 child: Text('CANCEL'),
+                textColor: TodoColors.baseColors[_colorIndex],
                 shape: BeveledRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(7.0)),
                 ),
@@ -204,6 +215,7 @@ class QuickDeviceActions extends StatelessWidget {
 
               RaisedButton(
                 child: Text('SEARCH'),
+                textColor: TodoColors.baseColors[_colorIndex],
                 elevation: 8.0,
                 shape: BeveledRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(7.0)),

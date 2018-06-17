@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_circular_chart/flutter_circular_chart.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'constants.dart';
-//void main() {
-//  runApp(new MaterialApp(
-//    home: new AnimatedPieChartExample(),
-//  ));
-//}
+
 
 final List<List<CircularStackEntry>> _quarterlyProfitPieData = [
   <CircularStackEntry>[
@@ -31,13 +27,18 @@ final List<List<CircularStackEntry>> _quarterlyProfitPieData2 = [
   ],
 ];
 
-class AnimatedPieChartExample extends StatefulWidget {
+class AnimatedPieChartPage extends StatefulWidget {
+  final int colorIndex;
+
+  const AnimatedPieChartPage({
+    @required this.colorIndex,
+  }) : assert(colorIndex != null);
+
   @override
-  _AnimatedPieChartExampleState createState() =>
-      new _AnimatedPieChartExampleState();
+  AnimatedPieChartPageState createState() => new AnimatedPieChartPageState();
 }
 
-class _AnimatedPieChartExampleState extends State<AnimatedPieChartExample> {
+class AnimatedPieChartPageState extends State<AnimatedPieChartPage> {
   final GlobalKey<AnimatedCircularChartState> _chartKey =
       new GlobalKey<AnimatedCircularChartState>();
   final GlobalKey<AnimatedCircularChartState> _chartKey2 =
@@ -81,7 +82,7 @@ class _AnimatedPieChartExampleState extends State<AnimatedPieChartExample> {
     [
     new FloatingActionButton(
     child: new Icon(Icons.refresh,),
-      backgroundColor: TodoColors.baseColors[1],
+      backgroundColor: TodoColors.baseColors[widget.colorIndex],
       onPressed: _cycleSamples,
     ),
     ],
@@ -105,7 +106,7 @@ class _AnimatedPieChartExampleState extends State<AnimatedPieChartExample> {
             Expanded(child:Text("Spots\nLeft", style: TextStyle(color: Colors.red[200]),),flex: 1,),
           ],
         ),
-        backgroundColor: TodoColors.baseColors[1],
+        backgroundColor: TodoColors.baseColors[widget.colorIndex],
       ),
       body: new Center(
         child: new AnimatedCircularChart(
@@ -129,7 +130,7 @@ class _AnimatedPieChartExampleState extends State<AnimatedPieChartExample> {
                Expanded(child:Text("Male\nStaff", style: TextStyle(color: Colors.red[200]),),flex: 1,),
              ],
            ),
-           backgroundColor: TodoColors.baseColors[1],
+           backgroundColor: TodoColors.baseColors[widget.colorIndex],
          ),
          body: new Center(
            child: new AnimatedCircularChart(

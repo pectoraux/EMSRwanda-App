@@ -5,6 +5,12 @@ import 'constants.dart';
 import 'supplemental/cut_corners_border.dart';
 
 class ClosedProjectPage extends StatefulWidget {
+  final int colorIndex;
+
+  const ClosedProjectPage({
+    @required this.colorIndex,
+  }) : assert(colorIndex != null);
+
   @override
   ClosedProjectPageState createState() => ClosedProjectPageState();
 }

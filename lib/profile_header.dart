@@ -11,6 +11,8 @@ class ProfileHeader extends StatelessWidget {
   final Profile profile;
   int _colorIndex = 0;
 
+
+
   ProfileHeader(this.profile);
 
   @override

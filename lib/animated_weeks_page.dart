@@ -296,6 +296,3 @@ class CardItem extends StatelessWidget {
   }
 }
 
-//void main() {
-//  runApp(new AnimatedListSample());
-//}

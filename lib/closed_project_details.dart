@@ -3,7 +3,7 @@ import 'package:flutter_sparkline/flutter_sparkline.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'constants.dart';
 import 'view_devices.dart';
-import 'staffs_stats.dart';
+import 'staff_stats.dart';
 
 class ClosedProjectDetailsPage extends StatefulWidget {
   @override
@@ -13,6 +13,7 @@ class ClosedProjectDetailsPage extends StatefulWidget {
 
 class ClosedProjectDetailsPageState extends State<ClosedProjectDetailsPage> {
   static const _padding = EdgeInsets.all(5.0);
+  int _colorIndex = 7;
   int people_surveyed = 100;
   final List<List<double>> charts =
   [
@@ -296,13 +297,13 @@ class ClosedProjectDetailsPageState extends State<ClosedProjectDetailsPage> {
                         children: <Widget>
                         [
                           Text('Kigali, Gisenyi',
-                              style: TextStyle(color: Colors.blueAccent)),
+                              style: TextStyle(color: TodoColors.baseColors[_colorIndex])),
                           Text('FSI', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: Colors.blue,
+                          color: TodoColors.baseColors[_colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
 
                           child: Center
@@ -348,7 +349,7 @@ class ClosedProjectDetailsPageState extends State<ClosedProjectDetailsPage> {
               ),
               onTap: () =>
                   Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => StaffNStatsPage(colorIndex: 5,))),
+                      MaterialPageRoute(builder: (_) => StaffNStatsPage(colorIndex: _colorIndex,))),
             ),
             _buildTile(
               Padding

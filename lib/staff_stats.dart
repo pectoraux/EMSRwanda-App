@@ -51,8 +51,8 @@ class StaffNStatsPageState extends State<StaffNStatsPage> {
       resizeToAvoidBottomPadding: false,
       body: new PageView(
           children: [
-            new AnimatedPieChartPage(colorIndex: 1,),
-            new ViewUsersPage(colorIndex: 1,),
+            new AnimatedPieChartPage(colorIndex: widget.colorIndex,),
+            new ViewUsersPage(colorIndex: widget.colorIndex,),
             new QRCodeScanPage(colorIndex: widget.colorIndex,),
           ],
           controller: _pageController,

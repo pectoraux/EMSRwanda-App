@@ -50,7 +50,7 @@ class ClosedProjectPageState extends State<ClosedProjectPage> {
                   new FloatingActionButton(
                     elevation: 200.0,
                     child: new Icon(Icons.search),
-                    backgroundColor: TodoColors.baseColors[7],
+                    backgroundColor: TodoColors.baseColors[widget.colorIndex],
                     onPressed: () {
                       new Container(
                         width: 450.0,
@@ -61,12 +61,14 @@ class ClosedProjectPageState extends State<ClosedProjectPage> {
                         builder: (BuildContext context) {
                           return new AlertDialog(
                             title: new Text(
-                              'SEARCH  PROJECTS', style: TodoColors.textStyle,),
+                              'Search Projects', style: TodoColors.textStyle.apply(color: TodoColors.baseColors[widget.colorIndex]),),
                             content: new SingleChildScrollView(
                               child: new ListBody(
                                 children: <Widget>[
                                   SizedBox(height: 12.0),
-                                  TextField(
+                              PrimaryColorOverride(
+                                color: TodoColors.baseColors[widget.colorIndex],
+                                child: TextField(
                                     key: _projectTitle,
                                     controller: _projectTitleController,
                                     decoration: InputDecoration(
@@ -75,8 +77,11 @@ class ClosedProjectPageState extends State<ClosedProjectPage> {
                                       border: CutCornersBorder(),
                                     ),
                                   ),
+                              ),
                                   SizedBox(height: 12.0),
-                                  TextField(
+                              PrimaryColorOverride(
+                                color: TodoColors.baseColors[widget.colorIndex],
+                                child: TextField(
                                     key: _projectLocations,
                                     controller: _projectLocationsController,
                                     decoration: InputDecoration(
@@ -85,8 +90,10 @@ class ClosedProjectPageState extends State<ClosedProjectPage> {
                                       border: CutCornersBorder(),
                                     ),
                                   ),
+                              ),
                                   RaisedButton(
                                     child: Text('ADD LOCATION'),
+                                    textColor: TodoColors.baseColors[widget.colorIndex],
                                     elevation: 8.0,
                                     shape: BeveledRectangleBorder(
                                       borderRadius: BorderRadius.all(
@@ -95,7 +102,9 @@ class ClosedProjectPageState extends State<ClosedProjectPage> {
                                     onPressed: () {},
                                   ),
                                   SizedBox(height: 12.0),
-                                  TextField(
+                              PrimaryColorOverride(
+                                color: TodoColors.baseColors[widget.colorIndex],
+                                child: TextField(
                                     key: _projectTags,
                                     controller: _projectTagsController,
                                     decoration: InputDecoration(
@@ -104,8 +113,10 @@ class ClosedProjectPageState extends State<ClosedProjectPage> {
                                       border: CutCornersBorder(),
                                     ),
                                   ),
+                              ),
                                   RaisedButton(
                                     child: Text('ADD TAG'),
+                                    textColor: TodoColors.baseColors[widget.colorIndex],
                                     elevation: 8.0,
                                     shape: BeveledRectangleBorder(
                                       borderRadius: BorderRadius.all(
@@ -122,6 +133,7 @@ class ClosedProjectPageState extends State<ClosedProjectPage> {
                             actions: <Widget>[
                               FlatButton(
                                 child: Text('CANCEL'),
+                                textColor: TodoColors.baseColors[widget.colorIndex],
                                 shape: BeveledRectangleBorder(
                                   borderRadius: BorderRadius.all(
                                       Radius.circular(7.0)),
@@ -133,6 +145,7 @@ class ClosedProjectPageState extends State<ClosedProjectPage> {
 
                               RaisedButton(
                                 child: Text('SEARCH'),
+                                textColor: TodoColors.baseColors[widget.colorIndex],
                                 elevation: 8.0,
                                 shape: BeveledRectangleBorder(
                                   borderRadius: BorderRadius.all(
@@ -140,7 +153,6 @@ class ClosedProjectPageState extends State<ClosedProjectPage> {
                                 ),
                                 onPressed: () {},
                               ),
-
                             ],
                           );
                         },
@@ -175,13 +187,13 @@ class ClosedProjectPageState extends State<ClosedProjectPage> {
                         children: <Widget>
                         [
                           Text('Kigali, Gisenyi',
-                              style: TextStyle(color: TodoColors.baseColors[7])),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('FSI', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[7],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -214,13 +226,13 @@ class ClosedProjectPageState extends State<ClosedProjectPage> {
                         children: <Widget>
                         [
                           Text('Remera, Gaculiro',
-                              style: TextStyle(color: TodoColors.baseColors[7])),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('CookStoves', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[7],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -253,13 +265,13 @@ class ClosedProjectPageState extends State<ClosedProjectPage> {
                         children: <Widget>
                         [
                           Text('Kacyiru, Kimironko',
-                              style: TextStyle(color: TodoColors.baseColors[7])),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('MISM', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[7],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -292,13 +304,13 @@ class ClosedProjectPageState extends State<ClosedProjectPage> {
                         children: <Widget>
                         [
                           Text('Kiyovu, Nyamirambo',
-                              style: TextStyle(color: TodoColors.baseColors[7])),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('PEPSI', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[7],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -331,13 +343,13 @@ class ClosedProjectPageState extends State<ClosedProjectPage> {
                         children: <Widget>
                         [
                           Text('Kigali, Gaculiro',
-                              style: TextStyle(color: TodoColors.baseColors[7])),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('Students Report', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[7],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -370,13 +382,13 @@ class ClosedProjectPageState extends State<ClosedProjectPage> {
                         children: <Widget>
                         [
                           Text('Kacyiru',
-                              style: TextStyle(color: TodoColors.baseColors[7])),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('MISM', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[7],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -409,13 +421,13 @@ class ClosedProjectPageState extends State<ClosedProjectPage> {
                         children: <Widget>
                         [
                           Text('Kiyovu',
-                              style: TextStyle(color: TodoColors.baseColors[7])),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('RRA Survey', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[7],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -448,13 +460,13 @@ class ClosedProjectPageState extends State<ClosedProjectPage> {
                         children: <Widget>
                         [
                           Text('Gisenyi',
-                              style: TextStyle(color: TodoColors.baseColors[7])),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('ALI', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[7],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -487,13 +499,13 @@ class ClosedProjectPageState extends State<ClosedProjectPage> {
                         children: <Widget>
                         [
                           Text('Gaculiro',
-                              style: TextStyle(color: TodoColors.baseColors[7])),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('LATI', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[7],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -526,13 +538,13 @@ class ClosedProjectPageState extends State<ClosedProjectPage> {
                         children: <Widget>
                         [
                           Text('Remera',
-                              style: TextStyle(color: TodoColors.baseColors[7])),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('VINE', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[7],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -580,6 +592,22 @@ class ClosedProjectPageState extends State<ClosedProjectPage> {
                     builder: (_) => ClosedProjectDetailsPage())),
             child: child
         )
+    );
+  }
+}
+
+class PrimaryColorOverride extends StatelessWidget {
+  const PrimaryColorOverride({Key key, this.color, this.child})
+      : super(key: key);
+
+  final Color color;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+      child: child,
+      data: Theme.of(context).copyWith(primaryColor: color),
     );
   }
 }

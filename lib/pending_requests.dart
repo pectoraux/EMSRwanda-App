@@ -669,14 +669,16 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
                               child: Text(
                                   _isMadeByYou ? "CANCEL" : "REJECT"
                               ),
+                              textColor: TodoColors.baseColors[widget.colorIndex],
                               onPressed: () {
                                 showInSnackBar("WORK REQUEST FOR PROJECT $title HAS BEEN $Status", TodoColors.baseColors[widget.colorIndex]);
                                 Navigator.of(context).pop(); },
                             ),
                             new FlatButton(
                               child: Text(
-                                  _isMadeByYou ? "" : "ACCEPT"
+                                  _isMadeByYou ? "" : "ACCEPT",
                               ),
+                              textColor: TodoColors.baseColors[widget.colorIndex],
                               onPressed: () { showInSnackBar("YOU ACCEPTED TO WORK ON PROJECT $title", TodoColors.baseColors[widget.colorIndex]);
                                 Navigator.of(context).pop();
                               },

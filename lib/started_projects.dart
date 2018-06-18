@@ -61,12 +61,14 @@ class StartedProjectPageState extends State<StartedProjectPage> {
                         builder: (BuildContext context) {
                           return new AlertDialog(
                             title: new Text(
-                              'Search  Projects', style: TodoColors.textStyle6,),
+                              'Search  Projects', style: TodoColors.textStyle.apply(color: TodoColors.baseColors[widget.colorIndex]),),
                             content: new SingleChildScrollView(
                               child: new ListBody(
                                 children: <Widget>[
                                   SizedBox(height: 12.0),
-                                  TextField(
+                              PrimaryColorOverride(
+                                color: TodoColors.baseColors[widget.colorIndex],
+                                child: TextField(
                                     key: _projectTitle,
                                     controller: _projectTitleController,
                                     decoration: InputDecoration(
@@ -75,8 +77,11 @@ class StartedProjectPageState extends State<StartedProjectPage> {
                                       border: CutCornersBorder(),
                                     ),
                                   ),
+                              ),
                                   SizedBox(height: 12.0),
-                                  TextField(
+                              PrimaryColorOverride(
+                                color: TodoColors.baseColors[widget.colorIndex],
+                                child: TextField(
                                     key: _projectLocations,
                                     controller: _projectLocationsController,
                                     decoration: InputDecoration(
@@ -85,9 +90,11 @@ class StartedProjectPageState extends State<StartedProjectPage> {
                                       border: CutCornersBorder(),
                                     ),
                                   ),
+                              ),
                                   RaisedButton(
                                     child: Text('ADD LOCATION'),
                                     elevation: 8.0,
+                                    textColor: TodoColors.baseColors[widget.colorIndex],
                                     shape: BeveledRectangleBorder(
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(7.0)),
@@ -95,7 +102,9 @@ class StartedProjectPageState extends State<StartedProjectPage> {
                                     onPressed: () {},
                                   ),
                                   SizedBox(height: 12.0),
-                                  TextField(
+                              PrimaryColorOverride(
+                                color: TodoColors.baseColors[widget.colorIndex],
+                                child: TextField(
                                     key: _projectTags,
                                     controller: _projectTagsController,
                                     decoration: InputDecoration(
@@ -104,9 +113,11 @@ class StartedProjectPageState extends State<StartedProjectPage> {
                                       border: CutCornersBorder(),
                                     ),
                                   ),
+                              ),
                                   RaisedButton(
                                     child: Text('ADD TAG'),
                                     elevation: 8.0,
+                                    textColor: TodoColors.baseColors[widget.colorIndex],
                                     shape: BeveledRectangleBorder(
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(7.0)),
@@ -122,6 +133,7 @@ class StartedProjectPageState extends State<StartedProjectPage> {
                             actions: <Widget>[
                               FlatButton(
                                 child: Text('CANCEL'),
+                                textColor: TodoColors.baseColors[widget.colorIndex],
                                 shape: BeveledRectangleBorder(
                                   borderRadius: BorderRadius.all(
                                       Radius.circular(7.0)),
@@ -133,6 +145,7 @@ class StartedProjectPageState extends State<StartedProjectPage> {
 
                               RaisedButton(
                                 child: Text('SEARCH'),
+                                textColor: TodoColors.baseColors[widget.colorIndex],
                                 elevation: 8.0,
                                 shape: BeveledRectangleBorder(
                                   borderRadius: BorderRadius.all(
@@ -580,6 +593,22 @@ class StartedProjectPageState extends State<StartedProjectPage> {
                     MaterialPageRoute(builder: (_) => ProjectDetailsPage(colorIndex: widget.colorIndex,))),
             child: child
         )
+    );
+  }
+}
+
+class PrimaryColorOverride extends StatelessWidget {
+  const PrimaryColorOverride({Key key, this.color, this.child})
+      : super(key: key);
+
+  final Color color;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+      child: child,
+      data: Theme.of(context).copyWith(primaryColor: color),
     );
   }
 }

@@ -25,6 +25,14 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
   final String display_unknown = "Unknown Error";
   final String display_no_scan = "You pressed the back button before scanning anything";
   String result = "Hey there !";
+  bool _scanIn;
+  bool _scannedOut, _scannedIn = false;   // used to know when to dismiss the dialog box
+
+  @override
+  void initState() {
+    _scanIn = false;
+  }
+
   Future _scanQR() async {
     try {
       String qrResult = await BarcodeScanner.scan();
@@ -88,8 +96,12 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
             onPressed: () {
               if(result != "" && result != display_welcome && result != display_permission_denied &&
                   result != display_no_scan && !result.startsWith(display_unknown)) {
-                onTap();
-                showInSnackBar("Records Saved !!!", TodoColors.baseColors[widget.colorIndex]);
+                onTap2();
+                setState(() {
+                  result = "";
+                  _scannedIn = false;
+                  _scannedOut = false;
+                });
               }
             },
           ),
@@ -177,12 +189,129 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
     showInSnackBar("Scanner has been reset", TodoColors.baseColors[widget.colorIndex]);
   }
 
+  void onTap2 (){
+    String status = "Available";
+    List<String> mResults = result.split("\n").toList();
+    String textInUse, textAvailable = "";
+    try {
+      textAvailable = mResults.sublist(2, mResults.indexOf(mResults.last)).toString();
+      textInUse = mResults.last;
+    }catch(ex) {
+      textAvailable = textInUse = "Scan User then scan devices";
+    }
+
+      setState(() {
+        if(status != "Available") {  // if device is in use
+          _scanIn = true;
+        }
+      });
+      showDialog<Null>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return new AlertDialog(
+            content: new SingleChildScrollView(
+              child: new ListBody(
+                children: <Widget>[
+                  new Card(
+                    child: new Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        ListTile(
+                          title: Text("Available Devices", style: TextStyle(color: TodoColors.baseColors[widget.colorIndex]),),
+                          subtitle: Text(textAvailable,
+                            style: TodoColors.textStyle.apply(color: TodoColors.baseColors[widget.colorIndex]),),
+                        ),
+                        new ButtonTheme.bar( // make buttons use the appropriate styles for cards
+                          child: new ButtonBar(
+                            children: <Widget>[
+                              BackButton(),
+                              new RaisedButton(
+                                child: Text(
+                                    _scannedOut? "" : "SCAN OUT"
+                                ),
+                                textColor: TodoColors.baseColors[widget.colorIndex],
+                                onPressed: () {
+                                  showInSnackBar("Scan Out Successful !!!", TodoColors.baseColors[widget.colorIndex]);
+                                  if(_scannedIn) {
+                                    Navigator.of(context).pop();
+                                  }else{
+                                    setState(() {
+                                      _scannedOut = true;
+                                    });
+                                  }
+
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        ListTile(
+                          title: Text("Devices In Use", style: TextStyle(color: Colors.redAccent),),
+                          subtitle: Text(textInUse,
+                            style: TodoColors.textStyle.apply(color: TodoColors.baseColors[widget.colorIndex]),),
+                        ),
+                        new ButtonTheme.bar( // make buttons use the appropriate styles for cards
+                          child: new ButtonBar(
+                            children: <Widget>[
+                              BackButton(),
+                              new RaisedButton(
+                                child: Text(
+                                    _scannedIn? "" : "SCAN IN"
+                                ),
+                                textColor: TodoColors.baseColors[widget.colorIndex],
+                                onPressed: () {
+                                  showInSnackBar("Scan In Successful !!!", TodoColors.baseColors[widget.colorIndex]);
+                                  if(_scannedOut) {
+                                    Navigator.of(context).pop();
+                                  }else{
+                                    setState(() {
+                                      _scannedIn = true;
+                                    });
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
+        },
+      );
+
+
+//    showInSnackBar("Scanner has been reset", TodoColors.baseColors[widget.colorIndex]);
+  }
+
   void showInSnackBar(String value, Color c) {
     Scaffold.of(context).showSnackBar(new SnackBar(
       content: new Text(value),
       backgroundColor: c,
+      action: new SnackBarAction(
+        label: 'Undo',
+        onPressed: () {
+          // Some code to undo the change!
+          showInSnackBar2("Previous Action Successfully Undone", TodoColors.baseColors[widget.colorIndex]);
+        },
+      ),
+      duration: kTabScrollDuration*10,
     ));
   }
+
+  void showInSnackBar2(String value, Color c) {
+    Scaffold.of(context).showSnackBar(new SnackBar(
+      content: new Text(value),
+      backgroundColor: c,
+      duration: kTabScrollDuration,
+    ));
+  }
+
+
 
 
   Widget _buildTile(Widget child, {Function() onTap}) {

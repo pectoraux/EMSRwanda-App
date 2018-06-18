@@ -160,7 +160,7 @@ class AnimatedPieChartPageState extends State<AnimatedPieChartPage> {
         builder: (BuildContext context) {
       return new AlertDialog(
         title: new Text(
-          'Spots Filled vs Spots Left', style: TextStyle(color: TodoColors.baseColors[1]),
+          'Spots Filled vs Spots Left', style: TextStyle(color: TodoColors.baseColors[widget.colorIndex]),
         ),
         content: new SingleChildScrollView(
           child: new ListBody(
@@ -172,6 +172,7 @@ class AnimatedPieChartPageState extends State<AnimatedPieChartPage> {
         actions: <Widget>[
           RaisedButton(
             child: Text('CLOSE'),
+            textColor: TodoColors.baseColors[widget.colorIndex],
             elevation: 8.0,
             shape: BeveledRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(7.0)),
@@ -193,7 +194,7 @@ class AnimatedPieChartPageState extends State<AnimatedPieChartPage> {
       builder: (BuildContext context) {
         return new AlertDialog(
           title: new Text(
-            'Female Staff vs Male Staff', style: TextStyle(color: TodoColors.baseColors[1]),
+            'Female Staff vs Male Staff', style: TextStyle(color: TodoColors.baseColors[widget.colorIndex]),
           ),
           content: new SingleChildScrollView(
             child: new ListBody(
@@ -206,6 +207,7 @@ class AnimatedPieChartPageState extends State<AnimatedPieChartPage> {
             RaisedButton(
               child: Text('CLOSE'),
               elevation: 8.0,
+              textColor: TodoColors.baseColors[widget.colorIndex],
               shape: BeveledRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),
               ),

@@ -3,11 +3,13 @@ import 'profile_colors.dart';
 import 'profile_fonts.dart';
 import 'profile_icons.dart';
 import 'models.dart';
+import 'notifications.dart';
 import 'dart:math';
 
 class ProfileHeader extends StatelessWidget {
 
   final Profile profile;
+  int _colorIndex = 0;
 
   ProfileHeader(this.profile);
 
@@ -70,7 +72,7 @@ class ProfileHeader extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                _buildBellIcon(),
+                _buildBellIcon(context),
                 new Padding(
                   padding: const EdgeInsets.only(bottom: 15.0),
                   child: _buildTitle(),
@@ -89,7 +91,7 @@ class ProfileHeader extends StatelessWidget {
   }
 
   /// Build the bell icon at the top right corner of the header
-  Widget _buildBellIcon() {
+  Widget _buildBellIcon(BuildContext context) {
     return new Row(
       mainAxisAlignment: MainAxisAlignment.end,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,7 +99,10 @@ class ProfileHeader extends StatelessWidget {
         new IconButton(
             icon: new Icon(
               LineAwesomeIcons.bell, color: Colors.white, size: 30.0,),
-            onPressed: () {}),
+            onPressed: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => NotificationsPage(colorIndex: _colorIndex,)));
+            }),
       ],
     );
   }

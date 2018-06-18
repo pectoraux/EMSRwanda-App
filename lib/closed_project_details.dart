@@ -4,6 +4,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'constants.dart';
 import 'view_devices.dart';
 import 'staff_stats.dart';
+import 'notifications.dart';
 
 class ClosedProjectDetailsPage extends StatefulWidget {
   @override
@@ -12,7 +13,22 @@ class ClosedProjectDetailsPage extends StatefulWidget {
 }
 
 class ClosedProjectDetailsPageState extends State<ClosedProjectDetailsPage> {
-  static const _padding = EdgeInsets.all(5.0);
+  String project_description = "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
+      "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
+      "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
+      "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
+      "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
+      "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
+      "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
+      "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
+      "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
+      "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
+      "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
+      "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
+      "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
+      "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
+      "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
+  ;
   int _colorIndex = 7;
   int people_surveyed = 100;
   final List<List<double>> charts =
@@ -280,7 +296,7 @@ class ClosedProjectDetailsPageState extends State<ClosedProjectDetailsPage> {
           mainAxisSpacing: 12.0,
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           children: <Widget>[
-            _buildTile(
+            _buildTile2(
               Padding
                 (
                 padding: const EdgeInsets.all(24.0),
@@ -319,6 +335,9 @@ class ClosedProjectDetailsPageState extends State<ClosedProjectDetailsPage> {
                     ]
                 ),
               ),
+                'Kigali, Gisenyi',
+                'FSI',
+                project_description
             ),
             _buildTile(
               Padding(
@@ -363,7 +382,7 @@ class ClosedProjectDetailsPageState extends State<ClosedProjectDetailsPage> {
                     [
                       Material
                         (
-                          color: Colors.amber,
+                          color: TodoColors.baseColors[_colorIndex],
                           shape: CircleBorder(),
                           child: Padding
                             (
@@ -379,6 +398,9 @@ class ClosedProjectDetailsPageState extends State<ClosedProjectDetailsPage> {
                     ]
                 ),
               ),
+              onTap: () =>
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => NotificationsPage(colorIndex: _colorIndex,))),
             ),
             _buildTile(
               Padding
@@ -403,7 +425,7 @@ class ClosedProjectDetailsPageState extends State<ClosedProjectDetailsPage> {
                             children: <Widget>
                             [
                               Text('People Surveyed',
-                                  style: TextStyle(color: Colors.green)),
+                                  style: TextStyle(color: TodoColors.baseColors[_colorIndex],)),
                               Text('${people_surveyed}', style: TodoColors.textStyle6),
                             ],
                           ),
@@ -438,7 +460,7 @@ class ClosedProjectDetailsPageState extends State<ClosedProjectDetailsPage> {
                         (
                         data: charts[actualChart],
                         lineWidth: 5.0,
-                        lineColor: Colors.greenAccent,
+                        lineColor: TodoColors.baseColors[_colorIndex],
                       )
                     ],
                   )
@@ -461,13 +483,13 @@ class ClosedProjectDetailsPageState extends State<ClosedProjectDetailsPage> {
                         children: <Widget>
                         [
                           Text('Devices',
-                              style: TextStyle(color: Colors.redAccent)),
+                              style: TextStyle(color: TodoColors.baseColors[_colorIndex],)),
                           Text('173', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: Colors.red,
+                          color: TodoColors.baseColors[_colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -484,7 +506,7 @@ class ClosedProjectDetailsPageState extends State<ClosedProjectDetailsPage> {
               ),
               onTap: () =>
                   Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => ViewDevicesPage(colorIndex: 0,))),
+                      MaterialPageRoute(builder: (_) => ViewDevicesPage(colorIndex: _colorIndex,))),
             )
           ],
           staggeredTiles: [
@@ -508,9 +530,62 @@ class ClosedProjectDetailsPageState extends State<ClosedProjectDetailsPage> {
           // Do onTap() if it isn't null, otherwise do print()
             onTap: onTap != null ? () => onTap() : () {
               print('Not set yet');
+
             },
             child: child
         )
+    );
+  }
+
+  Widget _buildTile2(Widget child, String locations, String title, String description) {
+    return Material(
+        elevation: 14.0,
+        borderRadius: BorderRadius.circular(12.0),
+        shadowColor: Color(0x802196F3),
+        child: InkWell
+          (
+          // Do onTap() if it isn't null, otherwise do print()
+            onTap: () {
+              showTile(locations, title, description);
+            },
+            child: child
+        )
+    );
+  }
+
+  void showTile(String locations, String title, String description){
+    String Status;
+    title = title.toUpperCase();
+    setState(() {
+
+    });
+
+    showDialog<Null>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return new AlertDialog(
+          content: new SingleChildScrollView(
+            child: new ListBody(
+              children: <Widget>[
+                new Card(
+                  child: new Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      ListTile(
+                        title: Text("Project Title: $title\nProject Location: $locations",
+                          style: TextStyle(color: TodoColors.baseColors[_colorIndex]),),
+                        subtitle: Text(description),
+                      ),
+                      BackButton(color: TodoColors.baseColors[_colorIndex],),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

@@ -73,17 +73,18 @@ class TodoColors {
       fontSize: 10.0,
       color: Colors.black,
       fontFamily: ProfileFontNames.TimeBurner);
-
+  Color c = Colors.amber;
   static const baseColors = <ColorSwatch>[
     ColorSwatch(0xFF6AB7A8, {
       'highlight': Color(0xFF6AB7A8),
       'splash': Color(0xFF0ABC9B),
     }),
-    ColorSwatch(0xFFFFD28E, {
+    //0xFFFFD28E
+    ColorSwatch(0xFFFFBF00,  {
       'highlight': Color(0xFFFFD28E),
       'splash': Color(0xFFFFA41C),
     }),
-    ColorSwatch(0xFFFFB7DE, {
+    ColorSwatch(0xFFFFC7DE, {
       'highlight': Color(0xFFFFB7DE),
       'splash': Color(0xFFF94CBF),
     }),

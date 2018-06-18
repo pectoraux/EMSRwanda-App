@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
-import 'main_menu.dart';
+import 'employment_history_page.dart';
+import 'user_rating_page.dart';
 import 'models.dart';
-import 'edit_tag.dart';
-import 'edit_project.dart';
+import 'view_devices.dart';
 import 'profile_header.dart';
 import 'quick_actions.dart';
 import 'constants.dart';
-import 'animated_pie_chart.dart';
-import 'view_users.dart';
-import 'qrcode_scanner.dart';
+import 'edit_device.dart';
+import 'edit_role.dart';
+import 'edit_user.dart';
 
-class StaffNStatsPage extends StatefulWidget {
+class UserHistoryPage extends StatefulWidget {
   final int colorIndex;
 
-  const StaffNStatsPage({
+  const UserHistoryPage({
     @required this.colorIndex,
   }) : assert(colorIndex != null);
 
   @override
-  StaffNStatsPageState createState() => StaffNStatsPageState();
+  _UserHistoryPageState createState() => _UserHistoryPageState();
 }
 
-class StaffNStatsPageState extends State<StaffNStatsPage> {
+class _UserHistoryPageState extends State<UserHistoryPage> {
 
   /// This controller can be used to programmatically
   /// set the current displayed page
@@ -34,14 +34,15 @@ class StaffNStatsPageState extends State<StaffNStatsPage> {
   Widget build(BuildContext context) {
     final navigationItems = <BottomNavigationBarItem>[
       new BottomNavigationBarItem(
-          icon: new Icon(Icons.assessment, color: getColor(0)),
-          title: new Text("Project\nStats")),
+          icon: new Icon(Icons.work, color: getColor(0),),
+          title: new Text("Employment\nHistory",)),
       new BottomNavigationBarItem(
-          icon: new Icon(Icons.people, color: getColor(1),),
-          title: new Text("Staff")),
+          icon: new Icon(Icons.stars, color: getColor(1)),
+          title: new Text("Rate\nUser",)),
       new BottomNavigationBarItem(
-          icon: new Icon(Icons.border_outer, color: getColor(2),),
-          title: new Text("Scan QR Code")),
+          icon: new Icon(Icons.devices, color: getColor(2),),
+          title: new Text("User\nDevices",)
+      ),
     ];
 
     final profile = getProfile();
@@ -50,9 +51,9 @@ class StaffNStatsPageState extends State<StaffNStatsPage> {
       resizeToAvoidBottomPadding: false,
       body: new PageView(
           children: [
-            new AnimatedPieChartPage(colorIndex: widget.colorIndex,),
-            new ViewUsersPage(colorIndex: widget.colorIndex,),
-            new QRCodeScanPage(colorIndex: widget.colorIndex,),
+            new EmploymentHistoryPage(colorIndex: widget.colorIndex, isMadeByYou: false, noButton: true),
+            new UserRatingPage(),
+            new ViewDevicesPage(colorIndex: widget.colorIndex),
           ],
           controller: _pageController,
           onPageChanged: onPageChanged
@@ -102,7 +103,7 @@ class StaffNStatsPageState extends State<StaffNStatsPage> {
   Color getColor(int idx) {
     final iconColor = Color(0xEFCCCCCD);
     if (_page == idx) {
-      return TodoColors.baseColors[widget.colorIndex];
+      return TodoColors.baseColors[0];
     } else {
       return iconColor;
     }

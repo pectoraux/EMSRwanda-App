@@ -1,4 +1,7 @@
+import 'supplemental/cut_corners_border.dart';
 import 'package:flutter/material.dart';
+import 'constants.dart';
+import 'star_rating.dart';
 
 class UserRatingPage extends StatefulWidget {
   @override
@@ -6,8 +9,17 @@ class UserRatingPage extends StatefulWidget {
 }
 
 class UserRatingPageState extends State<UserRatingPage> {
+  int _colorIndex = 1;
+  final _ratingController = TextEditingController();
+  final _rating = GlobalKey(debugLabel: 'Rating');
+  final _ratingTypeController = TextEditingController();
+  final _ratingType = GlobalKey(debugLabel: 'Rating Type');
+  final _ratingCommentController = TextEditingController();
+  final _ratingComment = GlobalKey(debugLabel: 'Rating Comment');
+
   @override
   Widget build(BuildContext context) {
+    double rating = 3.5;
     return Scaffold
       (
       body: CustomScrollView
@@ -20,7 +32,12 @@ class UserRatingPageState extends State<UserRatingPage> {
             backgroundColor: Colors.red,
             flexibleSpace: FlexibleSpaceBar
               (
-              title: Text('Erin Niamkey'),
+              title: Row (
+
+              children: <Widget>[
+                Text('Erin Niamkey'),
+              ],
+              ),
               background: SizedBox.expand
                 (
                 child: Stack
@@ -44,6 +61,132 @@ class UserRatingPageState extends State<UserRatingPage> {
               (
                 <Widget>
                 [
+                  Container
+                    (
+                      margin: EdgeInsets.symmetric(vertical: 16.0, horizontal: 54.0),
+                      child: Material
+                        (
+                        elevation: 8.0,
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(32.0),
+                        child:
+                        InkWell
+                          (
+                          onTap: () {
+                            new Container(
+                              width: 450.0,
+                            );
+                            showDialog<Null>(
+                              context: context,
+                              barrierDismissible: false, // user must tap button!
+                              builder: (BuildContext context) {
+                                return new AlertDialog(
+                                  title: new Text(
+                                    'Rate Erin Niamkey', style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),),
+                                  content: new SingleChildScrollView(
+                                    child: new ListBody(
+                                      children: <Widget>[
+                                        SizedBox(height: 12.0),
+                                        PrimaryColorOverride(
+                                          color: TodoColors.baseColors[_colorIndex],
+                                          child: TextField(
+                                            key: _ratingType,
+                                            controller: _ratingTypeController,
+                                            decoration: InputDecoration(
+                                              labelText: 'Rating Type',
+                                              labelStyle: TodoColors.textStyle2,
+                                              border: CutCornersBorder(),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 12.0),
+                                        PrimaryColorOverride(
+                                          color: TodoColors.baseColors[_colorIndex],
+                                          child: TextField(
+                                            key: _rating,
+                                            controller: _ratingController,
+                                            decoration: InputDecoration(
+                                              labelText: 'Rating',
+                                              labelStyle: TodoColors.textStyle2,
+                                              border: CutCornersBorder(),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 12.0),
+                                        PrimaryColorOverride(
+                                          color: TodoColors.baseColors[_colorIndex],
+                                          child: new StarRating(
+                                            rating: rating,
+                                            onRatingChanged: (rating) => setState(() => rating = rating),
+                                          ),
+                                        ),
+                                        SizedBox(height: 12.0),
+                                        PrimaryColorOverride(
+                                          color: TodoColors.baseColors[_colorIndex],
+                                          child: TextField(
+                                            key: _ratingComment,
+                                            controller: _ratingCommentController,
+                                            decoration: InputDecoration(
+                                              labelText: 'Rating Comment',
+                                              labelStyle: TodoColors.textStyle2,
+                                              border: CutCornersBorder(),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 12.0),
+                                      ],
+                                    ),
+
+                                  ),
+
+                                  actions: <Widget>[
+                                    FlatButton(
+                                      child: Text('CANCEL'),
+                                      textColor: TodoColors.baseColors[_colorIndex],
+                                      shape: BeveledRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(7.0)),
+                                      ),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+
+                                    RaisedButton(
+                                      child: Text('SEARCH'),
+                                      textColor: TodoColors.baseColors[_colorIndex],
+                                      elevation: 8.0,
+                                      shape: BeveledRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(7.0)),
+                                      ),
+                                      onPressed: () {},
+                                    ),
+
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: Padding
+                            (
+                            padding: EdgeInsets.all(12.0),
+                            child: Column
+                              (
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>
+                              [
+                                Padding(padding: EdgeInsets.only(right: 16.0)),
+                                Text('RATE USER',
+                                    style: TextStyle(color: Colors.white))
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
+                  ),
 
                   /// Rating average
                   Center
@@ -514,6 +657,22 @@ class UserRatingPageState extends State<UserRatingPage> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class PrimaryColorOverride extends StatelessWidget {
+  const PrimaryColorOverride({Key key, this.color, this.child})
+      : super(key: key);
+
+  final Color color;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+      child: child,
+      data: Theme.of(context).copyWith(primaryColor: color),
     );
   }
 }

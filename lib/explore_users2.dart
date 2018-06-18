@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'constants.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'accept_request.dart';
-
+import 'user_history_page.dart';
 import 'supplemental/cut_corners_border.dart';
 
 class ExploreUsersPage2 extends StatefulWidget {
@@ -11,7 +11,7 @@ class ExploreUsersPage2 extends StatefulWidget {
 }
 
 class ExploreUsersPageState extends State<ExploreUsersPage2> {
-  static const _padding = EdgeInsets.all(5.0);
+  int _colorIndex = 7;
 
   @override
   Widget build(BuildContext context) {
@@ -596,7 +596,7 @@ class ExploreUsersPageState extends State<ExploreUsersPage2> {
           // Do onTap() if it isn't null, otherwise do print()
             onTap: () =>
                 Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => AcceptRequestPage())),
+                    MaterialPageRoute(builder: (_) => UserHistoryPage(colorIndex: _colorIndex))),
             child: child
         )
     );

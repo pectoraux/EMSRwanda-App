@@ -1,40 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'supplemental/cut_corners_border.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'project_details.dart';
 import 'constants.dart';
-import 'employment_history_page.dart';
 
-
-class PendingRequestsPage extends StatefulWidget {
+class NotificationsPage extends StatefulWidget {
   final int colorIndex;
 
-  const PendingRequestsPage({
+  const NotificationsPage({
     @required this.colorIndex,
   }) : assert(colorIndex != null);
 
   @override
-  PendingRequestsPageState createState() => PendingRequestsPageState();
+  NotificationsPageState createState() => NotificationsPageState();
 }
 
-class PendingRequestsPageState extends State<PendingRequestsPage> {
-
-  bool _isMadeByYou;
-
-  @override
-  void initState() {
-    _isMadeByYou = false;
-  }
+class NotificationsPageState extends State<NotificationsPage> {
+  static const _padding = EdgeInsets.all(5.0);
 
   @override
   Widget build(BuildContext context) {
     final _bkey = GlobalKey(debugLabel: 'Back Key');
     final _projectTitleController = TextEditingController();
     final _projectTitle = GlobalKey(debugLabel: 'Project Title');
-    final _projectLocationsController = TextEditingController();
-    final _projectTagsController = TextEditingController();
-    final _projectLocations = GlobalKey(debugLabel: 'Project Locations');
-    final _projectTags = GlobalKey(debugLabel: 'Project Tags');
-    String project_description = "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld";
+    final _notifPriorityController = TextEditingController();
+    final _notifPriority = GlobalKey(debugLabel: 'Notification Priority');
+    final _fromController = TextEditingController();
+    final _from = GlobalKey(debugLabel: 'From (time)');
+    final _toController = TextEditingController();
+    final _to = GlobalKey(debugLabel: 'To (time)');
+
     return Scaffold
       (
         appBar: AppBar
@@ -68,7 +63,7 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
                         builder: (BuildContext context) {
                           return new AlertDialog(
                             title: new Text(
-                              'Search  Requests', style: TodoColors.textStyle6,),
+                              'Search  Notifications', style: TodoColors.textStyle.apply(color: TodoColors.baseColors[widget.colorIndex]),),
                             content: new SingleChildScrollView(
                               child: new ListBody(
                                 children: <Widget>[
@@ -89,47 +84,40 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
                               PrimaryColorOverride(
                                 color: TodoColors.baseColors[widget.colorIndex],
                                 child: TextField(
-                                    key: _projectLocations,
-                                    controller: _projectLocationsController,
+                                    key: _notifPriority,
+                                    controller: _notifPriorityController,
                                     decoration: InputDecoration(
-                                      labelText: 'Project Location',
+                                      labelText: 'Notification Priority',
                                       labelStyle: TodoColors.textStyle2,
                                       border: CutCornersBorder(),
                                     ),
                                   ),
                               ),
-                                  RaisedButton(
-                                    child: Text('ADD LOCATION'),
-                                    textColor: TodoColors.baseColors[widget.colorIndex],
-                                    elevation: 8.0,
-                                    shape: BeveledRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(7.0)),
-                                    ),
-                                    onPressed: () {},
-                                  ),
                                   SizedBox(height: 12.0),
                               PrimaryColorOverride(
                                 color: TodoColors.baseColors[widget.colorIndex],
                                 child: TextField(
-                                    key: _projectTags,
-                                    controller: _projectTagsController,
+                                    key: _from,
+                                    controller: _fromController,
                                     decoration: InputDecoration(
-                                      labelText: 'Project Tag',
+                                      labelText: 'From (time)',
                                       labelStyle: TodoColors.textStyle2,
                                       border: CutCornersBorder(),
                                     ),
                                   ),
                               ),
-                                  RaisedButton(
-                                    child: Text('ADD TAG'),
-                                    textColor: TodoColors.baseColors[widget.colorIndex],
-                                    elevation: 8.0,
-                                    shape: BeveledRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(7.0)),
+                                  SizedBox(height: 12.0),
+                                  PrimaryColorOverride(
+                                    color: TodoColors.baseColors[widget.colorIndex],
+                                    child: TextField(
+                                      key: _to,
+                                      controller: _toController,
+                                      decoration: InputDecoration(
+                                        labelText: 'To (time)',
+                                        labelStyle: TodoColors.textStyle2,
+                                        border: CutCornersBorder(),
+                                      ),
                                     ),
-                                    onPressed: () {},
                                   ),
                                   SizedBox(height: 12.0),
                                 ],
@@ -179,7 +167,6 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           children: <Widget>[
             _buildTile(
-              context,
               Padding
                 (
                 padding: const EdgeInsets.all(24.0),
@@ -195,9 +182,9 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Made By You',
-                              style: TextStyle(color: Colors.blueAccent)),
-                          Text('FSI', style: TodoColors.textStyle6)
+                          Text('10 Jun 2017',
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
+                          Text('High Priority', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -217,12 +204,8 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
                     ]
                 ),
               ),
-                'Made By You',
-              "FSI",
-              project_description
             ),
             _buildTile(
-              context,
               Padding
                 (
                 padding: const EdgeInsets.all(24.0),
@@ -238,9 +221,9 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Made To You',
-                              style: TextStyle(color: Colors.redAccent)),
-                          Text('CookStoves', style: TodoColors.textStyle6)
+                          Text('10 Mar 2018',
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
+                          Text('High Priority', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -260,12 +243,8 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
                     ]
                 ),
               ),
-                'Made To You',
-              "CookStoves",
-              project_description
             ),
             _buildTile(
-              context,
               Padding
                 (
                 padding: const EdgeInsets.all(24.0),
@@ -281,9 +260,9 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Made To You',
-                              style: TextStyle(color: Colors.redAccent)),
-                          Text('MISM', style: TodoColors.textStyle6)
+                          Text('20 Apr 2018',
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
+                          Text('Low Priority', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -303,12 +282,8 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
                     ]
                 ),
               ),
-                'Made To You',
-              "MISM",
-              project_description
             ),
             _buildTile(
-              context,
               Padding
                 (
                 padding: const EdgeInsets.all(24.0),
@@ -324,9 +299,9 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Made By You',
-                              style: TextStyle(color: Colors.blueAccent)),
-                          Text('PEPSI', style: TodoColors.textStyle6)
+                          Text('18 Jan 2018',
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
+                          Text('Medium Priority', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -346,12 +321,8 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
                     ]
                 ),
               ),
-                'Made By You',
-              "PEPSI",
-              project_description
             ),
             _buildTile(
-              context,
               Padding
                 (
                 padding: const EdgeInsets.all(24.0),
@@ -367,9 +338,9 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Made By You',
-                              style: TextStyle(color: Colors.blueAccent)),
-                          Text('Students Report', style: TodoColors.textStyle6)
+                          Text('12 Feb 2018',
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
+                          Text('High Priority', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -389,12 +360,8 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
                     ]
                 ),
               ),
-                'Made By You',
-                'Students Report',
-              project_description
             ),
             _buildTile(
-              context,
               Padding
                 (
                 padding: const EdgeInsets.all(24.0),
@@ -410,9 +377,9 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Made By You',
-                              style: TextStyle(color: Colors.blueAccent)),
-                          Text('LATI', style: TodoColors.textStyle6)
+                          Text('18 May 2018',
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
+                          Text('High Priority', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -432,12 +399,8 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
                     ]
                 ),
               ),
-                'Made By You',
-              "LATI",
-              project_description
             ),
             _buildTile(
-              context,
               Padding
                 (
                 padding: const EdgeInsets.all(24.0),
@@ -453,9 +416,9 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Made To You',
-                              style: TextStyle(color: Colors.redAccent)),
-                          Text('ALI', style: TodoColors.textStyle6)
+                          Text('18 Jul 2017',
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
+                          Text('High Priority', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -475,12 +438,8 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
                     ]
                 ),
               ),
-                'Made To You',
-              "ALI",
-              project_description
             ),
             _buildTile(
-              context,
               Padding
                 (
                 padding: const EdgeInsets.all(24.0),
@@ -496,9 +455,9 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Made By You',
-                              style: TextStyle(color: Colors.blueAccent)),
-                          Text('VINE', style: TodoColors.textStyle6)
+                          Text('01 Mar 2018',
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
+                          Text('High Priority', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -518,12 +477,8 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
                     ]
                 ),
               ),
-                'Made By You',
-              "VINE",
-              project_description
             ),
             _buildTile(
-              context,
               Padding
                 (
                 padding: const EdgeInsets.all(24.0),
@@ -539,9 +494,9 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Made To You',
-                              style: TextStyle(color: Colors.redAccent)),
-                          Text('MISM', style: TodoColors.textStyle6)
+                          Text('22 Jan 2018',
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
+                          Text('High Priority', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -561,12 +516,8 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
                     ]
                 ),
               ),
-                'Made To You',
-              "MISM",
-              project_description
             ),
             _buildTile(
-              context,
               Padding
                 (
                 padding: const EdgeInsets.all(24.0),
@@ -582,9 +533,9 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Made By You',
-                              style: TextStyle(color: Colors.blueAccent)),
-                          Text('CROS', style: TodoColors.textStyle6)
+                          Text('22 May 2018',
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
+                          Text('High Priority', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -604,9 +555,6 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
                     ]
                 ),
               ),
-                'Made By You',
-              "CROS",
-              project_description
             ),
 
 
@@ -627,33 +575,11 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
     );
   }
 
-  Widget _buildTile(BuildContext context, Widget child, String type, String title, String description) {
-    bool _madeByYou = (type=="Made By You") ? true : false;
-    return Material(
-        elevation: 14.0,
-        borderRadius: BorderRadius.circular(12.0),
-        shadowColor: Color(0x802196F3),
-        child: InkWell
-          (
-            child: child,
-          // Do onTap() if it isn't null, otherwise do print()
-            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => new EmploymentHistoryPage(colorIndex: widget.colorIndex, isMadeByYou: _madeByYou, noButton: false,),),),
-        )
-    );
-  }
-
-
-  void showTile(BuildContext context, String type, String title, String description){
+  void showTile(String time, String title, String description){
     String Status;
     title = title.toUpperCase();
     setState(() {
-      if(type == "Made By You") {
-        _isMadeByYou = true;
-        Status = "CANCELLED";
-      }else if (type == "Made To You"){
-        _isMadeByYou = false;
-        Status = "REJECTED";
-      }
+
     });
 
     showDialog<Null>(
@@ -669,64 +595,35 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       ListTile(
-                        title: Text(title),
+                        title: Text("Project Title: $title\nNotification Time: $time",
+                          style: TextStyle(color: TodoColors.baseColors[widget.colorIndex]),),
                         subtitle: Text(description),
                       ),
-                      new ButtonTheme.bar( // make buttons use the appropriate styles for cards
-                        child: new ButtonBar(
-                          children: <Widget>[
-                            BackButton(),
-                            new FlatButton(
-                              child: Text(
-                                  _isMadeByYou ? "CANCEL" : "REJECT"
-                              ),
-                              textColor: TodoColors.baseColors[widget.colorIndex],
-                              onPressed: () {
-                                showInSnackBar("WORK REQUEST FOR PROJECT $title HAS BEEN $Status", TodoColors.baseColors[widget.colorIndex]);
-                                 },
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      new FlatButton(
-                        child: Text(
-                          "EMPLOYMENT HISTORY",
-                        ),
-                        textColor: TodoColors.baseColors[widget.colorIndex],
-                        onPressed:() {
-            },
-                            )
+                      BackButton(color: TodoColors.baseColors[widget.colorIndex],),
                     ],
                   ),
                 )
-          ],
+              ],
             ),
           ),
         );
       },
     );
   }
-  void showInSnackBar(String value, Color c) {
-    Scaffold.of(context).showSnackBar(new SnackBar(
-      content: new Text(value),
-      backgroundColor: c,
-      action: new SnackBarAction(
-        label: 'Undo',
-        onPressed: () {
-          // Some code to undo the change!
-          showInSnackBar2("Previous Action Successfully Undone", TodoColors.baseColors[widget.colorIndex]);
-        },
-      ),
-      duration: kTabScrollDuration*100,
-    ));
-  }
 
-  void showInSnackBar2(String value, Color c) {
-    Scaffold.of(context).showSnackBar(new SnackBar(
-      content: new Text(value),
-      backgroundColor: c,
-    ));
+  Widget _buildTile(Widget child, {Function() onTap}) {
+    return Material(
+        elevation: 14.0,
+        borderRadius: BorderRadius.circular(12.0),
+        shadowColor: Color(0x802196F3),
+        child: InkWell
+          (
+            onTap: () {
+              showTile("10 Jun 2017", "FSI", "Your work request sent to project FSI has been accepted.");
+            },
+            child: child
+        )
+    );
   }
 }
 

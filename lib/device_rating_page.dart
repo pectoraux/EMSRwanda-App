@@ -1,13 +1,25 @@
+import 'supplemental/cut_corners_border.dart';
 import 'package:flutter/material.dart';
+import 'constants.dart';
+import 'star_rating.dart';
 
 class DeviceRatingPage extends StatefulWidget {
   @override
-  DeviceRatingPageState createState() => DeviceRatingPageState();
+  _DeviceRatingPageState createState() => _DeviceRatingPageState();
 }
 
-class DeviceRatingPageState extends State<DeviceRatingPage> {
+class _DeviceRatingPageState extends State<DeviceRatingPage> {
+  int _colorIndex = 1;
+//  final _ratingController = TextEditingController();
+//  final _rating = GlobalKey(debugLabel: 'Rating');
+//  final _ratingTypeController = TextEditingController();
+//  final _ratingType = GlobalKey(debugLabel: 'Rating Type');
+//  final _ratingCommentController = TextEditingController();
+//  final _ratingComment = GlobalKey(debugLabel: 'Rating Comment');
+
   @override
   Widget build(BuildContext context) {
+    double rating = 3.5;
     return Scaffold
       (
       body: CustomScrollView
@@ -20,7 +32,12 @@ class DeviceRatingPageState extends State<DeviceRatingPage> {
             backgroundColor: Colors.red,
             flexibleSpace: FlexibleSpaceBar
               (
-              title: Text('Ipad'),
+              title: Row (
+
+                children: <Widget>[
+                  Text('Ipad'),
+                ],
+              ),
               background: SizedBox.expand
                 (
                 child: Stack
@@ -28,7 +45,7 @@ class DeviceRatingPageState extends State<DeviceRatingPage> {
                   alignment: Alignment.center,
                   children: <Widget>
                   [
-                    Image.asset('assets/ipad.jpg'),
+                    Image.asset("assets/images/ipad.jpg"),
                     Container(color: Colors.black26)
                   ],
                 ),
@@ -44,6 +61,132 @@ class DeviceRatingPageState extends State<DeviceRatingPage> {
               (
                 <Widget>
                 [
+                  Container
+                    (
+                      margin: EdgeInsets.symmetric(vertical: 16.0, horizontal: 54.0),
+                      child: Material
+                        (
+                        elevation: 8.0,
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(32.0),
+                        child:
+                        InkWell
+                          (
+                          onTap: () {
+                            new Container(
+                              width: 450.0,
+                            );
+                            showDialog<Null>(
+                              context: context,
+                              barrierDismissible: false, // user must tap button!
+                              builder: (BuildContext context) {
+                                return new AlertDialog(
+                                  title: new Text(
+                                    'Rate Ipad', style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),),
+                                  content: new SingleChildScrollView(
+                                    child: new ListBody(
+                                      children: <Widget>[
+                                        SizedBox(height: 12.0),
+                                        PrimaryColorOverride(
+                                          color: TodoColors.baseColors[_colorIndex],
+                                          child: TextField(
+//                                            key: _ratingType,
+//                                            controller: _ratingTypeController,
+                                            decoration: InputDecoration(
+                                              labelText: 'Rating Type',
+                                              labelStyle: TodoColors.textStyle2,
+                                              border: CutCornersBorder(),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 12.0),
+                                        PrimaryColorOverride(
+                                          color: TodoColors.baseColors[_colorIndex],
+                                          child: TextField(
+//                                            key: _rating,
+//                                            controller: _ratingController,
+                                            decoration: InputDecoration(
+                                              labelText: 'Rating',
+                                              labelStyle: TodoColors.textStyle2,
+                                              border: CutCornersBorder(),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 12.0),
+                                        PrimaryColorOverride(
+                                          color: TodoColors.baseColors[_colorIndex],
+                                          child: new StarRating(
+                                            rating: rating,
+                                            onRatingChanged: (rating) => setState(() => rating = rating),
+                                          ),
+                                        ),
+                                        SizedBox(height: 12.0),
+                                        PrimaryColorOverride(
+                                          color: TodoColors.baseColors[_colorIndex],
+                                          child: TextField(
+//                                            key: _ratingComment,
+//                                            controller: _ratingCommentController,
+                                            decoration: InputDecoration(
+                                              labelText: 'Rating Comment',
+                                              labelStyle: TodoColors.textStyle2,
+                                              border: CutCornersBorder(),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 12.0),
+                                      ],
+                                    ),
+
+                                  ),
+
+                                  actions: <Widget>[
+                                    FlatButton(
+                                      child: Text('CANCEL'),
+                                      textColor: TodoColors.baseColors[_colorIndex],
+                                      shape: BeveledRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(7.0)),
+                                      ),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+
+                                    RaisedButton(
+                                      child: Text('SEARCH'),
+                                      textColor: TodoColors.baseColors[_colorIndex],
+                                      elevation: 8.0,
+                                      shape: BeveledRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(7.0)),
+                                      ),
+                                      onPressed: () {},
+                                    ),
+
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: Padding
+                            (
+                            padding: EdgeInsets.all(12.0),
+                            child: Column
+                              (
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>
+                              [
+                                Padding(padding: EdgeInsets.only(right: 16.0)),
+                                Text('RATE DEVICE',
+                                    style: TextStyle(color: Colors.white))
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
+                  ),
 
                   /// Rating average
                   Center
@@ -344,7 +487,7 @@ class DeviceRatingPageState extends State<DeviceRatingPage> {
                             title: Text(
                                 'Ivascu Adrian ★★★★★', style: TextStyle()),
                             subtitle: Text(
-                                'The shoes were shipped one day before the shipping date, but this wasn\'t at all a problem :). The shoes are very comfortable and good looking.',
+                                'This Ipad worked fine the entire duration of the project and never let me down :)',
                                 style: TextStyle()),
                           ),
                         ),
@@ -419,12 +562,12 @@ class DeviceRatingPageState extends State<DeviceRatingPage> {
                                 leading: CircleAvatar
                                   (
                                   backgroundColor: Colors.purple,
-                                  child: Text('AI'),
+                                  child: Text('VA'),
                                 ),
                                 title: Text(
-                                    'Ivascu Adrian ★★★★★', style: TextStyle()),
+                                    'Viscivus Aloi ★★★★★', style: TextStyle()),
                                 subtitle: Text(
-                                    'The shoes were shipped one day before the shipping date, but this wasn\'t at all a problem :). The shoes are very comfortable and good looking',
+                                    'This Ipad\'s screen is broken but it still worked great the entire duration of the project',
                                     style: TextStyle()),
                               ),
                             ),
@@ -481,12 +624,12 @@ class DeviceRatingPageState extends State<DeviceRatingPage> {
                                 leading: CircleAvatar
                                   (
                                   backgroundColor: Colors.purple,
-                                  child: Text('AI'),
+                                  child: Text('AD'),
                                 ),
                                 title: Text(
-                                    'Ivascu Adrian ★★★★★', style: TextStyle()),
+                                    'Alian Dimitri ★★★★★', style: TextStyle()),
                                 subtitle: Text(
-                                    'The shoes were shipped one day before the shipping date, but this wasn\'t at all a problem :). The shoes are very comfortable and good looking',
+                                    'Awesome !!! Worked great for the whole month that I used it.',
                                     style: TextStyle()),
                               ),
                             ),
@@ -514,6 +657,22 @@ class DeviceRatingPageState extends State<DeviceRatingPage> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class PrimaryColorOverride extends StatelessWidget {
+  const PrimaryColorOverride({Key key, this.color, this.child})
+      : super(key: key);
+
+  final Color color;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+      child: child,
+      data: Theme.of(context).copyWith(primaryColor: color),
     );
   }
 }

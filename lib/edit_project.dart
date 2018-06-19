@@ -13,19 +13,12 @@ class EditProjectPage extends StatefulWidget {
 class EditProjectPageState extends State<EditProjectPage> {
   final _projectTitleController = TextEditingController();
   final _projectDescriptionController = TextEditingController();
-  final _projectLocationsController = TextEditingController();
-  final _projectTagsController = TextEditingController();
-  final _projectStaffRolesController = TextEditingController();
   final _projectTitle = GlobalKey(debugLabel: 'Project Title');
   final _projectDescription = GlobalKey(debugLabel: 'Project Description');
-  final _projectLocations = GlobalKey(debugLabel: 'Project Locations');
-  final _projectTags = GlobalKey(debugLabel: 'Project Tags');
-  final _card = GlobalKey(debugLabel: 'Card');
-  final _projectStaffRoles = GlobalKey(debugLabel: 'Project Staff Roles');
-  final _padding = EdgeInsets.all(5.0);
+
   bool _sendRequestToAvailableUsers = false;
   List<String> _mTags = new List<String>();
-  List<DropdownMenuItem> _unitMenuItems;
+  List<DropdownMenuItem> _locationMenuItems, _tagMenuItems, _roleMenuItems;
   String dropdown2Value;
   String _value = null;
   String dropdown3Value = 'Four';
@@ -35,12 +28,119 @@ class EditProjectPageState extends State<EditProjectPage> {
     "Dictaphone",
     "Phone",
   ];
+  List<String> locations = ["Locations", "Gasabo", "Remera", "Kisimenti", "Gaculiro", "Kacyiru"];
+  List<String> tags = ["Tags", "Over18", "Male", "Female", "Education", "Sensitive"];
+  List<String> roles = ["Project Staff Roles", "Enumerator", "Project Lead", "Project Supervisor", "Administrator"];
+  String _tagValue, _locationValue, _roleValue;
   int _colorIndex = 0;
 
   List devices_values = [false, false, false, false];
   List<Color> _mcolors = [
     Colors.brown[500], Colors.brown[500], Colors.brown[500], Colors.brown[500]];
 
+  @override
+  void initState() {
+    super.initState();
+    _createDropdownMenuItems(0, locations);
+    _createDropdownMenuItems(1, tags);
+    _createDropdownMenuItems(2, roles);
+    _setDefaults();
+  }
+
+  /// Creates fresh list of [DropdownMenuItem] widgets, given a list of [Unit]s.
+  void _createDropdownMenuItems(int idx, List<String> list) {
+    var newItems = <DropdownMenuItem>[];
+    for (var unit in list) {
+      newItems.add(DropdownMenuItem(
+        value: unit,
+        child: Container(
+          child: Text(
+            unit,
+            softWrap: true,
+          ),
+        ),
+      ));
+    }
+    setState(() {
+      if(idx == 0) { //if location drop down
+        _locationMenuItems = newItems;
+      } else if (idx == 1){
+        _tagMenuItems = newItems;
+      } else if (idx == 2) {
+        _roleMenuItems = newItems;
+      }
+    });
+  }
+
+  /// Sets the default values for the 'from' and 'to' [Dropdown]s, and the
+  /// updated output value if a user had previously entered an input.
+  void _setDefaults() {
+    setState(() {
+      _locationValue = locations[0];
+      _tagValue = tags[0];
+      _roleValue = roles[0];
+    });
+  }
+
+  Widget _createDropdown(int idx, String currentValue, ValueChanged<dynamic>
+
+  onChanged)
+
+  {
+    return Container(
+      margin: EdgeInsets.only(top: 16.0),
+      decoration: BoxDecoration(
+        // This sets the color of the [DropdownButton] itself
+        color: TodoColors.baseColors[_colorIndex],
+        border: Border.all(
+          color: TodoColors.baseColors[_colorIndex],
+          width: 1.0,
+        ),
+      ),
+      padding: EdgeInsets.symmetric(vertical: 8.0),
+      child: Theme(
+        // This sets the color of the [DropdownMenuItem]
+        data: Theme.of(context).copyWith(
+          canvasColor: Colors.grey[50],
+        ),
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton(
+              value: currentValue,
+              items: (idx == 0) ? _locationMenuItems : (idx == 1) ? _tagMenuItems : _roleMenuItems,
+              onChanged: onChanged,
+              style: TodoColors.textStyle2,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _updateLocationValue(dynamic name) {
+    setState(() {
+  _locationValue = name;
+    });
+  }
+
+  void _updateTagValue(dynamic name) {
+    setState(() {
+      _tagValue = name;
+    });
+  }
+
+  void _updateRoleValue(dynamic name) {
+    setState(() {
+      _roleValue = name;
+    });
+  }
+
+  bool areAllBrown(List<Color> list){
+    for (int i = 0; i < list.length; i++) {
+      if (list[i] != Colors.brown[500]){
+        return false;
+      }
+    }
+    return true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,19 +190,7 @@ class EditProjectPageState extends State<EditProjectPage> {
         ),
 
         const SizedBox(height: 12.0),
-        PrimaryColorOverride(
-          color: TodoColors.baseColors[_colorIndex],
-          child: TextField(
-            key: _projectLocations,
-            controller: _projectLocationsController,
-            decoration: InputDecoration(
-              helperText: _projectLocationsController.value.text,
-              labelText: 'Project Location',
-              labelStyle: TodoColors.textStyle2,
-              border: CutCornersBorder(),
-            ),
-          ),
-        ),
+        _createDropdown(0, _locationValue, _updateLocationValue),
 
         RaisedButton(
           child: Text('ADD LOCATION'),
@@ -112,8 +200,8 @@ class EditProjectPageState extends State<EditProjectPage> {
             borderRadius: BorderRadius.all(Radius.circular(7.0)),
           ),
           onPressed: () {
-            if (_projectLocationsController.value.text.trim() != "") {
-              _projectLocationsController.clear();
+            if (_locationValue != "Locations") {
+              _locationValue = "Locations";
               showInSnackBar("Location Added Successfully", TodoColors.baseColors[_colorIndex]);
             } else {
               showInSnackBar(
@@ -124,18 +212,7 @@ class EditProjectPageState extends State<EditProjectPage> {
         ),
 
         const SizedBox(height: 12.0),
-        PrimaryColorOverride(
-          color: TodoColors.baseColors[_colorIndex],
-          child: TextField(
-            key: _projectTags,
-            controller: _projectTagsController,
-            decoration: InputDecoration(
-              labelText: 'Project Tag',
-              labelStyle: TodoColors.textStyle2,
-              border: CutCornersBorder(),
-            ),
-          ),
-        ),
+        _createDropdown(1, _tagValue, _updateTagValue),
 
         RaisedButton(
           child: Text('ADD TAG'),
@@ -145,8 +222,8 @@ class EditProjectPageState extends State<EditProjectPage> {
             borderRadius: BorderRadius.all(Radius.circular(7.0)),
           ),
           onPressed: () {
-            if (_projectTagsController.value.text.trim() != "") {
-              _projectTagsController.clear();
+            if (_tagValue != "Tags") {
+              _tagValue = "Tags";
               showInSnackBar("Tag Added Successfully", TodoColors.baseColors[_colorIndex]);
             } else {
               showInSnackBar("Please Specify A Tag Before Clicking This Button",
@@ -156,20 +233,7 @@ class EditProjectPageState extends State<EditProjectPage> {
         ),
 
         const SizedBox(height: 12.0),
-        PrimaryColorOverride(
-          color: TodoColors.baseColors[_colorIndex],
-          child: TextField(
-            key: _projectStaffRoles,
-            controller: _projectStaffRolesController,
-            decoration: InputDecoration(
-              labelText: 'Project Staff Roles',
-              labelStyle: TodoColors.textStyle2,
-              border: CutCornersBorder(),
-            ),
-          ),
-        ),
-
-        const SizedBox(height: 12.0),
+        _createDropdown(2, _roleValue, _updateRoleValue),
         GridView.count(
           shrinkWrap: true,
           crossAxisCount: 3,
@@ -199,15 +263,15 @@ class EditProjectPageState extends State<EditProjectPage> {
 
         const SizedBox(height: 12.0),
         RaisedButton(
-          child: Text('ADD'),
+          child: Text('ADD DEVICES TO ROLE'),
           textColor: TodoColors.baseColors[_colorIndex],
           elevation: 6.0,
           shape: BeveledRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(7.0)),
           ),
           onPressed: () {
-            if (_projectStaffRolesController.value.text.trim() != "") {
-              _projectStaffRolesController.clear();
+            if (_roleValue != "Project Staff Roles" && !areAllBrown(_mcolors)) {
+              _roleValue = "Project Staff Roles";
               setState(() {
                 for (int i = 0; i < _mcolors.length; i++) {
                   _mcolors.removeAt(i);
@@ -215,7 +279,7 @@ class EditProjectPageState extends State<EditProjectPage> {
                 }
               });
               showInSnackBar(
-                  "Devices Added Successfully To Role", TodoColors.baseColors[_colorIndex]);
+                  "Device(s) Added Successfully To Role", TodoColors.baseColors[_colorIndex]);
             } else {
               showInSnackBar(
                   "Please Specify A Role and At Least One Device Before Clicking This Button",
@@ -223,9 +287,6 @@ class EditProjectPageState extends State<EditProjectPage> {
             }
           },
         ),
-
-        const SizedBox(height: 24.0),
-
 
         const SizedBox(height: 12.0),
         new CheckboxListTile(

@@ -18,6 +18,173 @@ class EditTagPageState extends State<EditTagPage> {
   final _tagType = GlobalKey(debugLabel: 'Tag Type');
   final _tagDescription = GlobalKey(debugLabel: 'Tag Description');
   int _colorIndex = 0;
+  List<String> tagTypes = ["Tag Type", "User Related", "Project Related"];
+  List<String> ages = ["Age"] + new List<String>.generate(20, (int index) => (index * 5 + 5).toString());
+  List<String> symbol = ["Symbol", "  =  ", "  >  ", "  >=  ", "  <=  ", "  <  "];
+  List<String> symbol2 = ["Symbol", "  =  "];
+  List<String> menu = ["Menu", "Age", "Sex"];
+  List<String> sex = ["Sex", "Male", "Female"];
+  List<DropdownMenuItem> _tagTypeMenuItems, _ageMenuItems, _symbolMenuItems, _symbol2MenuItems, _menuMenuItems, _sexMenuItems;
+  String _tagTypeValue, _ageValue, _symbolValue, _symbol2Value, _menuValue, _sexValue;
+
+
+  @override
+  void initState() {
+    super.initState();
+    _createDropdownMenuItems(3, tagTypes);
+    _createDropdownMenuItems(4, menu);
+    _createDropdownMenuItems(5, ages);
+    _createDropdownMenuItems(6, sex);
+    _createDropdownMenuItems(7, symbol);
+    _createDropdownMenuItems(8, symbol2);
+    _setDefaults();
+    _setUserTypeDefaults();
+    _setMenuDefaults(5);
+    _setMenuDefaults(6);
+    _setMenuDefaults(7);
+  }
+
+  /// Creates fresh list of [DropdownMenuItem] widgets, given a list of [Unit]s.
+  void _createDropdownMenuItems(int idx, List<String> list) {
+    var newItems = <DropdownMenuItem>[];
+    for (var unit in list) {
+      newItems.add(DropdownMenuItem(
+        value: unit,
+        child: Container(
+          child: Text(
+            unit,
+            softWrap: true,
+          ),
+        ),
+      ));
+    }
+    setState(() {
+      if(idx == 3) { //if location drop down
+        _tagTypeMenuItems = newItems;
+      } else if (idx == 4){
+        _menuMenuItems = newItems;
+      }else if (idx == 5){
+        _ageMenuItems = newItems;
+      }else if (idx == 6){
+        _sexMenuItems = newItems;
+      }else if (idx == 7) {
+        _symbolMenuItems = newItems;
+      }else if (idx == 8) {
+        _symbol2MenuItems = newItems;
+      }
+    });
+  }
+
+  /// Sets the default values for the 'from' and 'to' [Dropdown]s, and the
+  /// updated output value if a user had previously entered an input.
+  void _setDefaults() {
+    setState(() {
+      _tagTypeValue = tagTypes[0];
+    });
+  }
+
+  void _setUserTypeDefaults() {
+    setState(() {
+      _menuValue = menu[0];
+    });
+  }
+  void _setMenuDefaults(int idx){
+//    _setUserTypeDefaults();
+    if (idx == 5){
+      _ageValue = ages[0];
+    }else if (idx == 6){
+      _sexValue = sex[0];
+    }
+    _symbolValue = symbol[0];
+    _symbol2Value = symbol2[0];
+  }
+
+  Widget _createDropdown(int idx, String currentValue, ValueChanged<dynamic>
+
+  onChanged)
+
+  {
+    return Container(
+      margin: EdgeInsets.only(top: 16.0),
+      decoration: BoxDecoration(
+        // This sets the color of the [DropdownButton] itself
+        color: TodoColors.baseColors[_colorIndex],
+        border: Border.all(
+          color: TodoColors.baseColors[_colorIndex],
+          width: 1.0,
+        ),
+      ),
+      padding: EdgeInsets.symmetric(vertical: 8.0),
+      child: Theme(
+        // This sets the color of the [DropdownMenuItem]
+        data: Theme.of(context).copyWith(
+          canvasColor: Colors.grey[50],
+        ),
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton(
+            value: currentValue,
+            items: (idx == 3)?_tagTypeMenuItems: (idx == 4) ? _menuMenuItems : (idx == 5) ? _ageMenuItems : (idx == 6) ? _sexMenuItems : (idx == 7) ?_symbolMenuItems:_symbol2MenuItems,
+            onChanged: onChanged,
+            style: TodoColors.textStyle2,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _updateTagTypeValue(dynamic name) {
+    setState(() {
+      _tagTypeValue = name;
+    });
+  }
+
+  void _updateMenuValue(dynamic name) {
+    setState(() {
+      _menuValue = name;
+    });
+  }
+
+  void _updateAgeValue(dynamic name) {
+    setState(() {
+      _ageValue = name;
+    });
+  }
+
+  void _updateSexValue(dynamic name) {
+    setState(() {
+      _sexValue = name;
+    });
+  }
+
+  void _updateSymbolValue(dynamic name) {
+    setState(() {
+      _symbolValue = name;
+    });
+  }
+
+  void _updateSymbol2Value(dynamic name) {
+    setState(() {
+      _symbol2Value = name;
+    });
+  }
+
+   Widget _createMenuAndSymbol(){
+    return new Container(
+      child: Row(
+     children: <Widget>[
+       _createDropdown(4, _menuValue, _updateMenuValue),
+       SizedBox(width: 10.0,),
+       (_menuValue == "Age") ?
+       _createDropdown(7, _symbolValue, _updateSymbolValue): _createDropdown(8, _symbol2Value, _updateSymbol2Value),
+       SizedBox(width: 10.0,),
+       (_menuValue == "Age" || _menuValue == "Menu" ) ?
+       _createDropdown(5, _ageValue, _updateAgeValue):
+       (_menuValue == "Sex") ?
+       _createDropdown(6, _sexValue, _updateSexValue): new Container(),
+      ],
+      ),
+     );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,20 +219,12 @@ class EditTagPageState extends State<EditTagPage> {
           ),
 
           const SizedBox(height: 12.0),
+          _createDropdown(3, _tagTypeValue, _updateTagTypeValue),
 
-          PrimaryColorOverride(
-            color: TodoColors.baseColors[_colorIndex],
-            child: TextField(
-              key: _tagType,
-              controller: _tagTypeController,
-              decoration: InputDecoration(
-                labelText: 'Tag Type',
-                border: CutCornersBorder(),
-              ),
-            ),
-          ),
+    (_tagTypeValue == "User Related") ?
+    _createMenuAndSymbol():new Container(),
+
           const SizedBox(height: 12.0),
-
           PrimaryColorOverride(
             color: TodoColors.baseColors[_colorIndex],
             child: TextField(

@@ -4,6 +4,7 @@ import 'constants.dart';
 import 'profile_fonts.dart';
 import 'view_roles.dart';
 import 'supplemental/cut_corners_border.dart';
+import 'color_override.dart';
 
 /// QuickActions represents the horizontal list of rectangular buttons below the header
 class QuickRoleActions extends StatelessWidget {
@@ -221,18 +222,3 @@ class _BackgroundImageClipper extends CustomClipper<Path> {
 
 }
 
-class PrimaryColorOverride extends StatelessWidget {
-  const PrimaryColorOverride({Key key, this.color, this.child})
-      : super(key: key);
-
-  final Color color;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Theme(
-      child: child,
-      data: Theme.of(context).copyWith(primaryColor: color),
-    );
-  }
-}

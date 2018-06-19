@@ -3,6 +3,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'update_role.dart';
 import 'constants.dart';
 import 'supplemental/cut_corners_border.dart';
+import 'color_override.dart';
 
 class ViewRolesPage extends StatefulWidget {
   final int colorIndex;

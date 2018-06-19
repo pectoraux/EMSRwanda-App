@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
 import 'quick_role_actions.dart';
-
+import 'color_override.dart';
 
 class EditRolesPage extends StatefulWidget {
   @override
@@ -184,21 +184,5 @@ class EditRolesPageState extends State<EditRolesPage> {
       content: new Text(value),
       backgroundColor: c,
     ));
-  }
-}
-
-class PrimaryColorOverride extends StatelessWidget {
-  const PrimaryColorOverride({Key key, this.color, this.child})
-      : super(key: key);
-
-  final Color color;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Theme(
-      child: child,
-      data: Theme.of(context).copyWith(primaryColor: color),
-    );
   }
 }

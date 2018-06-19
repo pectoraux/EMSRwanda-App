@@ -4,9 +4,15 @@ import 'dart:math';
 import 'view_users.dart';
 import 'profile_fonts.dart';
 import 'constants.dart';
+import 'my_user_dialog.dart';
+
+class QuickUserActions extends StatefulWidget {
+  @override
+  QuickUserActionsState createState() => QuickUserActionsState();
+}
 
 /// QuickActions represents the horizontal list of rectangular buttons below the header
-class QuickUserActions extends StatelessWidget {
+class QuickUserActionsState extends State<QuickUserActions>  {
   int _colorIndex = 0;
 
   @override
@@ -131,16 +137,6 @@ class QuickUserActions extends StatelessWidget {
   }
 
   void onTap(BuildContext context, String title) {
-    final _userNameController = TextEditingController();
-    final _userName = GlobalKey(debugLabel: 'User Name');
-    final _userRoleController = TextEditingController();
-    final _userRole = GlobalKey(debugLabel: 'User Role');
-    final _userStatusController = TextEditingController();
-    final _userStatus = GlobalKey(debugLabel: 'User Status');
-    final _userLocationsController = TextEditingController();
-    final _tagsController = TextEditingController();
-    final _userLocations = GlobalKey(debugLabel: 'Users Locations');
-    final _tags = GlobalKey(debugLabel: 'Project or User Related Tags');
 
     if (title == "View\nUsers") {
       Navigator.of(context).push(
@@ -149,130 +145,8 @@ class QuickUserActions extends StatelessWidget {
       new Container(
         width: 450.0,
       );
-      showDialog<Null>(
-        context: context,
-        barrierDismissible: false, // user must tap button!
-        builder: (BuildContext context) {
-          return new AlertDialog(
-            title: new Text('Search User To Update', style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),),
-            content: new SingleChildScrollView(
-              child: new ListBody(
-                children: <Widget>[
-                  SizedBox(height: 12.0),
-              PrimaryColorOverride(
-                color: TodoColors.baseColors[_colorIndex],
-                child: TextField(
-                    key: _userName,
-                    controller: _userNameController,
-                    decoration: InputDecoration(
-                      labelText: 'User Name',
-                      labelStyle: TodoColors.textStyle2,
-                      border: CutCornersBorder(),
-                    ),
-                  ),
-              ),
-                  SizedBox(height: 12.0),
-              PrimaryColorOverride(
-                color: TodoColors.baseColors[_colorIndex],
-                child: TextField(
-                    key: _userRole,
-                    controller: _userRoleController,
-                    decoration: InputDecoration(
-                      labelText: 'User Role',
-                      labelStyle: TodoColors.textStyle2,
-                      border: CutCornersBorder(),
-                    ),
-                  ),
-              ),
-                  SizedBox(height: 12.0),
-              PrimaryColorOverride(
-                color: TodoColors.baseColors[_colorIndex],
-                child: TextField(
-                    key: _userStatus,
-                    controller: _userStatusController,
-                    decoration: InputDecoration(
-                      labelText: 'User Status',
-                      labelStyle: TodoColors.textStyle2,
-                      border: CutCornersBorder(),
-                    ),
-                  ),
-              ),
-                  SizedBox(height: 12.0),
-              PrimaryColorOverride(
-                color: TodoColors.baseColors[_colorIndex],
-                child: TextField(
-                    key: _userLocations,
-                    controller: _userLocationsController,
-                    decoration: InputDecoration(
-                      labelText: 'User Location',
-                      labelStyle: TodoColors.textStyle2,
-                      border: CutCornersBorder(),
-                    ),
-                  ),
-              ),
-                  RaisedButton(
-                    child: Text('ADD LOCATION'),
-                    textColor: TodoColors.baseColors[_colorIndex],
-                    elevation: 8.0,
-                    shape: BeveledRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(7.0)),
-                    ),
-                    onPressed: () {},
-                  ),
-                  SizedBox(height: 12.0),
-              PrimaryColorOverride(
-                color: TodoColors.baseColors[_colorIndex],
-                child: TextField(
-                    key: _tags,
-                    controller: _tagsController,
-                    decoration: InputDecoration(
-                      labelText: 'Project or User Related Tags',
-                      labelStyle: TodoColors.textStyle2,
-                      border: CutCornersBorder(),
-                    ),
-                  ),
-              ),
-                  RaisedButton(
-                    child: Text('ADD TAG'),
-                    textColor: TodoColors.baseColors[_colorIndex],
-                    elevation: 8.0,
-                    shape: BeveledRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(7.0)),
-                    ),
-                    onPressed: () {},
-                  ),
-                  SizedBox(height: 12.0,),
-                ],
-              ),
 
-            ),
-
-            actions: <Widget>[
-              FlatButton(
-                child: Text('CANCEL'),
-                textColor: TodoColors.baseColors[_colorIndex],
-                shape: BeveledRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(7.0)),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-
-              RaisedButton(
-                child: Text('SEARCH'),
-                textColor: TodoColors.baseColors[_colorIndex],
-                elevation: 8.0,
-                shape: BeveledRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(7.0)),
-                ),
-                onPressed: () {},
-              ),
-
-            ],
-          );
-        },
-      );
+      showDialog(context: context, child: new MyUserDialog(colorIndex: _colorIndex,));
     }
   }
 }
@@ -291,20 +165,4 @@ class _BackgroundImageClipper extends CustomClipper<Path> {
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 
-}
-
-class PrimaryColorOverride extends StatelessWidget {
-  const PrimaryColorOverride({Key key, this.color, this.child})
-      : super(key: key);
-
-  final Color color;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Theme(
-      child: child,
-      data: Theme.of(context).copyWith(primaryColor: color),
-    );
-  }
 }

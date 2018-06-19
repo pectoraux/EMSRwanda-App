@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'constants.dart';
-
+import 'color_override.dart';
+import 'my_devices_dialog.dart';
 import 'device_rating_page.dart';
 
 class ViewDevicesPage extends StatefulWidget {
@@ -55,90 +56,7 @@ class ViewDevicesPageState extends State<ViewDevicesPage> {
                       new Container(
                         width: 450.0,
                       );
-
-                      showDialog<Null>(
-                        context: context,
-                        barrierDismissible: false, // user must tap button!
-                        builder: (BuildContext context) {
-                          return new AlertDialog(
-                            title: new Text(
-                              'Search  Devices To Update', style: TodoColors.textStyle.apply(color: TodoColors.baseColors[widget.colorIndex]),),
-                            content: new SingleChildScrollView(
-                              child: new ListBody(
-                                children: <Widget>[
-                                  SizedBox(height: 12.0),
-                              PrimaryColorOverride(
-                                color: TodoColors.baseColors[widget.colorIndex],
-                                child: TextField(
-                                    key: _deviceName,
-                                    controller: _deviceNameController,
-                                    decoration: InputDecoration(
-                                      labelText: 'Device Name',
-                                      labelStyle: TodoColors.textStyle2,
-                                      border: CutCornersBorder(),
-                                    ),
-                                  ),
-                              ),
-                                  SizedBox(height: 12.0),
-                              PrimaryColorOverride(
-                                color: TodoColors.baseColors[widget.colorIndex],
-                                child: TextField(
-                                    key: _deviceType,
-                                    controller: _deviceTypeController,
-                                    decoration: InputDecoration(
-                                      labelText: 'Device Type',
-                                      labelStyle: TodoColors.textStyle2,
-                                      border: CutCornersBorder(),
-                                    ),
-                                  ),
-                              ),
-                                  SizedBox(height: 12.0),
-                                PrimaryColorOverride(
-                                  color: TodoColors.baseColors[widget.colorIndex],
-                                  child: TextField(
-                                    key: _deviceCondition,
-                                    controller: _deviceConditionController,
-                                    decoration: InputDecoration(
-                                      labelText: 'Device Condition',
-                                      labelStyle: TodoColors.textStyle2,
-                                      border: CutCornersBorder(),
-                                    ),
-                                  ),
-                              ),
-                                  SizedBox(height: 12.0,),
-                                ],
-                              ),
-
-                            ),
-
-                            actions: <Widget>[
-                              FlatButton(
-                                child: Text('CANCEL'),
-                                textColor: TodoColors.baseColors[widget.colorIndex],
-                                shape: BeveledRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(7.0)),
-                                ),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-
-                              RaisedButton(
-                                child: Text('SEARCH'),
-                                textColor: TodoColors.baseColors[widget.colorIndex],
-                                elevation: 8.0,
-                                shape: BeveledRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(7.0)),
-                                ),
-                                onPressed: () {},
-                              ),
-
-                            ],
-                          );
-                        },
-                      );
+                      showDialog(context: context, child: new MyDevicesDialog(colorIndex: widget.colorIndex,));
                     },
                   ),
                 ],
@@ -571,25 +489,9 @@ class ViewDevicesPageState extends State<ViewDevicesPage> {
           // Do onTap() if it isn't null, otherwise do print()
             onTap: () =>
                 Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => DeviceRatingPage())),
+                    MaterialPageRoute(builder: (_) => DeviceRatingPage(colorIndex: widget.colorIndex,))),
             child: child
         )
-    );
-  }
-}
-
-class PrimaryColorOverride extends StatelessWidget {
-  const PrimaryColorOverride({Key key, this.color, this.child})
-      : super(key: key);
-
-  final Color color;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Theme(
-      child: child,
-      data: Theme.of(context).copyWith(primaryColor: color),
     );
   }
 }

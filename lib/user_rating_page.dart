@@ -2,20 +2,23 @@ import 'supplemental/cut_corners_border.dart';
 import 'package:flutter/material.dart';
 import 'constants.dart';
 import 'star_rating.dart';
+import 'color_override.dart';
+import 'my_rating_dialog.dart';
 
 class UserRatingPage extends StatefulWidget {
+  final int colorIndex;
+
+  const UserRatingPage({
+    @required this.colorIndex,
+  }) : assert(colorIndex != null);
+
   @override
   UserRatingPageState createState() => UserRatingPageState();
 }
 
 class UserRatingPageState extends State<UserRatingPage> {
-  int _colorIndex = 1;
-  final _ratingController = TextEditingController();
-  final _rating = GlobalKey(debugLabel: 'Rating');
-  final _ratingTypeController = TextEditingController();
-  final _ratingType = GlobalKey(debugLabel: 'Rating Type');
-  final _ratingCommentController = TextEditingController();
-  final _ratingComment = GlobalKey(debugLabel: 'Rating Comment');
+  final _replyController = TextEditingController();
+  final _reply = GlobalKey(debugLabel: 'Reply');
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +32,7 @@ class UserRatingPageState extends State<UserRatingPage> {
           SliverAppBar
             (
             expandedHeight: 170.0,
-            backgroundColor: Colors.red,
+            backgroundColor: TodoColors.baseColors[widget.colorIndex],
             flexibleSpace: FlexibleSpaceBar
               (
               title: Row (
@@ -76,97 +79,7 @@ class UserRatingPageState extends State<UserRatingPage> {
                             new Container(
                               width: 450.0,
                             );
-                            showDialog<Null>(
-                              context: context,
-                              barrierDismissible: false, // user must tap button!
-                              builder: (BuildContext context) {
-                                return new AlertDialog(
-                                  title: new Text(
-                                    'Rate Erin Niamkey', style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),),
-                                  content: new SingleChildScrollView(
-                                    child: new ListBody(
-                                      children: <Widget>[
-                                        SizedBox(height: 12.0),
-                                        PrimaryColorOverride(
-                                          color: TodoColors.baseColors[_colorIndex],
-                                          child: TextField(
-                                            key: _ratingType,
-                                            controller: _ratingTypeController,
-                                            decoration: InputDecoration(
-                                              labelText: 'Rating Type',
-                                              labelStyle: TodoColors.textStyle2,
-                                              border: CutCornersBorder(),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(height: 12.0),
-                                        PrimaryColorOverride(
-                                          color: TodoColors.baseColors[_colorIndex],
-                                          child: TextField(
-                                            key: _rating,
-                                            controller: _ratingController,
-                                            decoration: InputDecoration(
-                                              labelText: 'Rating',
-                                              labelStyle: TodoColors.textStyle2,
-                                              border: CutCornersBorder(),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(height: 12.0),
-                                        PrimaryColorOverride(
-                                          color: TodoColors.baseColors[_colorIndex],
-                                          child: new StarRating(
-                                            rating: rating,
-                                            onRatingChanged: (rating) => setState(() => rating = rating),
-                                          ),
-                                        ),
-                                        SizedBox(height: 12.0),
-                                        PrimaryColorOverride(
-                                          color: TodoColors.baseColors[_colorIndex],
-                                          child: TextField(
-                                            key: _ratingComment,
-                                            controller: _ratingCommentController,
-                                            decoration: InputDecoration(
-                                              labelText: 'Rating Comment',
-                                              labelStyle: TodoColors.textStyle2,
-                                              border: CutCornersBorder(),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(height: 12.0),
-                                      ],
-                                    ),
-
-                                  ),
-
-                                  actions: <Widget>[
-                                    FlatButton(
-                                      child: Text('CANCEL'),
-                                      textColor: TodoColors.baseColors[_colorIndex],
-                                      shape: BeveledRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(7.0)),
-                                      ),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-
-                                    RaisedButton(
-                                      child: Text('SEARCH'),
-                                      textColor: TodoColors.baseColors[_colorIndex],
-                                      elevation: 8.0,
-                                      shape: BeveledRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(7.0)),
-                                      ),
-                                      onPressed: () {},
-                                    ),
-
-                                  ],
-                                );
-                              },
-                            );
+                            showDialog(context: context, child: new MyRatingDialog(colorIndex: widget.colorIndex,));
                           },
                           child: Padding
                             (
@@ -440,7 +353,7 @@ class UserRatingPageState extends State<UserRatingPage> {
                                 (
                                 child: Theme
                                   (
-                                  data: ThemeData(accentColor: Colors.red),
+                                  data: ThemeData(accentColor: TodoColors.baseColors[widget.colorIndex]),
                                   child: LinearProgressIndicator
                                     (
                                     value: 0.12,
@@ -481,7 +394,7 @@ class UserRatingPageState extends State<UserRatingPage> {
                             (
                             leading: CircleAvatar
                               (
-                              backgroundColor: Colors.purple,
+                              backgroundColor: TodoColors.baseColors[widget.colorIndex],
                               child: Text('AI'),
                             ),
                             title: Text(
@@ -561,7 +474,7 @@ class UserRatingPageState extends State<UserRatingPage> {
                                 (
                                 leading: CircleAvatar
                                   (
-                                  backgroundColor: Colors.purple,
+                                  backgroundColor: TodoColors.baseColors[widget.colorIndex],
                                   child: Text('AI'),
                                 ),
                                 title: Text(
@@ -576,11 +489,75 @@ class UserRatingPageState extends State<UserRatingPage> {
                               padding: EdgeInsets.only(top: 4.0, right: 10.0),
                               child: FlatButton.icon
                                 (
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    new Container(
+                                      width: 450.0,
+                                    );
+                                    showDialog<Null>(
+                                      context: context,
+                                      barrierDismissible: false, // user must tap button!
+                                      builder: (BuildContext context) {
+                                        return new AlertDialog(
+                                          title: new Text(
+                                            'Search  Projects', style: TodoColors.textStyle.apply(color: TodoColors.baseColors[widget.colorIndex]),),
+                                          content: new SingleChildScrollView(
+                                            child: new ListBody(
+                                              children: <Widget>[
+                                                SizedBox(height: 12.0),
+                                                PrimaryColorOverride(
+                                                  color: TodoColors.baseColors[widget.colorIndex],
+                                                  child: TextField(
+                                                    key: _reply,
+                                                    controller: _replyController,
+                                                    decoration: InputDecoration(
+                                                      labelText: 'Your Response',
+                                                      labelStyle: TodoColors.textStyle2,
+                                                      border: CutCornersBorder(),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(height: 12.0),
+                                              ],
+                                            ),
+
+                                          ),
+
+                                          actions: <Widget>[
+                                            FlatButton(
+                                              child: Text('CANCEL'),
+                                              textColor: TodoColors.baseColors[widget.colorIndex],
+                                              shape: BeveledRectangleBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(7.0)),
+                                              ),
+                                              onPressed: () {
+                                                _replyController.clear();
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+
+                                            RaisedButton(
+                                              child: Text('SEND'),
+                                              textColor: TodoColors.baseColors[widget.colorIndex],
+                                              elevation: 8.0,
+                                              shape: BeveledRectangleBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(7.0)),
+                                              ),
+                                              onPressed: () {
+                                                _replyController.clear();
+                                              },
+                                            ),
+
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
                                   icon: Icon(
-                                      Icons.reply, color: Colors.blueAccent),
+                                      Icons.reply, color: TodoColors.baseColors[widget.colorIndex]),
                                   label: Text('Reply', style: TextStyle(
-                                      color: Colors.blueAccent,
+                                      color: TodoColors.baseColors[widget.colorIndex],
                                       fontWeight: FontWeight.w700,
                                       fontSize: 16.0))
                               ),
@@ -623,8 +600,8 @@ class UserRatingPageState extends State<UserRatingPage> {
                                 (
                                 leading: CircleAvatar
                                   (
-                                  backgroundColor: Colors.purple,
-                                  child: Text('AI'),
+                                  backgroundColor: TodoColors.baseColors[widget.colorIndex],
+                                  child: Text('IA'),
                                 ),
                                 title: Text(
                                     'Ivascu Adrian ★★★★★', style: TextStyle()),
@@ -638,11 +615,76 @@ class UserRatingPageState extends State<UserRatingPage> {
                               padding: EdgeInsets.only(top: 4.0, right: 10.0),
                               child: FlatButton.icon
                                 (
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    new Container(
+                                      width: 450.0,
+                                    );
+
+                                    showDialog<Null>(
+                                      context: context,
+                                      barrierDismissible: false, // user must tap button!
+                                      builder: (BuildContext context) {
+                                        return new AlertDialog(
+                                          title: new Text(
+                                            'Reply', style: TodoColors.textStyle.apply(color: TodoColors.baseColors[widget.colorIndex]),),
+                                          content: new SingleChildScrollView(
+                                            child: new ListBody(
+                                              children: <Widget>[
+                                                SizedBox(height: 12.0),
+                                                PrimaryColorOverride(
+                                                  color: TodoColors.baseColors[widget.colorIndex],
+                                                  child: TextField(
+                                                    key: _reply,
+                                                    controller: _replyController,
+                                                    decoration: InputDecoration(
+                                                      labelText: 'Your Response',
+                                                      labelStyle: TodoColors.textStyle2,
+                                                      border: CutCornersBorder(),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(height: 12.0),
+                                              ],
+                                            ),
+
+                                          ),
+
+                                          actions: <Widget>[
+                                            FlatButton(
+                                              child: Text('CANCEL'),
+                                              textColor: TodoColors.baseColors[widget.colorIndex],
+                                              shape: BeveledRectangleBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(7.0)),
+                                              ),
+                                              onPressed: () {
+                                                _replyController.clear();
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+
+                                            RaisedButton(
+                                              child: Text('SEND'),
+                                              textColor: TodoColors.baseColors[widget.colorIndex],
+                                              elevation: 8.0,
+                                              shape: BeveledRectangleBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(7.0)),
+                                              ),
+                                              onPressed: () {
+                                                _replyController.clear();
+                                              },
+                                            ),
+
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
                                   icon: Icon(
-                                      Icons.reply, color: Colors.blueAccent),
+                                      Icons.reply, color: TodoColors.baseColors[widget.colorIndex]),
                                   label: Text('Reply', style: TextStyle(
-                                      color: Colors.blueAccent,
+                                      color: TodoColors.baseColors[widget.colorIndex],
                                       fontWeight: FontWeight.w700,
                                       fontSize: 16.0))
                               ),
@@ -657,22 +699,6 @@ class UserRatingPageState extends State<UserRatingPage> {
           ),
         ],
       ),
-    );
-  }
-}
-
-class PrimaryColorOverride extends StatelessWidget {
-  const PrimaryColorOverride({Key key, this.color, this.child})
-      : super(key: key);
-
-  final Color color;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Theme(
-      child: child,
-      data: Theme.of(context).copyWith(primaryColor: color),
     );
   }
 }

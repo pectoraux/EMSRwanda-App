@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
 import 'quick_project_actions.dart';
-
+import 'color_override.dart';
 
 class EditProjectPage extends StatefulWidget {
   @override
@@ -17,8 +17,6 @@ class EditProjectPageState extends State<EditProjectPage> {
   final _projectDescription = GlobalKey(debugLabel: 'Project Description');
 
   bool _sendRequestToAvailableUsers = false;
-  List<String> _mTags = new List<String>();
-  List<DropdownMenuItem> _locationMenuItems, _tagMenuItems, _roleMenuItems;
   String dropdown2Value;
   String _value = null;
   String dropdown3Value = 'Four';
@@ -28,6 +26,7 @@ class EditProjectPageState extends State<EditProjectPage> {
     "Dictaphone",
     "Phone",
   ];
+  List<DropdownMenuItem> _locationMenuItems, _tagMenuItems, _roleMenuItems;
   List<String> locations = [" Locations", " Gasabo", " Remera", " Kisimenti", " Gaculiro", " Kacyiru"];
   List<String> tags = ["Tags", "Over18", "Male", "Female", "Education", "Sensitive"];
   List<String> roles = ["Project Staff Roles", "Enumerator", "Project Lead", "Project Supervisor", "Administrator"];
@@ -102,16 +101,26 @@ class EditProjectPageState extends State<EditProjectPage> {
         data: Theme.of(context).copyWith(
           canvasColor: Colors.grey[50],
         ),
-        child: DropdownButtonHideUnderline(
-          child: DropdownButton(
+        child: new SingleChildScrollView(
+  child: new ConstrainedBox(
+  constraints: new BoxConstraints(
+  minHeight: 8.0,
+  ),
+            child: DropdownButtonHideUnderline(
+          child: new Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                DropdownButton(
               value: currentValue,
               items: (idx == 0) ? _locationMenuItems : (idx == 1) ? _tagMenuItems : _roleMenuItems,
               onChanged: onChanged,
               style: TodoColors.textStyle2,
-          ),
-        ),
+          ),]
+            ),),
+    ),
       ),
-    );
+    ),);
   }
 
   void _updateLocationValue(dynamic name) {
@@ -374,18 +383,3 @@ class EditProjectPageState extends State<EditProjectPage> {
   }
 }
 
-class PrimaryColorOverride extends StatelessWidget {
-  const PrimaryColorOverride({Key key, this.color, this.child})
-      : super(key: key);
-
-  final Color color;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Theme(
-      child: child,
-      data: Theme.of(context).copyWith(primaryColor: color),
-    );
-  }
-}

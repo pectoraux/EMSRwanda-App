@@ -1,6 +1,6 @@
 import 'profile_icons.dart';
 import 'package:flutter/material.dart';
-
+import 'color_override.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
 import 'quick_tag_actions.dart';
@@ -119,14 +119,26 @@ class EditTagPageState extends State<EditTagPage> {
           canvasColor: Colors.grey[50],
         ),
         child: DropdownButtonHideUnderline(
-          child: DropdownButton(
+          child: new SingleChildScrollView(
+          child: new ConstrainedBox(
+        constraints: new BoxConstraints(
+        minHeight: 8.0,
+      ),
+      child: DropdownButtonHideUnderline(
+        child: new Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+          DropdownButton(
             value: currentValue,
             items: (idx == 3)?_tagTypeMenuItems: (idx == 4) ? _menuMenuItems : (idx == 5) ? _ageMenuItems : (idx == 6) ? _sexMenuItems : (idx == 7) ?_symbolMenuItems:_symbol2MenuItems,
             onChanged: onChanged,
             style: TodoColors.textStyle2,
           ),
+  ],)
         ),
       ),
+    ),),),
     );
   }
 
@@ -297,18 +309,3 @@ class EditTagPageState extends State<EditTagPage> {
   }
 }
 
-class PrimaryColorOverride extends StatelessWidget {
-  const PrimaryColorOverride({Key key, this.color, this.child})
-      : super(key: key);
-
-  final Color color;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Theme(
-      child: child,
-      data: Theme.of(context).copyWith(primaryColor: color),
-    );
-  }
-}

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'color_override.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
 import 'quick_user_actions.dart';
@@ -78,12 +78,22 @@ class EditUserPageState extends State<EditUserPage> {
           canvasColor: Colors.grey[50],
         ),
         child: DropdownButtonHideUnderline(
-          child: DropdownButton(
+          child: new SingleChildScrollView(
+          child: new ConstrainedBox(
+        constraints: new BoxConstraints(
+        minHeight: 8.0,
+      ),
+      child: DropdownButtonHideUnderline(
+        child: new Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+          DropdownButton(
             value: currentValue,
             items: _roleMenuItems,
             onChanged: onChanged,
             style: TodoColors.textStyle2,
-          ),
+          ),],))))
         ),
       ),
     );
@@ -211,18 +221,3 @@ class EditUserPageState extends State<EditUserPage> {
   }
 }
 
-class PrimaryColorOverride extends StatelessWidget {
-  const PrimaryColorOverride({Key key, this.color, this.child})
-      : super(key: key);
-
-  final Color color;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Theme(
-      child: child,
-      data: Theme.of(context).copyWith(primaryColor: color),
-    );
-  }
-}

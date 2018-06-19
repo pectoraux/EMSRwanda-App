@@ -3,6 +3,8 @@ import 'supplemental/cut_corners_border.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'update_tag.dart';
 import 'constants.dart';
+import 'color_override.dart';
+import 'my_tags_dialog.dart';
 
 class ViewTagsPage extends StatefulWidget {
   final int colorIndex;
@@ -52,77 +54,7 @@ class ViewTagsPageState extends State<ViewTagsPage> {
                       new Container(
                         width: 450.0,
                       );
-
-                      showDialog<Null>(
-                        context: context,
-                        barrierDismissible: false, // user must tap button!
-                        builder: (BuildContext context) {
-                          return new AlertDialog(
-                            title: new Text(
-                              'Search Tag To Update', style: TodoColors.textStyle.apply(color: TodoColors.baseColors[widget.colorIndex]),),
-                            content: new SingleChildScrollView(
-                              child: new ListBody(
-                                children: <Widget>[
-                                  SizedBox(height: 12.0),
-                              PrimaryColorOverride(
-                                color: TodoColors.baseColors[widget.colorIndex],
-                                child: TextField(
-                                    key: _tagName,
-                                    controller: _tagNameController,
-                                    decoration: InputDecoration(
-                                      labelText: 'Tag Name',
-                                      labelStyle: TodoColors.textStyle2,
-                                      border: CutCornersBorder(),
-                                    ),
-                                  ),
-                              ),
-                                  SizedBox(height: 12.0),
-                              PrimaryColorOverride(
-                                color: TodoColors.baseColors[widget.colorIndex],
-                                child: TextField(
-                                    key: _tagType,
-                                    controller: _tagTypeController,
-                                    decoration: InputDecoration(
-                                      labelText: 'Tag Type',
-                                      labelStyle: TodoColors.textStyle2,
-                                      border: CutCornersBorder(),
-                                    ),
-                                  ),
-                              ),
-                                  SizedBox(height: 12.0,),
-                                ],
-                              ),
-
-                            ),
-
-                            actions: <Widget>[
-                              FlatButton(
-                                child: Text('CANCEL'),
-                                textColor: TodoColors.baseColors[widget.colorIndex],
-                                shape: BeveledRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(7.0)),
-                                ),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-
-                              RaisedButton(
-                                child: Text('SEARCH'),
-                                textColor: TodoColors.baseColors[widget.colorIndex],
-                                elevation: 8.0,
-                                shape: BeveledRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(7.0)),
-                                ),
-                                onPressed: () {},
-                              ),
-
-                            ],
-                          );
-                        },
-                      );
+                      showDialog(context: context, child: new MyTagsDialog(colorIndex: widget.colorIndex,));
                     },
                   ),
                 ],

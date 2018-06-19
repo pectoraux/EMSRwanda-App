@@ -4,7 +4,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'constants.dart';
 import 'user_history_page.dart';
 
-import 'user_rating_page.dart';
+import 'my_user_dialog.dart';
 
 class ViewUsersPage extends StatefulWidget {
   final int colorIndex;
@@ -61,136 +61,7 @@ class ViewUsersPageState extends State<ViewUsersPage> {
                       new Container(
                         width: 450.0,
                       );
-
-                      showDialog<Null>(
-                        context: context,
-                        barrierDismissible: false, // user must tap button!
-                        builder: (BuildContext context) {
-                          return new AlertDialog(
-                            title: new Text(
-                              'Search  Users To Update', style: TodoColors.textStyle.apply(color: TodoColors.baseColors[widget.colorIndex]),),
-                            content: new SingleChildScrollView(
-                              child: new ListBody(
-                                children: <Widget>[
-                                  SizedBox(height: 12.0),
-                              PrimaryColorOverride(
-                                color: TodoColors.baseColors[widget.colorIndex],
-                                child: TextField(
-                                    key: _userName,
-                                    controller: _userNameController,
-                                    decoration: InputDecoration(
-                                      labelText: 'User Name',
-                                      labelStyle: TodoColors.textStyle2,
-                                      border: CutCornersBorder(),
-                                    ),
-                                  ),
-                              ),
-                                  SizedBox(height: 12.0),
-                              PrimaryColorOverride(
-                                color: TodoColors.baseColors[widget.colorIndex],
-                                child: TextField(
-                                    key: _userRole,
-                                    controller: _userRoleController,
-                                    decoration: InputDecoration(
-                                      labelText: 'User Role',
-                                      labelStyle: TodoColors.textStyle2,
-                                      border: CutCornersBorder(),
-                                    ),
-                                  ),
-                              ),
-                                  SizedBox(height: 12.0),
-                              PrimaryColorOverride(
-                                color: TodoColors.baseColors[widget.colorIndex],
-                                child: TextField(
-                                    key: _userStatus,
-                                    controller: _userStatusController,
-                                    decoration: InputDecoration(
-                                      labelText: 'User Status',
-                                      labelStyle: TodoColors.textStyle2,
-                                      border: CutCornersBorder(),
-                                    ),
-                                  ),
-                              ),
-                                  SizedBox(height: 12.0),
-                              PrimaryColorOverride(
-                                color: TodoColors.baseColors[widget.colorIndex],
-                                child: TextField(
-                                    key: _userLocations,
-                                    controller: _userLocationsController,
-                                    decoration: InputDecoration(
-                                      labelText: 'User Location',
-                                      labelStyle: TodoColors.textStyle2,
-                                      border: CutCornersBorder(),
-                                    ),
-                                  ),
-                              ),
-                                  RaisedButton(
-                                    child: Text('ADD LOCATION'),
-                                    textColor: TodoColors.baseColors[widget.colorIndex],
-                                    elevation: 8.0,
-                                    shape: BeveledRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(7.0)),
-                                    ),
-                                    onPressed: () {},
-                                  ),
-                                  SizedBox(height: 12.0),
-                              PrimaryColorOverride(
-                                color: TodoColors.baseColors[widget.colorIndex],
-                                child: TextField(
-                                    key: _tags,
-                                    controller: _tagsController,
-                                    decoration: InputDecoration(
-                                      labelText: 'Project or User Related Tags',
-                                      labelStyle: TodoColors.textStyle2,
-                                      border: CutCornersBorder(),
-                                    ),
-                                  ),
-                              ),
-                                  RaisedButton(
-                                    child: Text('ADD TAG'),
-                                    textColor: TodoColors.baseColors[widget.colorIndex],
-                                    elevation: 8.0,
-                                    shape: BeveledRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(7.0)),
-                                    ),
-                                    onPressed: () {},
-                                  ),
-                                  SizedBox(height: 12.0,),
-                                ],
-                              ),
-
-                            ),
-
-                            actions: <Widget>[
-                              FlatButton(
-                                child: Text('CANCEL'),
-                                textColor: TodoColors.baseColors[widget.colorIndex],
-                                shape: BeveledRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(7.0)),
-                                ),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-
-                              RaisedButton(
-                                child: Text('SEARCH'),
-                                elevation: 8.0,
-                                textColor: TodoColors.baseColors[widget.colorIndex],
-                                shape: BeveledRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(7.0)),
-                                ),
-                                onPressed: () {},
-                              ),
-
-                            ],
-                          );
-                        },
-                      );
+                      showDialog(context: context, child: new MyUserDialog(colorIndex: widget.colorIndex,));
                     },
                   ),
                 ],

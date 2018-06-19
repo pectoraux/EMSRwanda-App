@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
 import 'quick_device_actions.dart';
-
+import 'color_override.dart';
+import 'star_rating.dart';
 
 class EditDevicePage extends StatefulWidget {
   @override
@@ -18,13 +19,16 @@ class EditDevicePageState extends State<EditDevicePage> {
   final _deviceCondition = GlobalKey(debugLabel: 'Device Condition');
   int _colorIndex = 0;
   List<String> deviceTypes = ["Device Type", "Ipad", "Microphone", "Phone", "Tablet", "Dictaphone", "Other"];
-  List<DropdownMenuItem> _deviceTypeMenuItems;
-  String _deviceTypeValue;
+  List<String> deviceConditions = ["Device Condition", "1", "2", "3", "4", "5"];
+  List<DropdownMenuItem> _deviceTypeMenuItems, _deviceConditionMenuItems;
+  String _deviceTypeValue, _deviceConditionValue;
+  double rating = 0.0;
 
   @override
   void initState() {
     super.initState();
     _createDropdownMenuItems(9, deviceTypes);
+    _createDropdownMenuItems(14, deviceConditions);
     _setDefaults();
   }
 
@@ -45,6 +49,8 @@ class EditDevicePageState extends State<EditDevicePage> {
     setState(() {
       if(idx == 9) { //if location drop down
         _deviceTypeMenuItems = newItems;
+      } else if (idx == 14){
+        _deviceConditionMenuItems = newItems;
       }
     });
   }
@@ -54,6 +60,7 @@ class EditDevicePageState extends State<EditDevicePage> {
   void _setDefaults() {
     setState(() {
       _deviceTypeValue = deviceTypes[0];
+      _deviceConditionValue = deviceConditions[0];
     });
   }
 
@@ -78,12 +85,22 @@ class EditDevicePageState extends State<EditDevicePage> {
           canvasColor: Colors.grey[50],
         ),
         child: DropdownButtonHideUnderline(
-          child: DropdownButton(
+          child: new SingleChildScrollView(
+          child: new ConstrainedBox(
+        constraints: new BoxConstraints(
+        minHeight: 8.0,
+      ),
+      child: DropdownButtonHideUnderline(
+        child: new Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+          DropdownButton(
             value: currentValue,
-            items: _deviceTypeMenuItems,
+            items: (idx == 14) ? _deviceConditionMenuItems : _deviceTypeMenuItems,
             onChanged: onChanged,
             style: TodoColors.textStyle2,
-          ),
+          ),]))))
         ),
       ),
     );
@@ -92,6 +109,13 @@ class EditDevicePageState extends State<EditDevicePage> {
   void _updateDeviceTypeValue(dynamic name) {
     setState(() {
       _deviceTypeValue = name;
+    });
+  }
+
+  void _updateDeviceConditionValue(dynamic name) {
+    setState(() {
+      _deviceConditionValue = name;
+      rating = double.parse(name);
     });
   }
 
@@ -147,15 +171,18 @@ class EditDevicePageState extends State<EditDevicePage> {
     (_deviceTypeValue == "Other") ?
     SizedBox(height: 12.0,):SizedBox(height: 4.0,),
 
+        const SizedBox(height: 12.0),
+        _createDropdown(14, _deviceConditionValue, _updateDeviceConditionValue),
+
+        SizedBox(height: 12.0),
         PrimaryColorOverride(
           color: TodoColors.baseColors[_colorIndex],
-          child: TextField(
-            key: _deviceCondition,
-            controller: _deviceConditionController,
-            decoration: InputDecoration(
-              labelText: 'Device Condition',
-              border: CutCornersBorder(),
-            ),
+          child: Container(
+            margin: const EdgeInsets.only(left: 100.0, right: 100.0),
+          child: new StarRating(
+            rating: rating,
+            onRatingChanged: (rating) => setState(() => rating = rating),
+          ),
           ),
         ),
 
@@ -170,9 +197,14 @@ class EditDevicePageState extends State<EditDevicePage> {
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),
               ),
               onPressed: () {
-                _deviceNameController.clear();
-                _deviceTypeController.clear();
-                _deviceConditionController.clear();
+                setState(() {
+                  _deviceNameController.clear();
+                  _deviceTypeController.clear();
+                  _deviceConditionController.clear();
+                  _deviceConditionValue = "Device Condition";
+                  _deviceTypeValue = "Device Type";
+                  rating = 0.0;
+                });
               },
             ),
             RaisedButton(
@@ -184,19 +216,21 @@ class EditDevicePageState extends State<EditDevicePage> {
               ),
               onPressed: () {
                 if (_deviceNameController.value.text.trim() != "" &&
-                    _deviceConditionController.value.text.trim() != "" && _deviceTypeValue != "Other") {
+                    _deviceConditionController.value.text.trim() != "" && _deviceTypeValue != "Other" && _deviceConditionValue != "Device Condition") {
                   setState(() {
                     _deviceTypeValue = "Device Type";
+                    _deviceConditionValue != "Device Condition";
                     _deviceNameController.clear();
                     _deviceConditionController.clear();
                   });
                   showInSnackBar(
                       "Device Created Successfully", TodoColors.baseColors[_colorIndex]);
                 } else if(_deviceNameController.value.text.trim() != "" &&
-                    _deviceConditionController.value.text.trim() != "" && _deviceTypeValue == "Other") {
+                    _deviceConditionController.value.text.trim() != "" && _deviceTypeValue == "Other" && _deviceConditionValue != "Device Condition") {
                   if (_deviceTypeController.value.text.trim() != "") {
                     setState(() {
                       _deviceTypeValue = "Device Type";
+                      _deviceConditionValue = "Device Condition";
                       _deviceNameController.clear();
                       _deviceConditionController.clear();
                       _deviceTypeController.clear();
@@ -243,18 +277,3 @@ class EditDevicePageState extends State<EditDevicePage> {
   }
 }
 
-class PrimaryColorOverride extends StatelessWidget {
-  const PrimaryColorOverride({Key key, this.color, this.child})
-      : super(key: key);
-
-  final Color color;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Theme(
-      child: child,
-      data: Theme.of(context).copyWith(primaryColor: color),
-    );
-  }
-}

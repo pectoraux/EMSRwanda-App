@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-
+import 'color_override.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
 import 'edit_profile.dart';
@@ -123,18 +123,3 @@ class ViewBankingPageState extends State<ViewBankingPage> {
   }
 }
 
-class PrimaryColorOverride extends StatelessWidget {
-  const PrimaryColorOverride({Key key, this.color, this.child})
-      : super(key: key);
-
-  final Color color;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Theme(
-      child: child,
-      data: Theme.of(context).copyWith(primaryColor: color),
-    );
-  }
-}

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'project_details.dart';
+import 'color_override.dart';
 import 'constants.dart';
+import 'my_notification_dialog.dart';
 
 class NotificationsPage extends StatefulWidget {
   final int colorIndex;
@@ -57,102 +58,7 @@ class NotificationsPageState extends State<NotificationsPage> {
                       new Container(
                         width: 450.0,
                       );
-                      showDialog<Null>(
-                        context: context,
-                        barrierDismissible: false, // user must tap button!
-                        builder: (BuildContext context) {
-                          return new AlertDialog(
-                            title: new Text(
-                              'Search  Notifications', style: TodoColors.textStyle.apply(color: TodoColors.baseColors[widget.colorIndex]),),
-                            content: new SingleChildScrollView(
-                              child: new ListBody(
-                                children: <Widget>[
-                                  SizedBox(height: 12.0),
-                              PrimaryColorOverride(
-                                color: TodoColors.baseColors[widget.colorIndex],
-                                child: TextField(
-                                    key: _projectTitle,
-                                    controller: _projectTitleController,
-                                    decoration: InputDecoration(
-                                      labelText: 'Project Title',
-                                      labelStyle: TodoColors.textStyle2,
-                                      border: CutCornersBorder(),
-                                    ),
-                                  ),
-                              ),
-                                  SizedBox(height: 12.0),
-                              PrimaryColorOverride(
-                                color: TodoColors.baseColors[widget.colorIndex],
-                                child: TextField(
-                                    key: _notifPriority,
-                                    controller: _notifPriorityController,
-                                    decoration: InputDecoration(
-                                      labelText: 'Notification Priority',
-                                      labelStyle: TodoColors.textStyle2,
-                                      border: CutCornersBorder(),
-                                    ),
-                                  ),
-                              ),
-                                  SizedBox(height: 12.0),
-                              PrimaryColorOverride(
-                                color: TodoColors.baseColors[widget.colorIndex],
-                                child: TextField(
-                                    key: _from,
-                                    controller: _fromController,
-                                    decoration: InputDecoration(
-                                      labelText: 'From (time)',
-                                      labelStyle: TodoColors.textStyle2,
-                                      border: CutCornersBorder(),
-                                    ),
-                                  ),
-                              ),
-                                  SizedBox(height: 12.0),
-                                  PrimaryColorOverride(
-                                    color: TodoColors.baseColors[widget.colorIndex],
-                                    child: TextField(
-                                      key: _to,
-                                      controller: _toController,
-                                      decoration: InputDecoration(
-                                        labelText: 'To (time)',
-                                        labelStyle: TodoColors.textStyle2,
-                                        border: CutCornersBorder(),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: 12.0),
-                                ],
-                              ),
-
-                            ),
-
-                            actions: <Widget>[
-                              FlatButton(
-                                child: Text('CANCEL'),
-                                textColor: TodoColors.baseColors[widget.colorIndex],
-                                shape: BeveledRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(7.0)),
-                                ),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-
-                              RaisedButton(
-                                child: Text('SEARCH'),
-                                textColor: TodoColors.baseColors[widget.colorIndex],
-                                elevation: 8.0,
-                                shape: BeveledRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(7.0)),
-                                ),
-                                onPressed: () {},
-                              ),
-
-                            ],
-                          );
-                        },
-                      );
+                      showDialog(context: context, child: new MyNotificationDialog(colorIndex: widget.colorIndex,));
                     },
                   ),
                 ],
@@ -623,22 +529,6 @@ class NotificationsPageState extends State<NotificationsPage> {
             },
             child: child
         )
-    );
-  }
-}
-
-class PrimaryColorOverride extends StatelessWidget {
-  const PrimaryColorOverride({Key key, this.color, this.child})
-      : super(key: key);
-
-  final Color color;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Theme(
-      child: child,
-      data: Theme.of(context).copyWith(primaryColor: color),
     );
   }
 }

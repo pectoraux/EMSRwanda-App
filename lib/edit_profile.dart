@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-
+import 'color_override.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
 
@@ -60,6 +60,104 @@ class EditProfilePageState extends State<EditProfilePage> {
       debugLabel: 'Emergency Contact Phone');
   final _padding = EdgeInsets.all(5.0);
   int _colorIndex = 0;
+  List<String> countries = TodoColors.countries;
+  List<String> sex = ["Sex", "Male", "Female"];
+  List<DropdownMenuItem> _countriesMenuItems, _sexMenuItems;
+  String _countriesValue, _sexValue;
+
+  @override
+  void initState() {
+    super.initState();
+    _createDropdownMenuItems(6, sex);
+    _createDropdownMenuItems(10, countries);
+    _setDefaults();
+  }
+
+  /// Creates fresh list of [DropdownMenuItem] widgets, given a list of [Unit]s.
+  void _createDropdownMenuItems(int idx, List<String> list) {
+    var newItems = <DropdownMenuItem>[];
+    for (var unit in list) {
+      newItems.add(DropdownMenuItem(
+        value: unit,
+        child: Container(
+          child: Text(
+            unit,
+            softWrap: true,
+          ),
+        ),
+      ));
+    }
+    setState(() {
+      if (idx == 10) {
+        _countriesMenuItems = newItems;
+      } else if (idx == 6){
+        _sexMenuItems = newItems;
+      }
+    });
+  }
+
+  /// Sets the default values for the 'from' and 'to' [Dropdown]s, and the
+  /// updated output value if a user had previously entered an input.
+  void _setDefaults() {
+    setState(() {
+      _sexValue = sex[0];
+      _countriesValue = countries[0];
+    });
+  }
+
+  Widget _createDropdown(int idx, String currentValue, ValueChanged<dynamic>
+
+  onChanged)
+
+  {
+    return Container(
+      decoration: BoxDecoration(
+        // This sets the color of the [DropdownButton] itself
+        color: TodoColors.baseColors[_colorIndex],
+        border: Border.all(
+          color: TodoColors.baseColors[_colorIndex],
+          width: 1.0,
+        ),
+      ),
+      padding: EdgeInsets.symmetric(vertical: 8.0),
+      child: Theme(
+        // This sets the color of the [DropdownMenuItem]
+        data: Theme.of(context).copyWith(
+          canvasColor: Colors.grey[50],
+        ),
+        child: DropdownButtonHideUnderline(
+            child: new SingleChildScrollView(
+                child: new ConstrainedBox(
+                    constraints: new BoxConstraints(
+                      minHeight: 8.0,
+                    ),
+                    child: DropdownButtonHideUnderline(
+                        child: new Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: <Widget>[
+                            DropdownButton(
+                              value: currentValue,
+                              items: (idx == 6) ? _sexMenuItems : _countriesMenuItems,
+                              onChanged: onChanged,
+                              style: TodoColors.textStyle2,
+                            ),],))))
+        ),
+      ),
+    );
+  }
+
+  void _updateSexValue(dynamic name) {
+    setState(() {
+      _sexValue = name;
+    });
+  }
+
+  void _updateCountriesValue(dynamic name) {
+    setState(() {
+      _countriesValue = name;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -164,17 +262,7 @@ class EditProfilePageState extends State<EditProfilePage> {
           ),
 
           const SizedBox(height: 12.0),
-          PrimaryColorOverride(
-            color: TodoColors.baseColors[_colorIndex],
-            child: TextField(
-              key: _country,
-              controller: _countryController,
-              decoration: InputDecoration(
-                labelText: 'Country',
-                border: CutCornersBorder(),
-              ),
-            ),
-          ),
+          _createDropdown(10, _countriesValue, _updateCountriesValue),
 
           const SizedBox(height: 12.0),
           PrimaryColorOverride(
@@ -203,17 +291,7 @@ class EditProfilePageState extends State<EditProfilePage> {
           ),
 
           const SizedBox(height: 12.0),
-          PrimaryColorOverride(
-            color: TodoColors.baseColors[_colorIndex],
-            child: TextField(
-              key: _sex,
-              controller: _sexController,
-              decoration: InputDecoration(
-                labelText: 'Sex',
-                border: CutCornersBorder(),
-              ),
-            ),
-          ),
+          _createDropdown(6, _sexValue, _updateSexValue),
 
           const SizedBox(height: 12.0),
           PrimaryColorOverride(
@@ -464,18 +542,3 @@ class EditProfilePageState extends State<EditProfilePage> {
   }
 }
 
-class PrimaryColorOverride extends StatelessWidget {
-  const PrimaryColorOverride({Key key, this.color, this.child})
-      : super(key: key);
-
-  final Color color;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Theme(
-      child: child,
-      data: Theme.of(context).copyWith(primaryColor: color),
-    );
-  }
-}

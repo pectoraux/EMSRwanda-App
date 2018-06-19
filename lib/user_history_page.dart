@@ -52,7 +52,7 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
       body: new PageView(
           children: [
             new EmploymentHistoryPage(colorIndex: widget.colorIndex, isMadeByYou: false, noButton: true),
-            new UserRatingPage(),
+            new UserRatingPage(colorIndex: widget.colorIndex,),
             new ViewDevicesPage(colorIndex: widget.colorIndex),
           ],
           controller: _pageController,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
-
+import 'color_override.dart';
 
 class UpdateTagPage extends StatefulWidget {
   @override
@@ -131,18 +131,3 @@ class UpdateTagPageState extends State<UpdateTagPage> {
   }
 }
 
-class PrimaryColorOverride extends StatelessWidget {
-  const PrimaryColorOverride({Key key, this.color, this.child})
-      : super(key: key);
-
-  final Color color;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Theme(
-      child: child,
-      data: Theme.of(context).copyWith(primaryColor: color),
-    );
-  }
-}

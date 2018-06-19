@@ -4,6 +4,8 @@ import 'dart:math';
 import 'constants.dart';
 import 'profile_fonts.dart';
 import 'view_projects.dart';
+import 'color_override.dart';
+import 'my_project_dialog.dart';
 
 /// QuickActions represents the horizontal list of rectangular buttons below the header
 class QuickProjectActions extends StatelessWidget {
@@ -146,102 +148,7 @@ class QuickProjectActions extends StatelessWidget {
       new Container(
         width: 450.0,
       );
-      showDialog<Null>(
-        context: context,
-        barrierDismissible: false, // user must tap button!
-        builder: (BuildContext context) {
-          return new AlertDialog(
-            title: new Text('Search Project To Delete', style: TodoColors.textStyle.apply(color: TodoColors.baseColors[0]),),
-            content: new SingleChildScrollView(
-              child: new ListBody(
-                children: <Widget>[
-                  SizedBox(height: 12.0),
-              PrimaryColorOverride(
-                color: TodoColors.baseColors[_colorIndex],
-                child: TextField(
-                    key: _projectTitle,
-                    controller: _projectTitleController,
-                    decoration: InputDecoration(
-                      labelText: 'Project Title',
-                      labelStyle: TodoColors.textStyle2,
-                      border: CutCornersBorder(),
-                    ),
-                  ),
-              ),
-                  SizedBox(height: 12.0),
-              PrimaryColorOverride(
-                color: TodoColors.baseColors[_colorIndex],
-                child: TextField(
-                    key: _projectLocations,
-                    controller: _projectLocationsController,
-                    decoration: InputDecoration(
-                      labelText: 'Project Location',
-                      labelStyle: TodoColors.textStyle2,
-                      border: CutCornersBorder(),
-                    ),
-                  ),
-              ),
-                  RaisedButton(
-                    child: Text('ADD LOCATION'),
-                    textColor: TodoColors.baseColors[_colorIndex],
-                    elevation: 8.0,
-                    shape: BeveledRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(7.0)),
-                    ),
-                    onPressed: () {},
-                  ),
-                  SizedBox(height: 12.0),
-              PrimaryColorOverride(
-                color: TodoColors.baseColors[_colorIndex],
-                child: TextField(
-                    key: _projectTags,
-                    controller: _projectTagsController,
-                    decoration: InputDecoration(
-                      labelText: 'Project Tag',
-                      labelStyle: TodoColors.textStyle2,
-                      border: CutCornersBorder(),
-                    ),
-                  ),
-              ),
-                  RaisedButton(
-                    child: Text('ADD TAG'),
-                    textColor: TodoColors.baseColors[_colorIndex],
-                    elevation: 8.0,
-                    shape: BeveledRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(7.0)),
-                    ),
-                    onPressed: () {},
-                  ),
-                  SizedBox(height: 12.0),
-                ],
-              ),
-            ),
-
-            actions: <Widget>[
-              FlatButton(
-                child: Text('CANCEL'),
-                textColor: TodoColors.baseColors[_colorIndex],
-                shape: BeveledRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(7.0)),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-
-              RaisedButton(
-                child: Text('SEARCH'),
-                textColor: TodoColors.baseColors[_colorIndex],
-                elevation: 8.0,
-                shape: BeveledRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(7.0)),
-                ),
-                onPressed: () {},
-              ),
-            ],
-          );
-        },
-      );
+      showDialog(context: context, child: new MyProjectDialog(colorIndex: _colorIndex,));
     }
   }
 }

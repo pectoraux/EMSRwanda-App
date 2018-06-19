@@ -3,6 +3,8 @@ import 'supplemental/cut_corners_border.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'project_details.dart';
 import 'constants.dart';
+import 'color_override.dart';
+import 'my_project_dialog.dart';
 
 class SearchProjectsPage extends StatefulWidget {
   final int colorIndex;
@@ -55,109 +57,7 @@ class SearchProjectsPageState extends State<SearchProjectsPage> {
                       new Container(
                         width: 450.0,
                       );
-                      showDialog<Null>(
-                        context: context,
-                        barrierDismissible: false, // user must tap button!
-                        builder: (BuildContext context) {
-                          return new AlertDialog(
-                            title: new Text(
-                              'Search  Projects', style: TodoColors.textStyle.apply(color: TodoColors.baseColors[widget.colorIndex]),),
-                            content: new SingleChildScrollView(
-                              child: new ListBody(
-                                children: <Widget>[
-                                  SizedBox(height: 12.0),
-                              PrimaryColorOverride(
-                                color: TodoColors.baseColors[widget.colorIndex],
-                                child: TextField(
-                                    key: _projectTitle,
-                                    controller: _projectTitleController,
-                                    decoration: InputDecoration(
-                                      labelText: 'Project Title',
-                                      labelStyle: TodoColors.textStyle2,
-                                      border: CutCornersBorder(),
-                                    ),
-                                  ),
-                              ),
-                                  SizedBox(height: 12.0),
-                              PrimaryColorOverride(
-                                color: TodoColors.baseColors[widget.colorIndex],
-                                child: TextField(
-                                    key: _projectLocations,
-                                    controller: _projectLocationsController,
-                                    decoration: InputDecoration(
-                                      labelText: 'Project Location',
-                                      labelStyle: TodoColors.textStyle2,
-                                      border: CutCornersBorder(),
-                                    ),
-                                  ),
-                              ),
-                                  RaisedButton(
-                                    child: Text('ADD LOCATION'),
-                                    textColor: TodoColors.baseColors[widget.colorIndex],
-                                    elevation: 8.0,
-                                    shape: BeveledRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(7.0)),
-                                    ),
-                                    onPressed: () {},
-                                  ),
-                                  SizedBox(height: 12.0),
-                              PrimaryColorOverride(
-                                color: TodoColors.baseColors[widget.colorIndex],
-                                child: TextField(
-                                    key: _projectTags,
-                                    controller: _projectTagsController,
-                                    decoration: InputDecoration(
-                                      labelText: 'Project Tag',
-                                      labelStyle: TodoColors.textStyle2,
-                                      border: CutCornersBorder(),
-                                    ),
-                                  ),
-                              ),
-                                  RaisedButton(
-                                    child: Text('ADD TAG'),
-                                    textColor: TodoColors.baseColors[widget.colorIndex],
-                                    elevation: 8.0,
-                                    shape: BeveledRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(7.0)),
-                                    ),
-                                    onPressed: () {},
-                                  ),
-                                  SizedBox(height: 12.0),
-                                ],
-                              ),
-
-                            ),
-
-                            actions: <Widget>[
-                              FlatButton(
-                                child: Text('CANCEL'),
-                                textColor: TodoColors.baseColors[widget.colorIndex],
-                                shape: BeveledRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(7.0)),
-                                ),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-
-                              RaisedButton(
-                                child: Text('SEARCH'),
-                                textColor: TodoColors.baseColors[widget.colorIndex],
-                                elevation: 8.0,
-                                shape: BeveledRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(7.0)),
-                                ),
-                                onPressed: () {},
-                              ),
-
-                            ],
-                          );
-                        },
-                      );
+                      showDialog(context: context, child: new MyProjectDialog(colorIndex: widget.colorIndex,));
                     },
                   ),
                 ],
@@ -597,18 +497,3 @@ class SearchProjectsPageState extends State<SearchProjectsPage> {
   }
 }
 
-class PrimaryColorOverride extends StatelessWidget {
-  const PrimaryColorOverride({Key key, this.color, this.child})
-      : super(key: key);
-
-  final Color color;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Theme(
-      child: child,
-      data: Theme.of(context).copyWith(primaryColor: color),
-    );
-  }
-}

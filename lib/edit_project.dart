@@ -28,7 +28,7 @@ class EditProjectPageState extends State<EditProjectPage> {
     "Dictaphone",
     "Phone",
   ];
-  List<String> locations = ["Locations", "Gasabo", "Remera", "Kisimenti", "Gaculiro", "Kacyiru"];
+  List<String> locations = [" Locations", " Gasabo", " Remera", " Kisimenti", " Gaculiro", " Kacyiru"];
   List<String> tags = ["Tags", "Over18", "Male", "Female", "Education", "Sensitive"];
   List<String> roles = ["Project Staff Roles", "Enumerator", "Project Lead", "Project Supervisor", "Administrator"];
   String _tagValue, _locationValue, _roleValue;
@@ -88,7 +88,6 @@ class EditProjectPageState extends State<EditProjectPage> {
 
   {
     return Container(
-      margin: EdgeInsets.only(top: 16.0),
       decoration: BoxDecoration(
         // This sets the color of the [DropdownButton] itself
         color: TodoColors.baseColors[_colorIndex],
@@ -234,6 +233,7 @@ class EditProjectPageState extends State<EditProjectPage> {
 
         const SizedBox(height: 12.0),
         _createDropdown(2, _roleValue, _updateRoleValue),
+
         GridView.count(
           shrinkWrap: true,
           crossAxisCount: 3,

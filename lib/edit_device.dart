@@ -17,7 +17,83 @@ class EditDevicePageState extends State<EditDevicePage> {
   final _deviceType = GlobalKey(debugLabel: 'Device Type');
   final _deviceCondition = GlobalKey(debugLabel: 'Device Condition');
   int _colorIndex = 0;
+  List<String> deviceTypes = ["Device Type", "Ipad", "Microphone", "Phone", "Tablet", "Dictaphone", "Other"];
+  List<DropdownMenuItem> _deviceTypeMenuItems;
+  String _deviceTypeValue;
 
+  @override
+  void initState() {
+    super.initState();
+    _createDropdownMenuItems(9, deviceTypes);
+    _setDefaults();
+  }
+
+  /// Creates fresh list of [DropdownMenuItem] widgets, given a list of [Unit]s.
+  void _createDropdownMenuItems(int idx, List<String> list) {
+    var newItems = <DropdownMenuItem>[];
+    for (var unit in list) {
+      newItems.add(DropdownMenuItem(
+        value: unit,
+        child: Container(
+          child: Text(
+            unit,
+            softWrap: true,
+          ),
+        ),
+      ));
+    }
+    setState(() {
+      if(idx == 9) { //if location drop down
+        _deviceTypeMenuItems = newItems;
+      }
+    });
+  }
+
+  /// Sets the default values for the 'from' and 'to' [Dropdown]s, and the
+  /// updated output value if a user had previously entered an input.
+  void _setDefaults() {
+    setState(() {
+      _deviceTypeValue = deviceTypes[0];
+    });
+  }
+
+  Widget _createDropdown(int idx, String currentValue, ValueChanged<dynamic>
+
+  onChanged)
+
+  {
+    return Container(
+      decoration: BoxDecoration(
+        // This sets the color of the [DropdownButton] itself
+        color: TodoColors.baseColors[_colorIndex],
+        border: Border.all(
+          color: TodoColors.baseColors[_colorIndex],
+          width: 1.0,
+        ),
+      ),
+      padding: EdgeInsets.symmetric(vertical: 8.0),
+      child: Theme(
+        // This sets the color of the [DropdownMenuItem]
+        data: Theme.of(context).copyWith(
+          canvasColor: Colors.grey[50],
+        ),
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton(
+            value: currentValue,
+            items: _deviceTypeMenuItems,
+            onChanged: onChanged,
+            style: TodoColors.textStyle2,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _updateDeviceTypeValue(dynamic name) {
+    setState(() {
+      _deviceTypeValue = name;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,20 +127,26 @@ class EditDevicePageState extends State<EditDevicePage> {
           ),
         ),
 
-        SizedBox(height: 12.0),
-        PrimaryColorOverride(
-          color: TodoColors.baseColors[_colorIndex],
-          child: TextField(
-            key: _deviceType,
-            controller: _deviceTypeController,
-            decoration: InputDecoration(
-              labelText: 'Device Type',
-              border: CutCornersBorder(),
-            ),
-          ),
-        ),
+        const SizedBox(height: 12.0),
+        _createDropdown(9, _deviceTypeValue, _updateDeviceTypeValue),
 
-        SizedBox(height: 12.0),
+        SizedBox(height: 12.0,),
+
+        (_deviceTypeValue == "Other") ?
+    PrimaryColorOverride(
+    color: TodoColors.baseColors[_colorIndex],
+    child: TextField(
+    key: _deviceType,
+    controller: _deviceTypeController,
+    decoration: InputDecoration(
+    labelText: 'Device Type',
+    border: CutCornersBorder(),
+    ),
+    )):new Container(),
+
+    (_deviceTypeValue == "Other") ?
+    SizedBox(height: 12.0,):SizedBox(height: 4.0,),
+
         PrimaryColorOverride(
           color: TodoColors.baseColors[_colorIndex],
           child: TextField(
@@ -79,8 +161,6 @@ class EditDevicePageState extends State<EditDevicePage> {
 
 
         const SizedBox(height: 12.0),
-
-
         ButtonBar(
           children: <Widget>[
             FlatButton(
@@ -104,11 +184,31 @@ class EditDevicePageState extends State<EditDevicePage> {
               ),
               onPressed: () {
                 if (_deviceNameController.value.text.trim() != "" &&
-                    _deviceTypeController.value.text.trim() != "" &&
-                    _deviceConditionController.value.text.trim() != "") {
+                    _deviceConditionController.value.text.trim() != "" && _deviceTypeValue != "Other") {
+                  setState(() {
+                    _deviceTypeValue = "Device Type";
+                    _deviceNameController.clear();
+                    _deviceConditionController.clear();
+                  });
                   showInSnackBar(
                       "Device Created Successfully", TodoColors.baseColors[_colorIndex]);
-                } else {
+                } else if(_deviceNameController.value.text.trim() != "" &&
+                    _deviceConditionController.value.text.trim() != "" && _deviceTypeValue == "Other") {
+                  if (_deviceTypeController.value.text.trim() != "") {
+                    setState(() {
+                      _deviceTypeValue = "Device Type";
+                      _deviceNameController.clear();
+                      _deviceConditionController.clear();
+                      _deviceTypeController.clear();
+                    });
+                    showInSnackBar(
+                        "Device Created Successfully", TodoColors.baseColors[_colorIndex]);
+                    _deviceTypeController.clear();
+                  } else {
+                    showInSnackBar("Please Specify A Device For All Fields",
+                        Colors.redAccent);
+                  }
+                }else {
                   showInSnackBar("Please Specify A Device For All Fields",
                       Colors.redAccent);
                 }

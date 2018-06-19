@@ -15,7 +15,6 @@ class EditTagPageState extends State<EditTagPage> {
   final _tagTypeController = TextEditingController();
   final _tagDescriptionController = TextEditingController();
   final _tagName = GlobalKey(debugLabel: 'Tag Name');
-  final _tagType = GlobalKey(debugLabel: 'Tag Type');
   final _tagDescription = GlobalKey(debugLabel: 'Tag Description');
   int _colorIndex = 0;
   List<String> tagTypes = ["Tag Type", "User Related", "Project Related"];
@@ -105,7 +104,6 @@ class EditTagPageState extends State<EditTagPage> {
 
   {
     return Container(
-      margin: EdgeInsets.only(top: 16.0),
       decoration: BoxDecoration(
         // This sets the color of the [DropdownButton] itself
         color: TodoColors.baseColors[_colorIndex],
@@ -221,6 +219,7 @@ class EditTagPageState extends State<EditTagPage> {
           const SizedBox(height: 12.0),
           _createDropdown(3, _tagTypeValue, _updateTagTypeValue),
 
+    (_tagTypeValue == "User Related") ? SizedBox(height: 12.0): SizedBox(height: 0.0,),
     (_tagTypeValue == "User Related") ?
     _createMenuAndSymbol():new Container(),
 

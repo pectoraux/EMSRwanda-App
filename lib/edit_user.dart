@@ -17,6 +17,83 @@ class EditUserPageState extends State<EditUserPage> {
   final _userRole = GlobalKey(debugLabel: 'User Role');
   final _userPassword = GlobalKey(debugLabel: 'User Password');
   int _colorIndex = 0;
+  List<String> roles = ["Project Staff Roles", "Enumerator", "Project Lead", "Project Supervisor", "Administrator"];
+  List<DropdownMenuItem> _roleMenuItems;
+  String _roleValue;
+
+  @override
+  void initState() {
+    super.initState();
+    _createDropdownMenuItems(2, roles);
+    _setDefaults();
+  }
+
+  /// Creates fresh list of [DropdownMenuItem] widgets, given a list of [Unit]s.
+  void _createDropdownMenuItems(int idx, List<String> list) {
+    var newItems = <DropdownMenuItem>[];
+    for (var unit in list) {
+      newItems.add(DropdownMenuItem(
+        value: unit,
+        child: Container(
+          child: Text(
+            unit,
+            softWrap: true,
+          ),
+        ),
+      ));
+    }
+    setState(() {
+      if (idx == 2) {
+        _roleMenuItems = newItems;
+      }
+    });
+  }
+
+  /// Sets the default values for the 'from' and 'to' [Dropdown]s, and the
+  /// updated output value if a user had previously entered an input.
+  void _setDefaults() {
+    setState(() {
+      _roleValue = roles[0];
+    });
+  }
+
+  Widget _createDropdown(int idx, String currentValue, ValueChanged<dynamic>
+
+  onChanged)
+
+  {
+    return Container(
+      decoration: BoxDecoration(
+        // This sets the color of the [DropdownButton] itself
+        color: TodoColors.baseColors[_colorIndex],
+        border: Border.all(
+          color: TodoColors.baseColors[_colorIndex],
+          width: 1.0,
+        ),
+      ),
+      padding: EdgeInsets.symmetric(vertical: 8.0),
+      child: Theme(
+        // This sets the color of the [DropdownMenuItem]
+        data: Theme.of(context).copyWith(
+          canvasColor: Colors.grey[50],
+        ),
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton(
+            value: currentValue,
+            items: _roleMenuItems,
+            onChanged: onChanged,
+            style: TodoColors.textStyle2,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _updateRoleValue(dynamic name) {
+    setState(() {
+      _roleValue = name;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,18 +127,9 @@ class EditUserPageState extends State<EditUserPage> {
           ),
         ),
 
-        SizedBox(height: 12.0),
-        PrimaryColorOverride(
-          color: TodoColors.baseColors[_colorIndex],
-          child: TextField(
-            key: _userRole,
-            controller: _userRoleController,
-            decoration: InputDecoration(
-              labelText: 'User Role',
-              border: CutCornersBorder(),
-            ),
-          ),
-        ),
+        const SizedBox(height: 12.0),
+        _createDropdown(2, _roleValue, _updateRoleValue),
+
         SizedBox(height: 12.0),
         InputDecorator(
           key: _userPassword,
@@ -101,9 +169,13 @@ class EditUserPageState extends State<EditUserPage> {
               ),
               onPressed: () {
                 if (_userNameController.value.text.trim() != "" &&
-                    _userRoleController.value.text.trim() != "") {
+                    _roleValue != "Project Staff Roles") {
+                  setState(() {
+                    _roleValue = "Project Staff Roles";
+                    _userNameController.clear();
+                  });
                   showInSnackBar(
-                      "User Created Successfully", TodoColors.accent);
+                      "User Created Successfully", TodoColors.baseColors[_colorIndex]);
                 } else {
                   showInSnackBar("Please Specify A Value For All Fields",
                       Colors.redAccent);

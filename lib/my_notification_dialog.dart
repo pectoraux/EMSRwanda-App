@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
 import 'color_override.dart';
+import 'date_and_time_picker.dart';
+import 'package:intl/intl.dart';
+import 'dart:async';
 
 class MyNotificationDialog extends StatefulWidget {
   final int colorIndex;
@@ -23,6 +26,10 @@ class MyNotificationDialogState extends State<MyNotificationDialog> {
   final _from = GlobalKey(debugLabel: 'From (time)');
   final _toController = TextEditingController();
   final _to = GlobalKey(debugLabel: 'To (time)');
+  DateTime _fromDate;
+  TimeOfDay _fromTime;
+  DateTime _toDate;
+  TimeOfDay _toTime;
 
   List<DropdownMenuItem> _notifPriorityMenuItems;
   List<String> _notifPriorities = ["Notification Priorities", "High Priority", "Medium Priority", "Low Priority"];
@@ -33,6 +40,11 @@ class MyNotificationDialogState extends State<MyNotificationDialog> {
     super.initState();
     _createDropdownMenuItems(15, _notifPriorities);
     _setDefaults();
+
+    _fromDate = new DateTime.now();
+    _fromTime = const TimeOfDay(hour: 7, minute: 28);
+    _toDate = new DateTime.now();
+    _toTime = const TimeOfDay(hour: 7, minute: 28);
   }
 
   /// Creates fresh list of [DropdownMenuItem] widgets, given a list of [Unit]s.
@@ -114,6 +126,8 @@ class MyNotificationDialogState extends State<MyNotificationDialog> {
 
 
   Widget build(BuildContext context) {
+
+
     return new AlertDialog(
       title: new Text('Search Notifications',
         style: TodoColors.textStyle.apply(
@@ -121,7 +135,6 @@ class MyNotificationDialogState extends State<MyNotificationDialog> {
       content: new SingleChildScrollView(
         child: new ListBody(
           children: <Widget>[
-            SizedBox(height: 12.0),
         SizedBox(height: 12.0),
         PrimaryColorOverride(
           color: TodoColors.baseColors[widget.colorIndex],
@@ -139,29 +152,40 @@ class MyNotificationDialogState extends State<MyNotificationDialog> {
             _createDropdown(15,  _notifPriorityValue, _updateNotificationValue),
 
             SizedBox(height: 12.0),
-            PrimaryColorOverride(
-              color: TodoColors.baseColors[widget.colorIndex],
-              child: TextField(
-                key: _from,
-                controller: _fromController,
-                decoration: InputDecoration(
-                  labelText: 'From (time)',
-                  labelStyle: TodoColors.textStyle2,
-                  border: CutCornersBorder(),
-                ),
-              ),
+            DateTimePicker(
+              labelText: 'From (time)',
+              selectedDate: _fromDate,
+              selectedTime: _fromTime,
+              selectDate: (DateTime date) {
+                setState(() {
+                  _fromDate = date;
+                });
+              },
+              selectTime: (TimeOfDay time) {
+                setState(() {
+                  _fromTime = time;
+                });
+              },
             ),
+
+
             SizedBox(height: 12.0),
             PrimaryColorOverride(
               color: TodoColors.baseColors[widget.colorIndex],
-              child: TextField(
-                key: _to,
-                controller: _toController,
-                decoration: InputDecoration(
-                  labelText: 'To (time)',
-                  labelStyle: TodoColors.textStyle2,
-                  border: CutCornersBorder(),
-                ),
+              child: DateTimePicker(
+                labelText: 'To (time)',
+                selectedDate: _toDate,
+                selectedTime: _toTime,
+                selectDate: (DateTime date) {
+                  setState(() {
+                    _toDate = date;
+                  });
+                },
+                selectTime: (TimeOfDay time) {
+                  setState(() {
+                    _toTime = time;
+                  });
+                },
               ),
             ),
 

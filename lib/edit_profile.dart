@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'color_override.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
-
+import 'date_and_time_picker.dart';
 
 class EditProfilePage extends StatefulWidget {
   @override
@@ -64,6 +64,10 @@ class EditProfilePageState extends State<EditProfilePage> {
   List<String> sex = ["Sex", "Male", "Female"];
   List<DropdownMenuItem> _countriesMenuItems, _sexMenuItems;
   String _countriesValue, _sexValue;
+  DateTime _fromDate;
+  TimeOfDay _fromTime;
+  DateTime _toDate;
+  TimeOfDay _toTime;
 
   @override
   void initState() {
@@ -71,6 +75,9 @@ class EditProfilePageState extends State<EditProfilePage> {
     _createDropdownMenuItems(6, sex);
     _createDropdownMenuItems(10, countries);
     _setDefaults();
+
+    _fromDate = new DateTime.now();
+    _toDate = new DateTime.now();
   }
 
   /// Creates fresh list of [DropdownMenuItem] widgets, given a list of [Unit]s.
@@ -248,16 +255,17 @@ class EditProfilePageState extends State<EditProfilePage> {
             ),
           ),
 
-          const SizedBox(height: 12.0),
+          SizedBox(height: 12.0),
           PrimaryColorOverride(
             color: TodoColors.baseColors[_colorIndex],
-            child: TextField(
-              key: _dob,
-              controller: _dobController,
-              decoration: InputDecoration(
-                labelText: 'Date Of Birth',
-                border: CutCornersBorder(),
-              ),
+            child: DatePicker(
+              labelText: 'Date Of Birth',
+              selectedDate: _toDate,
+              selectDate: (DateTime date) {
+                setState(() {
+                  _toDate = date;
+                });
+              },
             ),
           ),
 

@@ -24,11 +24,11 @@ class MainMenu extends StatelessWidget {
           _buildListItem("Insurance Details", Icons.local_hospital, () {
             onTap(context, "Insurance Details");
           }),
-          _buildListItem("Project Details", Icons.work, () {
-            onTap(context, "Project Details");
-          }),
           _buildListItem("Emergency Details", Icons.alarm, () {
             onTap(context, "Emergency Details");
+          }),
+          _buildListItem("Projects Details", Icons.work, () {
+            onTap(context, "Project Details");
           }),
         ],
       ),

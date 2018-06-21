@@ -6,6 +6,7 @@ import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
 import 'date_and_time_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'progress_bar.dart';
 
 class EditProfilePage extends StatefulWidget {
   @override
@@ -17,7 +18,7 @@ class EditProfilePageState extends State<EditProfilePage> {
 //  usersRef.snapshots();
 //  static final CollectionReference todoCollection = Firestore.instance.collection('users');
 //  Future<DocumentSnapshot> newDoc = todoCollection.document().get();
-  static String firstName;
+  static String firstName = "";
   static String lastName = "";
   static String email1 = "";
   static String email2 = "";
@@ -99,6 +100,7 @@ class EditProfilePageState extends State<EditProfilePage> {
   DateTime _toDate;
   TimeOfDay _toTime;
   List<bool> changed = [false, false, false, false, false, false, false, false,false,false,false,false,false,false,false,false,false,false,false,false,false];
+
 
   @override
   void initState() {
@@ -329,15 +331,10 @@ class EditProfilePageState extends State<EditProfilePage> {
               controller: _firstNameController,
               decoration: InputDecoration(
                 labelText: 'First Name',
+                hintText: document['firstName'],
                 border: CutCornersBorder(),
               ),
-              onChanged: (text) { changed[0] = true;  },
-              onSubmitted: (text) {
-
-                  firstName = text;
-
-                print("First: $firstName");
-              }
+              onChanged: (text) { changed[0] = true;  firstName = text; },
             ),
           ),
 
@@ -352,8 +349,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                 border: CutCornersBorder(),
                 hintText: document['lastName'],
               ),
-              onChanged: (value) { changed[1] = true;},
-              onSubmitted: (text) { lastName = text; },
+              onChanged: (text) { changed[1] = true; lastName = text;},
             ),
           ),
 
@@ -386,8 +382,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                 border: CutCornersBorder(),
                 hintText: document['nationalID'],
               ),
-              onChanged: (value) { changed[4] = true;},
-              onSubmitted: (text) { nationalID = text; },
+              onChanged: (text) { changed[4] = true; nationalID = text;},
             ),
           ),
 
@@ -402,8 +397,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                 border: CutCornersBorder(),
                 hintText: document['passportNo'],
               ),
-              onChanged: (value) { changed[5] = true;},
-              onSubmitted: (text) { passportNo = text; },
+              onChanged: (text) { changed[5] = true; passportNo = text;},
             ),
           ),
 
@@ -422,8 +416,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                 hintText: document['mainPhone'],
               ),
               keyboardType: TextInputType.phone,
-              onChanged: (value) { changed[7] = true;},
-              onSubmitted: (text) { mainPhone = text; },
+              onChanged: (text) { changed[7] = true; mainPhone = text;},
             ),
           ),
 
@@ -439,8 +432,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                 hintText: document['phone1'],
               ),
               keyboardType: TextInputType.phone,
-              onChanged: (value) { changed[8] = true;},
-              onSubmitted: (text) { phone1 = text; },
+              onChanged: (text) { changed[8] = true; phone1 = text;},
             ),
           ),
 
@@ -456,8 +448,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                 hintText: document['phone2'],
               ),
               keyboardType: TextInputType.phone,
-              onChanged: (value) { changed[9] = true;},
-              onSubmitted: (text) { phone2 = text; },
+              onChanged: (text) { changed[9] = true; phone2 = text;},
             ),
           ),
 
@@ -472,8 +463,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                 border: CutCornersBorder(),
                 hintText: document['email1'],
               ),
-              onChanged: (value) { changed[10] = true;},
-              onSubmitted: (text) { email1 = text; },
+              onChanged: (text) { changed[10] = true; email1 = text;},
             ),
           ),
 
@@ -488,8 +478,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                 border: CutCornersBorder(),
                 hintText: document['email2'],
               ),
-              onChanged: (value) { changed[11] = true;},
-              onSubmitted: (text) { email2 = text; },
+              onChanged: (text) { changed[11] = true; email2 = text;},
             ),
           ),
 
@@ -504,8 +493,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                 border: CutCornersBorder(),
                 hintText: document['bankName'],
               ),
-              onChanged: (value) { changed[12] = true;},
-              onSubmitted: (text) { bankName = text; },
+              onChanged: (text) { changed[12] = true; bankName = text;},
             ),
           ),
 
@@ -521,8 +509,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                 hintText: document['bankAcctNo'],
               ),
               keyboardType: TextInputType.number,
-              onChanged: (value) { changed[13] = true;},
-              onSubmitted: (text) { bankAcctNo = text; },
+              onChanged: (text) { changed[13] = true; bankAcctNo = text;},
             ),
           ),
 
@@ -537,8 +524,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                 border: CutCornersBorder(),
                 hintText: document['insurance'],
               ),
-              onChanged: (value) { changed[14] = true;},
-              onSubmitted: (text) { insurance = text; },
+              onChanged: (text) { changed[14] = true; insurance = text;},
             ),
           ),
 
@@ -553,8 +539,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                 border: CutCornersBorder(),
                 hintText: document['insuranceNo'],
               ),
-              onChanged: (value) { changed[15] = true;},
-              onSubmitted: (text) { insuranceNo = text; },
+              onChanged: (text) { changed[15] = true; insuranceNo = text;},
             ),
           ),
 
@@ -569,8 +554,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                 border: CutCornersBorder(),
                 hintText: document['insuranceCpy'],
               ),
-              onChanged: (value) { changed[16] = true;},
-              onSubmitted: (text) { insuranceCpy = text; },
+              onChanged: (text) { changed[16] = true; insuranceCpy = text;},
             ),
           ),
 
@@ -585,8 +569,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                 border: CutCornersBorder(),
                 hintText: document['tin'],
               ),
-              onChanged: (value) { changed[17] = true;},
-              onSubmitted: (text) { tin = text; },
+              onChanged: (text) { changed[17] = true; tin = text;},
             ),
           ),
 
@@ -601,8 +584,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                 border: CutCornersBorder(),
                 hintText: document['cvStatusElec'],
               ),
-              onChanged: (value) { changed[18] = true;},
-              onSubmitted: (text) { cvStatusElec = text; },
+              onChanged: (text) { changed[18] = true; cvStatusElec = text;},
             ),
           ),
 
@@ -617,8 +599,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                 border: CutCornersBorder(),
                 hintText: document['emergencyContactName'],
               ),
-              onChanged: (value) { changed[19] = true;},
-              onSubmitted: (text) { emergencyContactName = text; },
+              onChanged: (text) { changed[19] = true; emergencyContactName = text;},
             ),
           ),
 
@@ -634,8 +615,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                 hintText: document['emergencyContactPhone'],
               ),
               keyboardType: TextInputType.phone,
-              onChanged: (value) { changed[20] = true;},
-              onSubmitted: (text) { emergencyContactPhone = text; },
+              onChanged: (text) { changed[20] = true; emergencyContactPhone = text;},
             ),
           ),
 
@@ -660,35 +640,59 @@ class EditProfilePageState extends State<EditProfilePage> {
                   borderRadius: BorderRadius.all(Radius.circular(7.0)),
                 ),
                 onPressed: () {
+
                   if(!allFalse(changed)) {
-                    print("Submitted: $firstName");
-                    Firestore.instance.runTransaction((transaction) async {
-                      DocumentSnapshot freshSnap =
-                      await transaction.get(document.reference);
-                      await transaction.update(freshSnap.reference, {
-                        'firstName': firstName,
-                        'lastName': lastName,
-                        'email1':  email1,
-                        'email2':  email2,
-                        'sex': sex,
-                        'country':  country,
-                        'mainPhone':  mainPhone,
-                        'phone1': phone1,
-                        'phone2':  phone2,
-                        'passportNo':  passportNo,
-                        'bankAcctNo':  bankAcctNo,
-                        'bankName':  bankName,
-                        'insurance':  insurance,
-                        'insuranceNo':  insuranceNo,
-                        'insuranceCpy':  insuranceCpy,
-                        'tin':  tin,
-                        'cvStatusElec':  cvStatusElec,
-                        'dob':  dob,
-                        'nationalID':  nationalID,
-                        'emergencyContactName': emergencyContactName,
-                        'emergencyContactPhone':  emergencyContactPhone,
+                    firstName = changed[0] ? firstName : document['firstName'];
+                    lastName = changed[1] ? lastName : document['lastName'];
+                    dob = changed[2] ? dob : document['dob'];
+                    country = changed[3] ? country : document['country'];
+                    nationalID = changed[4] ? nationalID : document['nationalID'];
+                    passportNo = changed[5] ? passportNo : document['passportNo'];
+                    sex = changed[6] ? sex : document['sex'];
+                    mainPhone = changed[7] ? mainPhone : document['mainPhone'];
+                    phone1 = changed[8] ? phone1 : document['phone1'];
+                    phone2 = changed[9] ? phone2 : document['phone2'];
+                    email1 = changed[10] ? email1 : document['email1'];
+                    email2 = changed[11] ? email2 : document['email2'];
+                    bankName = changed[12] ? bankName : document['bankName'];
+                    bankAcctNo = changed[13] ? bankAcctNo : document['bankAcctNo'];
+                    insurance = changed[14] ? insurance : document['insurance'];
+                    insuranceNo = changed[15] ? insuranceNo : document['insuranceNo'];
+                    insuranceCpy = changed[16] ? insuranceCpy : document['insuranceCpy'];
+                    tin = changed[17] ? tin : document['tin'];
+                    cvStatusElec = changed[18] ? cvStatusElec : document['cvStatusElec'];
+                    emergencyContactName = changed[19] ? emergencyContactName : document['emergencyContactName'];
+                    emergencyContactPhone = changed[20] ? emergencyContactPhone : document['emergencyContactPhone'];
+
+                      Firestore.instance.runTransaction((transaction) async {
+                        DocumentSnapshot freshSnap =
+                        await transaction.get(document.reference);
+                        await transaction.update(freshSnap.reference, {
+                          'firstName': firstName,
+                          'lastName': lastName,
+                          'email1': email1,
+                          'email2': email2,
+                          'sex': sex,
+                          'country': country,
+                          'mainPhone': mainPhone,
+                          'phone1': phone1,
+                          'phone2': phone2,
+                          'passportNo': passportNo,
+                          'bankAcctNo': bankAcctNo,
+                          'bankName': bankName,
+                          'insurance': insurance,
+                          'insuranceNo': insuranceNo,
+                          'insuranceCpy': insuranceCpy,
+                          'tin': tin,
+                          'cvStatusElec': cvStatusElec,
+                          'dob': dob,
+                          'nationalID': nationalID,
+                          'emergencyContactName': emergencyContactName,
+                          'emergencyContactPhone': emergencyContactPhone,
+                        });
                       });
-                    });
+
+
                     showInSnackBar("Profile Updated Successfully",
                         TodoColors.baseColors[_colorIndex]);
                     Navigator.of(context).pop();
@@ -713,6 +717,7 @@ class EditProfilePageState extends State<EditProfilePage> {
         ]);
   }
 
+
   @override
   Widget build(BuildContext context) {
     final padding = Padding(padding: _padding);
@@ -721,8 +726,11 @@ class EditProfilePageState extends State<EditProfilePage> {
         stream: Firestore.instance.collection('users').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot)
     {
-    if (!snapshot.hasData) return new Text
-    ('Loading...', style: TodoColors.textStyle2.apply(color: TodoColors.baseColors[_colorIndex]),);
+    if (!snapshot.hasData) return
+      new Center(
+          child: new CircularProgressIndicator(value: ProgressIndicatorDemoState.animation.value)
+      );
+//      new Text('Loading...', style: TodoColors.textStyle2.apply(color: TodoColors.baseColors[_colorIndex]),);
 
     _firstNameController.text = snapshot.data.documents[0]['firstName'];
     _lastNameController.text = snapshot.data.documents[0]['lastName'];
@@ -748,28 +756,28 @@ class EditProfilePageState extends State<EditProfilePage> {
 
 
     final converter = _buildListItem(context, snapshot.data.documents[0]);
-
-    _firstNameController.text = firstName;
-    _lastNameController.text = lastName;
-    _email1Controller.text = email1;
-    _email2Controller.text = email2;
-    _sexController.text = sex;
-    _countryController.text = country;
-    _mainPhoneController.text = mainPhone;
-    _phone1Controller.text = phone1;
-    _phone2Controller.text = phone2;
-    _passportNoController.text = passportNo;
-    _bankAcctNoController.text = bankAcctNo;
-    _bankNameController.text = bankName;
-    _insuranceController.text = insurance;
-    _insuranceNoController.text = insuranceNo;
-    _insuranceCpyController.text = insuranceCpy;
-    _tinController.text = tin;
-    _cvStatusElecController.text = cvStatusElec;
-    _dobController.text = dob;
-    _nationalIDController.text = nationalID;
-    _emergencyContactNameController.text = emergencyContactName;
-    _emergencyContactPhoneController.text = emergencyContactPhone;
+//
+//    _firstNameController.text = firstName;
+//    _lastNameController.text = lastName;
+//    _email1Controller.text = email1;
+//    _email2Controller.text = email2;
+//    _sexController.text = sex;
+//    _countryController.text = country;
+//    _mainPhoneController.text = mainPhone;
+//    _phone1Controller.text = phone1;
+//    _phone2Controller.text = phone2;
+//    _passportNoController.text = passportNo;
+//    _bankAcctNoController.text = bankAcctNo;
+//    _bankNameController.text = bankName;
+//    _insuranceController.text = insurance;
+//    _insuranceNoController.text = insuranceNo;
+//    _insuranceCpyController.text = insuranceCpy;
+//    _tinController.text = tin;
+//    _cvStatusElecController.text = cvStatusElec;
+//    _dobController.text = dob;
+//    _nationalIDController.text = nationalID;
+//    _emergencyContactNameController.text = emergencyContactName;
+//    _emergencyContactPhoneController.text = emergencyContactPhone;
 
     return new Padding(
     padding: _padding,

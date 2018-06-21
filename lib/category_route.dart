@@ -21,6 +21,7 @@ import 'animated_weeks_page.dart';
 import 'profile_page.dart';
 import 'constants.dart';
 import 'data.dart';
+import 'progress_bar.dart';
 
 /// Loads in unit conversion data, and displays the data.
 ///

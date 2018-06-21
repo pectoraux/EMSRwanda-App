@@ -1,7 +1,7 @@
 import 'dart:async';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'color_override.dart';
+import 'progress_bar.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
 import 'edit_profile.dart';
@@ -33,12 +33,9 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage> {
   final _padding = EdgeInsets.all(5.0);
   int _colorIndex = 0;
 
-  @override
-  Widget build(BuildContext context) {
-    final padding = Padding(padding: _padding);
+  Widget _buildListItem(BuildContext context, DocumentSnapshot document){
 
-
-    final converter = ListView(
+    return ListView(
         padding: EdgeInsets.symmetric(horizontal: 10.0),
         children: <Widget>[
 
@@ -58,8 +55,8 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage> {
           InputDecorator(
             key: _userName,
             child: Text(
-              "emma.watson",
-              style: TodoColors.textStyle2,
+              document['userName'],
+              style: TodoColors.textStyle3.apply(color: TodoColors.baseColors[_colorIndex]),
             ),
             decoration: InputDecoration(
               labelText: 'User Name',
@@ -72,8 +69,8 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage> {
           InputDecorator(
             key: _role,
             child: Text(
-              "Field Supervisor",
-              style: TodoColors.textStyle3,
+              document['userRole'],
+              style: TodoColors.textStyle3.apply(color: TodoColors.baseColors[_colorIndex]),
             ),
             decoration: InputDecoration(
               labelText: 'User Role',
@@ -86,8 +83,8 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage> {
           InputDecorator(
             key: _userStatus,
             child: Text(
-              "Active",
-              style: TodoColors.textStyle3,
+              document['userStatus'],
+              style: TodoColors.textStyle3.apply(color: TodoColors.baseColors[_colorIndex]),
             ),
             decoration: InputDecoration(
               labelText: 'User Status',
@@ -100,7 +97,7 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage> {
           InputDecorator(
             key: _firstName,
             child: Text(
-              "Emma",
+              document['firstName'],
               style: TodoColors.textStyle2,
             ),
             decoration: InputDecoration(
@@ -114,7 +111,7 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage> {
           InputDecorator(
             key: _lastName,
             child: Text(
-              "Watson",
+              document['lastName'],
               style: TodoColors.textStyle2,
             ),
             decoration: InputDecoration(
@@ -156,7 +153,7 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage> {
           InputDecorator(
             key: _nationalID,
             child: Text(
-              "3336.256.654",
+              document['nationalID'],
               style: TodoColors.textStyle2,
             ),
             decoration: InputDecoration(
@@ -170,7 +167,7 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage> {
           InputDecorator(
             key: _passportNo,
             child: Text(
-              "EBB656JHOEPR",
+              document['passportNo'],
               style: TodoColors.textStyle2,
             ),
             decoration: InputDecoration(
@@ -198,7 +195,7 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage> {
           InputDecorator(
             key: _mainPhone,
             child: Text(
-              "+25078963405",
+              document['mainPhone'],
               style: TodoColors.textStyle2,
             ),
             decoration: InputDecoration(
@@ -212,7 +209,7 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage> {
           InputDecorator(
             key: _phone1,
             child: Text(
-              "",
+              document['phone1'],
               style: TodoColors.textStyle2,
             ),
             decoration: InputDecoration(
@@ -226,7 +223,7 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage> {
           InputDecorator(
             key: _phone2,
             child: Text(
-              "",
+              document['phone2'],
               style: TodoColors.textStyle2,
             ),
             decoration: InputDecoration(
@@ -240,7 +237,7 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage> {
           InputDecorator(
             key: _email1,
             child: Text(
-              "emmawatson@laterite.com",
+              document['email1'],
               style: TodoColors.textStyle2,
             ),
             decoration: InputDecoration(
@@ -254,7 +251,7 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage> {
           InputDecorator(
             key: _email2,
             child: Text(
-              "",
+              document['email2'],
               style: TodoColors.textStyle2,
             ),
             decoration: InputDecoration(
@@ -268,7 +265,7 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage> {
           InputDecorator(
             key: _tin,
             child: Text(
-              "",
+              document['tin'],
               style: TodoColors.textStyle2,
             ),
             decoration: InputDecoration(
@@ -282,7 +279,7 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage> {
           InputDecorator(
             key: _cvStatusElec,
             child: Text(
-              "",
+              document['cvStatusElec'],
               style: TodoColors.textStyle2,
             ),
             decoration: InputDecoration(
@@ -319,24 +316,45 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage> {
             ],
           ),
         ]);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final padding = Padding(padding: _padding);
+
+    return new StreamBuilder<QuerySnapshot>(
+        stream: Firestore.instance.collection('users').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot)
+    {
+    if (!snapshot.hasData) return
+    new Center(
+        child: new CircularProgressIndicator(value: ProgressIndicatorDemoState.animation.value)
+    );
+
+    final converter = _buildListItem(context, snapshot.data.documents[0]);
 
     return Padding(
-      padding: _padding,
-      child: OrientationBuilder(
-        builder: (BuildContext context, Orientation orientation) {
-          if (orientation == Orientation.portrait) {
-            return converter;
-          } else {
-            return Center(
-              child: Container(
-                width: 450.0,
-                child: converter,
-              ),
-            );
-          }
-        },
-      ),
+    padding:
+    _padding,
+    child: OrientationBuilder(
+    builder: (BuildContext
+    context, Orientation orientation)
+    {
+    if (orientation == Orientation.portrait) {
+    return converter;
+    } else {
+    return Center(
+    child: Container(
+    width: 450.0,
+    child: converter,
+    ),
     );
+    }
+    }
+    ,
+    ),
+    );
+    });
   }
 
   void showInSnackBar(String value, Color c) {

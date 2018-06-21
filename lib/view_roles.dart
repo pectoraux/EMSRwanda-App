@@ -4,6 +4,8 @@ import 'update_role.dart';
 import 'constants.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'color_override.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'progress_bar.dart';
 
 class ViewRolesPage extends StatefulWidget {
   final int colorIndex;
@@ -18,12 +20,15 @@ class ViewRolesPage extends StatefulWidget {
 
 class ViewRolesPageState extends State<ViewRolesPage> {
   static const _padding = EdgeInsets.all(5.0);
+  List<String> roles;
 
   @override
   Widget build(BuildContext context) {
     final _roleNameController = TextEditingController();
     final _roleName = GlobalKey(debugLabel: 'Project Title');
     final _bkey = GlobalKey(debugLabel: 'Back Key');
+    List<StaggeredTile> mTiles = [];
+    ScrollController controller = new ScrollController();
 
     return Scaffold
       (
@@ -125,176 +130,74 @@ class ViewRolesPageState extends State<ViewRolesPage> {
             )
           ],
         ),
-        body: StaggeredGridView.count(
+        body:  StreamBuilder<QuerySnapshot>(
+            stream: Firestore.instance.collection('roles').getDocuments().asStream(),
+            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (!snapshot.hasData)
+                return new Center
+                (
+                  child: new CircularProgressIndicator()
+              );
+
+
+        return StaggeredGridView.count(
           crossAxisCount: 2,
           crossAxisSpacing: 12.0,
           mainAxisSpacing: 12.0,
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          children: <Widget>[
-            _buildTile(
-              Padding
-                (
-                padding: const EdgeInsets.all(24.0),
-                child: Row
-                  (
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>
-                    [
-                      Column
-                        (
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+          controller: controller,
+          children: snapshot.data.documents.map((role) {
+
+                print(role.documentID + ': ' + role['roleName']);
+
+                mTiles.add(StaggeredTile.extent(2, 110.0));
+
+                return  _buildTile(
+                  Padding
+                    (
+                    padding: const EdgeInsets.all(24.0),
+                    child: Row
+                      (
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>
                         [
-                          Text('Enumerator', style: TodoColors.textStyle6)
-                        ],
-                      ),
-                      Material
-                        (
-                          color: TodoColors.baseColors[widget.colorIndex],
-                          borderRadius: BorderRadius.circular(24.0),
-                          child: Center
+                          Column
                             (
-                              child: Padding
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>
+                            [
+                              Text(role['roleName'], style: TodoColors.textStyle6)
+                            ],
+                          ),
+                          Material
+                            (
+                              color: TodoColors.baseColors[widget.colorIndex],
+                              borderRadius: BorderRadius.circular(24.0),
+                              child: Center
                                 (
-                                padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline, color: Colors.white,
-                                    size: 30.0),
+                                  child: Padding
+                                    (
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Icon(Icons.timeline, color: Colors.white,
+                                        size: 30.0),
+                                  )
                               )
                           )
-                      )
-                    ]
-                ),
-              ),
-            ),
-            _buildTile(
-              Padding
-                (
-                padding: const EdgeInsets.all(24.0),
-                child: Row
-                  (
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>
-                    [
-                      Column
-                        (
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>
-                        [
-                          Text('Field Supervisor', style: TodoColors.textStyle6)
-                        ],
-                      ),
-                      Material
-                        (
-                          color: TodoColors.baseColors[widget.colorIndex],
-                          borderRadius: BorderRadius.circular(24.0),
-                          child: Center
-                            (
-                              child: Padding
-                                (
-                                padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline, color: Colors.white,
-                                    size: 30.0),
-                              )
-                          )
-                      )
-                    ]
-                ),
-              ),
-            ),
-            _buildTile(
-              Padding
-                (
-                padding: const EdgeInsets.all(24.0),
-                child: Row
-                  (
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>
-                    [
-                      Column
-                        (
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>
-                        [
-                          Text('Team Lead', style: TodoColors.textStyle6)
-                        ],
-                      ),
-                      Material
-                        (
-                          color: TodoColors.baseColors[widget.colorIndex],
-                          borderRadius: BorderRadius.circular(24.0),
-                          child: Center
-                            (
-                              child: Padding
-                                (
-                                padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline, color: Colors.white,
-                                    size: 30.0),
-                              )
-                          )
-                      )
-                    ]
-                ),
-              ),
-            ),
-            _buildTile(
-              Padding
-                (
-                padding: const EdgeInsets.all(24.0),
-                child: Row
-                  (
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>
-                    [
-                      Column
-                        (
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>
-                        [
-                          Text('Administrator', style: TodoColors.textStyle6)
-                        ],
-                      ),
-                      Material
-                        (
-                          color: TodoColors.baseColors[widget.colorIndex],
-                          borderRadius: BorderRadius.circular(24.0),
-                          child: Center
-                            (
-                              child: Padding
-                                (
-                                padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline, color: Colors.white,
-                                    size: 30.0),
-                              )
-                          )
-                      )
-                    ]
-                ),
-              ),
-            ),
+                        ]
+                    ),
+                  ),
+                );
+              }).toList(),
 
 
-          ],
-          staggeredTiles: [
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-          ],
-        )
+
+          staggeredTiles: mTiles,
+        );
+
+
+            }),
     );
   }
 

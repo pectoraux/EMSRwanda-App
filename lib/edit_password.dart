@@ -46,6 +46,7 @@ class EditPasswordPageState extends State<EditPasswordPage> {
               labelText: 'Old Password',
               border: CutCornersBorder(),
             ),
+            obscureText: true,
           ),
         ),
 
@@ -59,6 +60,7 @@ class EditPasswordPageState extends State<EditPasswordPage> {
               labelText: 'New Password',
               border: CutCornersBorder(),
             ),
+            obscureText: true,
           ),
         ),
 
@@ -72,6 +74,7 @@ class EditPasswordPageState extends State<EditPasswordPage> {
               labelText: 'New Password Confirmation',
               border: CutCornersBorder(),
             ),
+            obscureText: true,
           ),
         ),
 

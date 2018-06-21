@@ -6,7 +6,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'closed_projects.dart';
 import 'started_projects.dart';
-import 'starting_projects.dart';
+import 'upcoming_projects.dart';
 import 'view_users.dart';
 import 'view_devices.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +20,7 @@ import 'pending_requests.dart';
 import 'animated_weeks_page.dart';
 import 'profile_page.dart';
 import 'constants.dart';
+import 'data.dart';
 
 /// Loads in unit conversion data, and displays the data.
 ///
@@ -239,7 +240,7 @@ class _CategoryRouteState extends State<CategoryRoute> {
   title: 'Starting Project Details',
   debugShowCheckedModeBanner: false,
   theme: ThemeData(primarySwatch: Colors.blue),
-  home: StartingProjectPage(colorIndex: 4,),
+  home: UpcomingProjectPage(colorIndex: 4,),
   );
   }else
   if (c.name == "Explore Users"){

@@ -17,6 +17,7 @@ dependencies:
   flutter_calendar: "^0.0.1"
   font_awesome_flutter: "^6.0.0"
   flutter_circular_chart:
+  cloud_firestore:
 
 dev_dependencies:
   flutter_test:

@@ -666,7 +666,7 @@ class EditProfilePageState extends State<EditProfilePage> {
 
                       Firestore.instance.runTransaction((transaction) async {
                         DocumentSnapshot freshSnap =
-                        await transaction.get(document.reference);
+                        await transaction.get(document['users'].reference);
                         await transaction.update(freshSnap.reference, {
                           'firstName': firstName,
                           'lastName': lastName,
@@ -728,7 +728,7 @@ class EditProfilePageState extends State<EditProfilePage> {
     {
     if (!snapshot.hasData) return
       new Center(
-          child: new CircularProgressIndicator(value: ProgressIndicatorDemoState.animation.value)
+          child: new CircularProgressIndicator()
       );
 //      new Text('Loading...', style: TodoColors.textStyle2.apply(color: TodoColors.baseColors[_colorIndex]),);
 

@@ -181,8 +181,15 @@ class EditRolesPageState extends State<EditRolesPage> {
             .setData({ 'roleName': roleName, });
       }
       _roleNameController.clear();
+      setState(() {
+        _createUserPermission = false;
+        _createProjectPermission = false;
+        _createRolePermission = false;
+        _createTagPermission = false;
+        _grantUserPermission = false;
+      });
       showInSnackBar(
-      "Project Created Successfully", TodoColors.accent);
+      "Role Created Successfully", TodoColors.accent);
       
                   } else {
                     showInSnackBar(

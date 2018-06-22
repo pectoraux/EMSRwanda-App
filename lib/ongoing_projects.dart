@@ -6,18 +6,18 @@ import 'constants.dart';
 import 'color_override.dart';
 import 'my_project_dialog.dart';
 
-class StartedProjectPage extends StatefulWidget {
+class OngoingProjectPage extends StatefulWidget {
   final int colorIndex;
 
-  const StartedProjectPage({
+  const OngoingProjectPage({
     @required this.colorIndex,
   }) : assert(colorIndex != null);
 
   @override
-  StartedProjectPageState createState() => StartedProjectPageState();
+  OngoingProjectPageState createState() => OngoingProjectPageState();
 }
 
-class StartedProjectPageState extends State<StartedProjectPage> {
+class OngoingProjectPageState extends State<OngoingProjectPage> {
 
   @override
   Widget build(BuildContext context) {

@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Profile {
   String firstName;
   String lastName;
@@ -36,8 +38,10 @@ class Profile {
 }
 
 Profile getProfile() {
+
+
   return new Profile()
-    ..firstName = "Emma"
+    ..firstName = "emma"//Firestore.instance.collection('users').document('firstName')
     ..lastName = "Watson"
     ..location = "Kigali"
     ..age = 35

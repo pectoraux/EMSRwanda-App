@@ -5,7 +5,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'closed_projects.dart';
-import 'started_projects.dart';
+import 'projects_page.dart';
 import 'upcoming_projects.dart';
 import 'view_users.dart';
 import 'view_devices.dart';
@@ -49,57 +49,8 @@ class _CategoryRouteState extends State<CategoryRoute> {
   // For more details, see https://github.com/dart-lang/sdk/issues/27755
   final _categories = <Category>[];
   static const _baseColors = TodoColors.baseColors;
-// <ColorSwatch>[
-//    ColorSwatch(0xFF6AB7A8, {
-//      'highlight': Color(0xFF6AB7A8),
-//      'splash': Color(0xFF0ABC9B),
-//    }),
-//    ColorSwatch(0xFFFFD28E, {
-//      'highlight': Color(0xFFFFD28E),
-//      'splash': Color(0xFFFFA41C),
-//    }),
-//    ColorSwatch(0xFFFFB7DE, {
-//      'highlight': Color(0xFFFFB7DE),
-//      'splash': Color(0xFFF94CBF),
-//    }),
-//    ColorSwatch(0xFF8899A8, {
-//      'highlight': Color(0xFF8899A8),
-//      'splash': Color(0xFFA9CAE8),
-//    }),
-//    ColorSwatch(0xFFEAD37E, {
-//      'highlight': Color(0xFFEAD37E),
-//      'splash': Color(0xFFFFE070),
-//    }),
-//    ColorSwatch(0xFF81A56F, {
-//      'highlight': Color(0xFF81A56F),
-//      'splash': Color(0xFF7CC159),
-//    }),
-//    ColorSwatch(0xFFD7C0E2, {
-//      'highlight': Color(0xFFD7C0E2),
-//      'splash': Color(0xFFCA90E5),
-//    }),
-//    ColorSwatch(0xFFCE9A9A, {
-//      'highlight': Color(0xFFCE9A9A),
-//      'splash': Color(0xFFF94D56),
-//      'error': Color(0xFF912D2D),
-//    }),
-//    ColorSwatch(0xFF779A9A, {
-//      'highlight': Color(0xFF3366FF),
-//      'splash': Color(0xFF3366FF),
-//      'error': Color(0xFF3366FF),
-//    }),
-//  ];
-  static const _icons = <String>[
-    'assets/icons/length.png',
-    'assets/icons/area.png',
-    'assets/icons/volume.png',
-    'assets/icons/mass.png',
-    'assets/icons/time.png',
-    'assets/icons/digital_storage.png',
-    'assets/icons/power.png',
-    'assets/icons/currency.png',
-    'assets/icons/availability.png',
-  ];
+
+  static const _icons = TodoColors.icons;
 
   @override
   Future
@@ -201,20 +152,20 @@ class _CategoryRouteState extends State<CategoryRoute> {
   if(c.name == "Profile"){
   return MaterialApp
   (
-  title: 'Projects',
+  title: 'Profile Page',
   debugShowCheckedModeBanner: false,
   theme: ThemeData(primarySwatch: Colors.blue),
   home: ProfilePage(colorIndex: 0,),
   );
 
   }else
-  if(c.name == "Project"){
+  if(c.name == "Projects"){
   return MaterialApp
   (
   title: 'Projects',
   debugShowCheckedModeBanner: false,
   theme: ThemeData(primarySwatch: Colors.blue),
-  home: SearchProjectsPage(colorIndex: 1,),
+  home: ProjectsPage(colorIndex: 1,),
   );
   }else
   if (c.name == "Pending Requests"){
@@ -226,31 +177,13 @@ class _CategoryRouteState extends State<CategoryRoute> {
   home: PendingRequestsPage(colorIndex: 2,),
   );
   }else
-  if (c.name == "Started Projects"){
-  return MaterialApp
-  (
-  title: 'Started Project Details',
-  debugShowCheckedModeBanner: false,
-  theme: ThemeData(primarySwatch: Colors.blue),
-  home: StartedProjectPage(colorIndex: 3,),
-  );
-  }else
-  if (c.name == "Starting Projects"){
-  return MaterialApp
-  (
-  title: 'Starting Project Details',
-  debugShowCheckedModeBanner: false,
-  theme: ThemeData(primarySwatch: Colors.blue),
-  home: UpcomingProjectPage(colorIndex: 4,),
-  );
-  }else
   if (c.name == "Explore Users"){
   return MaterialApp
   (
   title: 'Explore Users',
   debugShowCheckedModeBanner: false,
   theme: ThemeData(primarySwatch: Colors.blue),
-  home: ViewUsersPage(colorIndex: 5,),
+  home: ViewUsersPage(colorIndex: 3,),
   );
   }else
   if (c.name == "Explore Devices"){
@@ -259,24 +192,15 @@ class _CategoryRouteState extends State<CategoryRoute> {
   title: 'Explore Devices',
   debugShowCheckedModeBanner: false,
   theme: ThemeData(primarySwatch: Colors.blue),
-  home: ViewDevicesPage(colorIndex: 6,),
-  );
-  }else
-  if (c.name == "Closed Projects"){
-  return MaterialApp
-  (
-  title: 'Closed Project Details',
-  debugShowCheckedModeBanner: false,
-  theme: ThemeData(primarySwatch: Colors.blue),
-  home: ClosedProjectPage(colorIndex: 7,),
+  home: ViewDevicesPage(colorIndex: 4,),
   );
   }else {
   return MaterialApp
   (
-  title: 'Closed Project Details',
+  title: 'Weeks Availability',
   debugShowCheckedModeBanner: false,
   theme: ThemeData(primarySwatch: Colors.blue),
-  home: AnimatedWeeksPage(colorIndex: 8,),
+  home: AnimatedWeeksPage(colorIndex: 5,),
   );
   }
   }

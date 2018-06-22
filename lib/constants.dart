@@ -75,40 +75,91 @@ class TodoColors {
       fontFamily: ProfileFontNames.TimeBurner);
   Color c = Colors.amber;
   static const baseColors = <ColorSwatch>[
+    //Profile
     ColorSwatch(0xFF6AB7A8, {
       'highlight': Color(0xFF6AB7A8),
       'splash': Color(0xFF0ABC9B),
     }),
-    //0xFFFFD28E
-    ColorSwatch(0xFFFFBF00,  {
-      'highlight': Color(0xFFFFD28E),
-      'splash': Color(0xFFFFA41C),
-    }),
-    ColorSwatch(0xFFFFC7DE, {
-      'highlight': Color(0xFFFFB7DE),
-      'splash': Color(0xFFF94CBF),
-    }),
+    //Projects
     ColorSwatch(0xFF8899A8, {
       'highlight': Color(0xFF8899A8),
       'splash': Color(0xFFA9CAE8),
     }),
-    ColorSwatch(0xFFEAD37E, {
-      'highlight': Color(0xFFEAD37E),
-      'splash': Color(0xFFFFE070),
+    //Pending Requests
+    ColorSwatch(0xFF779A9A, {
+      'highlight': Color(0xFF3366FF),
+      'splash': Color(0xFF3366FF),
+      'error': Color(0xFF3366FF),
     }),
+    //Explore Users
     ColorSwatch(0xFF81A56F, {
       'highlight': Color(0xFF81A56F),
       'splash': Color(0xFF7CC159),
     }),
+    //Explore Devices
     ColorSwatch(0xFFD7C0E2, {
       'highlight': Color(0xFFD7C0E2),
       'splash': Color(0xFFCA90E5),
     }),
+    //Weeks Availability
+    ColorSwatch(0xFFFFC7DE, {
+      'highlight': Color(0xFFFFB7DE),
+      'splash': Color(0xFFF94CBF),
+    }),
+  ];
+
+  static const icons = <String>[
+    'assets/icons/length.png',
+    'assets/icons/area.png',
+    'assets/icons/volume.png',
+    'assets/icons/availability.png',
+    'assets/icons/power.png',
+    'assets/icons/digital_storage.png',
+  ];
+
+  static const baseColors2 = <ColorSwatch>[
+    //Profile
+    ColorSwatch(0xFF6AB7A8, {
+      'highlight': Color(0xFF6AB7A8),
+      'splash': Color(0xFF0ABC9B),
+    }),
+    //Projects
+    ColorSwatch(0xFFFFBF00,  {
+      'highlight': Color(0xFFFFD28E),
+      'splash': Color(0xFFFFA41C),
+    }),
+    //Pending Requests
+    ColorSwatch(0xFFFFC7DE, {
+      'highlight': Color(0xFFFFB7DE),
+      'splash': Color(0xFFF94CBF),
+    }),
+    //Started Projects
+    ColorSwatch(0xFF8899A8, {
+      'highlight': Color(0xFF8899A8),
+      'splash': Color(0xFFA9CAE8),
+    }),
+    //Upcoming Projects
+    ColorSwatch(0xFFEAD37E, {
+      'highlight': Color(0xFFEAD37E),
+      'splash': Color(0xFFFFE070),
+    }),
+    //Explore Users
+    ColorSwatch(0xFF81A56F, {
+      'highlight': Color(0xFF81A56F),
+      'splash': Color(0xFF7CC159),
+    }),
+    //Explore Devices
+    ColorSwatch(0xFFD7C0E2, {
+      'highlight': Color(0xFFD7C0E2),
+      'splash': Color(0xFFCA90E5),
+    }),
+    //Closed Projects
     ColorSwatch(0xFFCE9A9A, {
       'highlight': Color(0xFFCE9A9A),
       'splash': Color(0xFFF94D56),
       'error': Color(0xFF912D2D),
     }),
+    //Weeks Availability
     ColorSwatch(0xFF779A9A, {
       'highlight': Color(0xFF3366FF),
       'splash': Color(0xFF3366FF),

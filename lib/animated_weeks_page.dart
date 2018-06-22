@@ -166,7 +166,7 @@ class _AnimatedWeeksPageState extends State<AnimatedWeeksPage> {
                 ],
               )
           ),
-          backgroundColor: TodoColors.baseColors[8],
+          backgroundColor: TodoColors.baseColors[widget.colorIndex],
           actions: <Widget>[
             new IconButton(
               icon: const Icon(Icons.add_circle),

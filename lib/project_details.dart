@@ -5,6 +5,9 @@ import 'constants.dart';
 import 'staff_stats.dart';
 import 'view_devices.dart';
 import 'notifications.dart';
+import 'supplemental/cut_corners_border.dart';
+import 'color_override.dart';
+import 'my_project_details_dialog.dart';
 
 class ProjectDetailsPage extends StatefulWidget {
   final int colorIndex;
@@ -34,7 +37,13 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
       "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
       "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
       ;
+  String locations = 'Kigali, Gisenyi';
+  String title = 'FSI';
   int people_surveyed = 100;
+  final _projectDescriptionController = TextEditingController();
+  final _projectDescription = GlobalKey(debugLabel: 'Project Description');
+  bool update= false;
+
   final List<List<double>> charts =
   [
     [
@@ -341,8 +350,8 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
                     ]
                 ),
               ),
-                'Kigali, Gisenyi',
-                'FSI',
+                locations,
+                title,
               project_description
             ),
             _buildTile(
@@ -551,7 +560,8 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
           (
           // Do onTap() if it isn't null, otherwise do print()
             onTap: () {
-              showTile(locations, title, description);
+              showDialog(context: context, child: new MyProjectDetailsDialog(colorIndex: widget.colorIndex, title: title,
+              project_description: description, locations: locations,));
             },
             child: child
         )
@@ -561,7 +571,7 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
     String Status;
     title = title.toUpperCase();
     setState(() {
-
+      _projectDescriptionController.text = project_description;
     });
 
     showDialog<Null>(
@@ -579,9 +589,36 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
                       ListTile(
                         title: Text("Project Title: $title\nProject Location: $locations",
                           style: TextStyle(color: TodoColors.baseColors[widget.colorIndex]),),
-                        subtitle: Text(description),
+                        subtitle: update ?
+                        PrimaryColorOverride(
+                          color: TodoColors.baseColors[widget.colorIndex],
+                          child: new Container(
+                              child: TextField(
+                                style: TodoColors.textStyle2.apply(fontSizeDelta: 10.0),
+                                keyboardType: TextInputType.multiline,
+                                maxLines: null,
+                            key: _projectDescription,
+                            controller: _projectDescriptionController,
+                            decoration: InputDecoration(
+                              border: CutCornersBorder(),
+                            ),
+                          ),
+                          ),
+                        ):Text(description)
                       ),
                       BackButton(color: TodoColors.baseColors[widget.colorIndex],),
+                      FlatButton(
+                        child: Text('UPDATE'),
+                        textColor: TodoColors.baseColors[widget.colorIndex],
+                        shape: BeveledRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(7.0)),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            update= true;
+                          });
+                        },
+                      ),
                     ],
                   ),
                 )

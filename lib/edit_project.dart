@@ -209,7 +209,9 @@ class EditProjectPageState extends State<EditProjectPage> {
           ),
           onPressed: () {
             if (_locationValue != "Locations") {
-              _locationValue = "Locations";
+              setState(() {
+                _locationValue = locations[0];
+              });
               showInSnackBar("Location Added Successfully", TodoColors.baseColors[_colorIndex]);
             } else {
               showInSnackBar(
@@ -231,7 +233,10 @@ class EditProjectPageState extends State<EditProjectPage> {
           ),
           onPressed: () {
             if (_tagValue != "Tags") {
-              _tagValue = "Tags";
+              setState(() {
+                _tagValue = tags[0];
+              });
+
               showInSnackBar("Tag Added Successfully", TodoColors.baseColors[_colorIndex]);
             } else {
               showInSnackBar("Please Specify A Tag Before Clicking This Button",
@@ -280,12 +285,13 @@ class EditProjectPageState extends State<EditProjectPage> {
           ),
           onPressed: () {
             if (_roleValue != "Project Staff Roles" && !areAllBrown(_mcolors)) {
-              _roleValue = "Project Staff Roles";
+
               setState(() {
                 for (int i = 0; i < _mcolors.length; i++) {
                   _mcolors.removeAt(i);
                   _mcolors.insert(i, Colors.brown[500]);
                 }
+                _roleValue = roles[0];
               });
               showInSnackBar(
                   "Device(s) Added Successfully To Role", TodoColors.baseColors[_colorIndex]);

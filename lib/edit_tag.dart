@@ -273,6 +273,12 @@ class EditTagPageState extends State<EditTagPage> {
                   if (_tagNameController.value.text.trim() != "" &&
                       _tagTypeController.value.text.trim() != "" &&
                       _tagDescriptionController.value.text.trim() != "") {
+                    setState(() {
+                      _tagTypeValue = tagTypes[0];
+                      _tagNameController.clear();
+                      _tagDescriptionController.clear();
+                    });
+
                     showInSnackBar(
                         "Tag Created Successfully", TodoColors.accent);
                   } else {

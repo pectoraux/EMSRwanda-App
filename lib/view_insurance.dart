@@ -120,8 +120,7 @@ class ViewInsurancePageState extends State<ViewInsurancePage> {
     {
     if (!snapshot.hasData) return new Center
     (
-    child: new CircularProgressIndicator(value: ProgressIndicatorDemoState.
-    animation.value)
+    child: new CircularProgressIndicator()
     );
     final converter = _buildListItem
     (context, snapshot.data.documents[0

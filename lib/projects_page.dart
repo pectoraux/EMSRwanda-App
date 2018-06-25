@@ -9,7 +9,7 @@ import 'upcoming_projects.dart';
 import 'constants.dart';
 import 'edit_device.dart';
 import 'edit_role.dart';
-import 'edit_user.dart';
+import 'closed_projects.dart';
 
 class ProjectsPage extends StatefulWidget {
   final int colorIndex;
@@ -44,6 +44,10 @@ class ProjectsPageState extends State<ProjectsPage> {
           icon: new Icon(Icons.group_work, color: getColor(2),),
           title: new Text("Upcoming\nProjects",)
       ),
+      new BottomNavigationBarItem(
+          icon: new Icon(Icons.clear, color: getColor(3),),
+          title: new Text("Closed\nProjects",)
+      ),
     ];
 
     final profile = getProfile();
@@ -55,6 +59,7 @@ class ProjectsPageState extends State<ProjectsPage> {
             new SearchProjectsPage(colorIndex: widget.colorIndex),
             new OngoingProjectPage(colorIndex: widget.colorIndex),
             new UpcomingProjectPage(colorIndex: widget.colorIndex),
+            new ClosedProjectPage(colorIndex: widget.colorIndex),
           ],
           controller: _pageController,
           onPageChanged: onPageChanged

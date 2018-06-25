@@ -33,7 +33,7 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
     _scanIn = false;
   }
 
-  Future _scanQR() async {
+  Future scanQR() async {
     try {
       String qrResult = await BarcodeScanner.scan();
       setState(() {
@@ -65,6 +65,7 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
       });
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +135,7 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
                     ]
                 ),
               ),
-              onTap: _scanQR,
+              onTap: scanQR,
             ),
             _buildTile2(
               Padding

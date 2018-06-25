@@ -163,6 +163,7 @@ class MyRatingDialogState extends State<MyRatingDialog> {
               color: TodoColors.baseColors[widget.colorIndex],
               child: TextField(
                 key: _ratingComment,
+                maxLines: null,
                 controller: _ratingCommentController,
                 decoration: InputDecoration(
                   labelText: 'Rating Comment',

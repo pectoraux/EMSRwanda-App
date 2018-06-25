@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'main_menu.dart';
 import 'models.dart';
@@ -9,12 +12,17 @@ import 'constants.dart';
 import 'edit_device.dart';
 import 'edit_role.dart';
 import 'edit_user.dart';
+import 'auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ProfilePage extends StatefulWidget {
+  final BaseAuth auth;
   final int colorIndex;
+
 
   const ProfilePage({
     @required this.colorIndex,
+    this.auth,
   }) : assert(colorIndex != null);
 
   @override
@@ -56,8 +64,10 @@ class _ProfilePageState extends State<ProfilePage> {
           title: new Text("Users",)
       ),
     ];
-
+    String userEmail = 'enumerator@laterite.com';
     final profile = getProfile();
+//    Firestore.instance.collection('users').snapshots().first. documents.where((doc){
+//      return  == 'emma.watson';}).first;
 
     return new Scaffold(
       resizeToAvoidBottomPadding: false,
@@ -75,7 +85,7 @@ class _ProfilePageState extends State<ProfilePage> {
             new EditProjectPage(),
             new EditTagPage(),
             new EditDevicePage(),
-            new EditUserPage(),
+            new EditUserPage(auth: widget.auth,),
           ],
           controller: _pageController,
           onPageChanged: onPageChanged

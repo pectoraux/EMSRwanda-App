@@ -508,6 +508,7 @@ class UserRatingPageState extends State<UserRatingPage> {
                                                   color: TodoColors.baseColors[widget.colorIndex],
                                                   child: TextField(
                                                     key: _reply,
+                                                    maxLines: null,
                                                     controller: _replyController,
                                                     decoration: InputDecoration(
                                                       labelText: 'Your Response',
@@ -635,6 +636,7 @@ class UserRatingPageState extends State<UserRatingPage> {
                                                   color: TodoColors.baseColors[widget.colorIndex],
                                                   child: TextField(
                                                     key: _reply,
+                                                    maxLines: null,
                                                     controller: _replyController,
                                                     decoration: InputDecoration(
                                                       labelText: 'Your Response',

@@ -1,11 +1,18 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'color_override.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
 import 'quick_user_actions.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'auth.dart';
 
 class EditUserPage extends StatefulWidget {
+  EditUserPage({Key key, this.auth}) : super(key: key);
+
+  final BaseAuth auth;
+
   @override
   EditUserPageState createState() => EditUserPageState();
 }
@@ -20,6 +27,8 @@ class EditUserPageState extends State<EditUserPage> {
   List<String> roles = ["Project Staff Roles", "Enumerator", "Project Lead", "Project Supervisor", "Administrator"];
   List<DropdownMenuItem> _roleMenuItems;
   String _roleValue;
+  String defaultPassword = "Laterite";
+
 
   @override
   void initState() {
@@ -144,7 +153,7 @@ class EditUserPageState extends State<EditUserPage> {
         InputDecorator(
           key: _userPassword,
           child: Text(
-            "Laterite",
+            defaultPassword,
             style: TodoColors.textStyle2,
           ),
           decoration: InputDecoration(
@@ -180,11 +189,53 @@ class EditUserPageState extends State<EditUserPage> {
               onPressed: () {
                 if (_userNameController.value.text.trim() != "" &&
                     _roleValue != "Project Staff Roles") {
+                  String uid = "";
+                  Future<String> userId =  widget.auth.createUser(_userNameController.text, defaultPassword);
+
+//                  print('User Id: ${uid}');
+
+                  Map<String, String> user = <String, String>{
+                    'userName': _userNameController.text,
+                    'userRole': _roleValue,
+                    'userPassword': defaultPassword,
+                    'userStatus': 'Active',
+                    'firstName': '',
+                    'lastName': '',
+                    'email1': '',
+                    'email2': '',
+                    'sex': '',
+                    'country': '',
+                    'mainPhone': '',
+                    'phone1': '',
+                    'phone2': '',
+                    'passportNo': '',
+                    'bankAcctNo': '',
+                    'bankName': '',
+                    'insurance': '',
+                    'insuranceNo': '',
+                    'insuranceCpy': '',
+                    'tin': '',
+                    'cvStatusElec': '',
+                    'dob': '',
+                    'nationalID': '',
+                    'emergencyContactName': '',
+                    'emergencyContactPhone': '',
+                  };
+                  bool error = false;
+
                   setState(() {
-                    _roleValue = "Project Staff Roles";
-                    _userNameController.clear();
+                    Firestore.instance.collection('users').document(_userNameController.text)
+                    .setData(user).whenComplete(() {
+
+                    }).catchError((e) {
+                      error = true;
+                      showInSnackBar("Failed To Create User\n${e}",
+                          Colors.redAccent);
+                    });
                   });
-                  showInSnackBar(
+                  _roleValue = roles[0];
+                  _userNameController.clear();
+                  error? '': showInSnackBar(
                       "User Created Successfully", TodoColors.baseColors[_colorIndex]);
                 } else {
                   showInSnackBar("Please Specify A Value For All Fields",

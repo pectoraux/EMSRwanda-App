@@ -4,7 +4,9 @@
 
 // You can read about packages here: https://flutter.io/using-packages/
 import 'package:flutter/material.dart';
-
+import 'login_page.dart';
+import 'root_page.dart';
+import 'auth.dart';
 // You can use a relative import, i.e. `import 'category_route.dart;'` or
 // a package import, as shown below.
 // More details at http://dart-lang.github.io/linter/lints/avoid_relative_lib_imports.html
@@ -38,7 +40,7 @@ class UnitConverterApp extends StatelessWidget {
         primaryColor: Colors.grey[500],
         textSelectionHandleColor: Colors.green[500],
       ),
-      home: CategoryRoute(),
+      home: new RootPage(auth: new Auth()),//CategoryRoute(),
     );
   }
 }

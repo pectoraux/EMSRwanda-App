@@ -1,9 +1,14 @@
+import 'dart:async';
+
+import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
 import 'quick_device_actions.dart';
 import 'color_override.dart';
 import 'star_rating.dart';
+import 'qrcode_scanner.dart';
+import 'package:flutter/services.dart';
 
 class EditDevicePage extends StatefulWidget {
   @override
@@ -23,6 +28,10 @@ class EditDevicePageState extends State<EditDevicePage> {
   List<DropdownMenuItem> _deviceTypeMenuItems, _deviceConditionMenuItems;
   String _deviceTypeValue, _deviceConditionValue;
   double rating = 0.0;
+  String deviceName = "Tap Here To Scan The Device Name";
+  final String display_permission_denied = "Camera permission was denied";
+  final String display_unknown = "Unknown Error";
+  final String display_no_scan = "You pressed the back button before scanning anything";
 
   @override
   void initState() {
@@ -112,6 +121,33 @@ class EditDevicePageState extends State<EditDevicePage> {
     });
   }
 
+  Future scanQR2() async {
+    try {
+      String qrResult = await BarcodeScanner.scan();
+      setState(() {
+      deviceName = qrResult.toUpperCase();
+      });
+    } on PlatformException catch (ex) {
+      if (ex.code == BarcodeScanner.CameraAccessDenied) {
+        setState(() {
+        deviceName = display_permission_denied;
+        });
+      } else {
+        setState(() {
+        deviceName = display_unknown + " $ex";
+        });
+      }
+    } on FormatException {
+      setState(() {
+      deviceName = display_no_scan;
+      });
+    } catch (ex) {
+      setState(() {
+      deviceName = display_unknown + " $ex";
+      });
+    }
+  }
+
   void _updateDeviceConditionValue(dynamic name) {
     setState(() {
       _deviceConditionValue = name;
@@ -139,16 +175,24 @@ class EditDevicePageState extends State<EditDevicePage> {
         ),
 
         SizedBox(height: 12.0),
-        PrimaryColorOverride(
+        FlatButton(
+          child: Text(deviceName, style: TodoColors.textStyle.apply(color: Theme.of(context).disabledColor),),
+          padding: EdgeInsets.only(bottom: 20.0, top: 20.0),
           color: TodoColors.baseColors[_colorIndex],
-          child: TextField(
-            key: _deviceName,
-            controller: _deviceNameController,
-            decoration: InputDecoration(
-              labelText: 'Device Name',
-              border: CutCornersBorder(),
-            ),
+          shape: BeveledRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(7.0)),
           ),
+          onPressed: () {
+            scanQR2();
+            setState(() {
+              _deviceNameController.clear();
+              _deviceTypeController.clear();
+              _deviceConditionController.clear();
+              _deviceConditionValue = "Device Condition";
+              _deviceTypeValue = "Device Type";
+              rating = 0.0;
+            });
+          },
         ),
 
         const SizedBox(height: 12.0),

@@ -7,6 +7,13 @@ import 'staff_stats.dart';
 import 'notifications.dart';
 
 class ClosedProjectDetailsPage extends StatefulWidget {
+  final int colorIndex;
+
+  const ClosedProjectDetailsPage({
+    @required this.colorIndex,
+  }) : assert(colorIndex != null);
+
+
   @override
   ClosedProjectDetailsPageState createState() =>
       ClosedProjectDetailsPageState();
@@ -29,7 +36,6 @@ class ClosedProjectDetailsPageState extends State<ClosedProjectDetailsPage> {
       "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
       "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
   ;
-  int _colorIndex = 7;
   int people_surveyed = 100;
   final List<List<double>> charts =
   [
@@ -313,13 +319,13 @@ class ClosedProjectDetailsPageState extends State<ClosedProjectDetailsPage> {
                         children: <Widget>
                         [
                           Text('Kigali, Gisenyi',
-                              style: TextStyle(color: TodoColors.baseColors[_colorIndex])),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
                           Text('FSI', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[_colorIndex],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
 
                           child: Center
@@ -368,7 +374,7 @@ class ClosedProjectDetailsPageState extends State<ClosedProjectDetailsPage> {
               ),
               onTap: () =>
                   Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => StaffNStatsPage(colorIndex: _colorIndex,))),
+                      MaterialPageRoute(builder: (_) => StaffNStatsPage(colorIndex: widget.colorIndex,))),
             ),
             _buildTile(
               Padding
@@ -382,7 +388,7 @@ class ClosedProjectDetailsPageState extends State<ClosedProjectDetailsPage> {
                     [
                       Material
                         (
-                          color: TodoColors.baseColors[_colorIndex],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           shape: CircleBorder(),
                           child: Padding
                             (
@@ -400,7 +406,7 @@ class ClosedProjectDetailsPageState extends State<ClosedProjectDetailsPage> {
               ),
               onTap: () =>
                   Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => NotificationsPage(colorIndex: _colorIndex,))),
+                      MaterialPageRoute(builder: (_) => NotificationsPage(colorIndex: widget.colorIndex,))),
             ),
             _buildTile(
               Padding
@@ -425,7 +431,7 @@ class ClosedProjectDetailsPageState extends State<ClosedProjectDetailsPage> {
                             children: <Widget>
                             [
                               Text('People Surveyed',
-                                  style: TextStyle(color: TodoColors.baseColors[_colorIndex],)),
+                                  style: TextStyle(color: TodoColors.baseColors[widget.colorIndex],)),
                               Text('${people_surveyed}', style: TodoColors.textStyle6),
                             ],
                           ),
@@ -460,7 +466,7 @@ class ClosedProjectDetailsPageState extends State<ClosedProjectDetailsPage> {
                         (
                         data: charts[actualChart],
                         lineWidth: 5.0,
-                        lineColor: TodoColors.baseColors[_colorIndex],
+                        lineColor: TodoColors.baseColors[widget.colorIndex],
                       )
                     ],
                   )
@@ -483,13 +489,13 @@ class ClosedProjectDetailsPageState extends State<ClosedProjectDetailsPage> {
                         children: <Widget>
                         [
                           Text('Devices',
-                              style: TextStyle(color: TodoColors.baseColors[_colorIndex],)),
+                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex],)),
                           Text('173', style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
                         (
-                          color: TodoColors.baseColors[_colorIndex],
+                          color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
                           child: Center
                             (
@@ -506,7 +512,7 @@ class ClosedProjectDetailsPageState extends State<ClosedProjectDetailsPage> {
               ),
               onTap: () =>
                   Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => ViewDevicesPage(colorIndex: _colorIndex,))),
+                      MaterialPageRoute(builder: (_) => ViewDevicesPage(colorIndex: widget.colorIndex,))),
             )
           ],
           staggeredTiles: [
@@ -574,10 +580,10 @@ class ClosedProjectDetailsPageState extends State<ClosedProjectDetailsPage> {
                     children: <Widget>[
                       ListTile(
                         title: Text("Project Title: $title\nProject Location: $locations",
-                          style: TextStyle(color: TodoColors.baseColors[_colorIndex]),),
+                          style: TextStyle(color: TodoColors.baseColors[widget.colorIndex]),),
                         subtitle: Text(description),
                       ),
-                      BackButton(color: TodoColors.baseColors[_colorIndex],),
+                      BackButton(color: TodoColors.baseColors[widget.colorIndex],),
                     ],
                   ),
                 )

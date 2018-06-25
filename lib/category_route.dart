@@ -20,8 +20,7 @@ import 'pending_requests.dart';
 import 'animated_weeks_page.dart';
 import 'profile_page.dart';
 import 'constants.dart';
-import 'data.dart';
-import 'progress_bar.dart';
+import 'auth.dart';
 
 /// Loads in unit conversion data, and displays the data.
 ///
@@ -32,7 +31,10 @@ import 'progress_bar.dart';
 /// While it is named CategoryRoute, a more apt name would be CategoryScreen,
 /// because it is responsible for the UI at the route's destination.
 class CategoryRoute extends StatefulWidget {
-  const CategoryRoute();
+  CategoryRoute({this.auth, this.onSignOut});
+  final BaseAuth auth;
+  final VoidCallback onSignOut;
+
 
   @override
   _CategoryRouteState createState() => _CategoryRouteState();
@@ -51,6 +53,7 @@ class _CategoryRouteState extends State<CategoryRoute> {
   static const _baseColors = TodoColors.baseColors;
 
   static const _icons = TodoColors.icons;
+
 
   @override
   Future
@@ -118,6 +121,8 @@ class _CategoryRouteState extends State<CategoryRoute> {
   ///
   /// For portrait, we use a [ListView]. For landscape, we use a [GridView].
   Widget _buildCategoryWidgets(Orientation deviceOrientation) {
+
+
   if (deviceOrientation == Orientation.portrait) {
   return ListView.builder(
   itemBuilder: (BuildContext context, int index) {
@@ -155,7 +160,7 @@ class _CategoryRouteState extends State<CategoryRoute> {
   title: 'Profile Page',
   debugShowCheckedModeBanner: false,
   theme: ThemeData(primarySwatch: Colors.blue),
-  home: ProfilePage(colorIndex: 0,),
+  home: ProfilePage(colorIndex: 0, auth: widget.auth,),
   );
 
   }else
@@ -218,6 +223,20 @@ class _CategoryRouteState extends State<CategoryRoute> {
   Widget build(BuildContext context)
 
   {
+
+
+  void _signOut() async {
+  try {
+
+  await widget.auth.signOut();
+  widget.onSignOut();
+
+  } catch (e) {
+  print(e);
+  }
+
+  }
+
   if (_categories.isEmpty) {
   return Center(
   child: Container(
@@ -254,12 +273,21 @@ class _CategoryRouteState extends State<CategoryRoute> {
   [
   Text("Welcome To Laterite", style: TodoColors.textStyle5,),
   Expanded(child:FlatButton(
-  onPressed: () {},
+  onPressed: () {
+
+    _signOut();
+    },
   child: new Text('Log Out', style: TodoColors.textStyle3, ),
   ), flex: 1, ),
   ],
   ),
 
   );
+  }
+  void showInSnackBar(String value, Color c) {
+  Scaffold.of(context).showSnackBar(new SnackBar(
+  content: new Text(value),
+  backgroundColor: c,
+  ));
   }
 }

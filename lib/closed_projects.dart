@@ -490,7 +490,7 @@ class ClosedProjectPageState extends State<ClosedProjectPage> {
           // Do onTap() if it isn't null, otherwise do print()
             onTap: () =>
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (_) => ClosedProjectDetailsPage())),
+                    builder: (_) => ClosedProjectDetailsPage(colorIndex: widget.colorIndex,))),
             child: child
         )
     );

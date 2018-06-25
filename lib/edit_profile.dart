@@ -262,6 +262,9 @@ class EditProfilePageState extends State<EditProfilePage> {
 //    _emergencyContactPhoneController.text = emergencyContactPhone;
 
 
+
+
+
     return ListView(
         padding: EdgeInsets.symmetric(horizontal: 10.0),
 
@@ -755,7 +758,10 @@ class EditProfilePageState extends State<EditProfilePage> {
     _emergencyContactPhoneController.text = snapshot.data.documents[0]['emergencyContactPhone'];
 
 
-    final converter = _buildListItem(context, snapshot.data.documents[0]);
+
+    final converter = _buildListItem(context,
+                                      snapshot.data.documents.where((doc){
+                                      return doc.documentID == 'emma.watson';}).first);
 //
 //    _firstNameController.text = firstName;
 //    _lastNameController.text = lastName;
@@ -786,7 +792,8 @@ class EditProfilePageState extends State<EditProfilePage> {
     (BuildContext context, Orientation orientation)
     {
     if (orientation == Orientation.portrait) {
-    return converter;
+    return
+    converter;
     } else {
     return Center(
     child: Container(

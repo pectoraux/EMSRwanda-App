@@ -4,13 +4,17 @@ import 'color_override.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
 import 'quick_tag_actions.dart';
+import 'animated_logo.dart';
 
 class EditTagPage extends StatefulWidget {
   @override
   EditTagPageState createState() => EditTagPageState();
 }
 
-class EditTagPageState extends State<EditTagPage> {
+class EditTagPageState extends State<EditTagPage> with SingleTickerProviderStateMixin {
+  AnimationController controller;
+  Animation<double> animation;
+
   final _tagNameController = TextEditingController();
   final _tagTypeController = TextEditingController();
   final _tagDescriptionController = TextEditingController();
@@ -28,8 +32,13 @@ class EditTagPageState extends State<EditTagPage> {
 
 
   @override
-  void initState() {
+  initState() {
     super.initState();
+    controller = new AnimationController(
+        duration: const Duration(milliseconds: 2000), vsync: this);
+    animation = new Tween(begin: 0.0, end: 300.0).animate(controller);
+    controller.forward();
+
     _createDropdownMenuItems(3, tagTypes);
     _createDropdownMenuItems(4, menu);
     _createDropdownMenuItems(5, ages);
@@ -206,12 +215,13 @@ class EditTagPageState extends State<EditTagPage> {
           SizedBox(height: 20.0),
           Column(
             children: <Widget>[
-              Image.asset('assets/diamond.png'),
-              SizedBox(height: 16.0),
-              Text(
-                'Create A New Tag',
-                style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),
-              ),
+//              Image.asset('assets/diamond.png'),
+//              SizedBox(height: 16.0),
+//              Text(
+//                'Create A New Tag',
+//                style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),
+//              ),
+              AnimatedLogo(animation: animation, message: 'Create A New Tag', factor: 1.0,),
             ],
           ),
 

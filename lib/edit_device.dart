@@ -9,13 +9,17 @@ import 'color_override.dart';
 import 'star_rating.dart';
 import 'qrcode_scanner.dart';
 import 'package:flutter/services.dart';
+import 'animated_logo.dart';
 
 class EditDevicePage extends StatefulWidget {
   @override
   EditDevicePageState createState() => EditDevicePageState();
 }
 
-class EditDevicePageState extends State<EditDevicePage> {
+class EditDevicePageState extends State<EditDevicePage> with SingleTickerProviderStateMixin {
+  AnimationController controller;
+  Animation<double> animation;
+
   final _deviceNameController = TextEditingController();
   final _deviceTypeController = TextEditingController();
   final _deviceConditionController = TextEditingController();
@@ -33,9 +37,15 @@ class EditDevicePageState extends State<EditDevicePage> {
   final String display_unknown = "Unknown Error";
   final String display_no_scan = "You pressed the back button before scanning anything";
 
+
   @override
-  void initState() {
+  initState() {
     super.initState();
+    controller = new AnimationController(
+        duration: const Duration(milliseconds: 2000), vsync: this);
+    animation = new Tween(begin: 0.0, end: 300.0).animate(controller);
+    controller.forward();
+
     _createDropdownMenuItems(9, deviceTypes);
     _createDropdownMenuItems(14, deviceConditions);
     _setDefaults();
@@ -165,12 +175,13 @@ class EditDevicePageState extends State<EditDevicePage> {
         SizedBox(height: 20.0),
         Column(
           children: <Widget>[
-            Image.asset('assets/diamond.png'),
-            SizedBox(height: 16.0),
-            Text(
-              'Create A New Device',
-              style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),
-            ),
+//            Image.asset('assets/diamond.png'),
+//            SizedBox(height: 16.0),
+//            Text(
+//              'Create A New Device',
+//              style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),
+//            ),
+            AnimatedLogo(animation: animation, message: 'Create A New Device', factor: 1.0,),
           ],
         ),
 

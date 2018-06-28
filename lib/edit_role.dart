@@ -5,14 +5,18 @@ import 'constants.dart';
 import 'quick_role_actions.dart';
 import 'color_override.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'progress_bar.dart';
+import 'animated_logo.dart';
 
 class EditRolesPage extends StatefulWidget {
   @override
   EditRolesPageState createState() => EditRolesPageState();
 }
 
-class EditRolesPageState extends State<EditRolesPage> {
+class EditRolesPageState extends State<EditRolesPage> with SingleTickerProviderStateMixin {
+  AnimationController controller;
+  Animation<double> animation;
+
+
   final _roleNameController = TextEditingController();
   final _roleName = GlobalKey(debugLabel: 'Role Name');
   bool _createUserPermission = false;
@@ -37,7 +41,15 @@ class EditRolesPageState extends State<EditRolesPage> {
     return true;
 
   }
-  
+
+  initState() {
+    super.initState();
+    controller = new AnimationController(
+        duration: const Duration(milliseconds: 2000), vsync: this);
+    animation = new Tween(begin: 0.0, end: 300.0).animate(controller);
+    controller.forward();
+  }
+
     Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
       return ListView(
         padding: EdgeInsets.symmetric(horizontal: 10.0),
@@ -47,13 +59,14 @@ class EditRolesPageState extends State<EditRolesPage> {
           SizedBox(height: 20.0),
           Column(
             children: <Widget>[
-              Image.asset('assets/diamond.png'),
-              SizedBox(height: 16.0),
-              Text(
-                'Create A New Role',
-                style: TodoColors.textStyle.apply(
-                    color: TodoColors.baseColors[_colorIndex]),
-              ),
+//              Image.asset('assets/diamond.png'),
+//              SizedBox(height: 16.0),
+//              Text(
+//                'Create A New Role',
+//                style: TodoColors.textStyle.apply(
+//                    color: TodoColors.baseColors[_colorIndex]),
+//              ),
+              AnimatedLogo(animation: animation, message: 'Create A New Role', factor: 1.0,),
             ],
           ),
 

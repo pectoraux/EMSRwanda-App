@@ -21,6 +21,7 @@ import 'animated_weeks_page.dart';
 import 'profile_page.dart';
 import 'constants.dart';
 import 'auth.dart';
+//import 'package:url_launcher/url_launcher.dart';
 
 /// Loads in unit conversion data, and displays the data.
 ///
@@ -271,14 +272,21 @@ class _CategoryRouteState extends State<CategoryRoute> {
   textDirection: TextDirection.ltr,
   children: <Widget>
   [
-  Text("Welcome To Laterite", style: TodoColors.textStyle5,),
+//  Text("Welcome To Laterite", style: TodoColors.textStyle5,),
   Expanded(child:FlatButton(
   onPressed: () {
 
-    _signOut();
-    },
-  child: new Text('Log Out', style: TodoColors.textStyle3, ),
-  ), flex: 1, ),
+//  launch('https://www.laterite.com');
+  },
+  child: Text("Welcome To Laterite", style: TodoColors.textStyle5, textDirection:  TextDirection.rtl, textAlign: TextAlign.justify,),
+  ), flex: 2, ),
+  Expanded(child:FlatButton(
+  onPressed: () {
+
+  _signOut();
+  },
+  child: new Text('Log Out', style: TodoColors.textStyle3, textDirection:  TextDirection.rtl, textAlign: TextAlign.end,) ,
+  ), flex: 2, ),
   ],
   ),
 

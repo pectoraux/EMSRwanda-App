@@ -27,9 +27,9 @@ class MainMenu extends StatelessWidget {
           _buildListItem("Emergency Details", Icons.alarm, () {
             onTap(context, "Emergency Details");
           }),
-          _buildListItem("Projects Details", Icons.work, () {
-            onTap(context, "Project Details");
-          }),
+//          _buildListItem("Projects Details", Icons.work, () {
+//            onTap(context, "Project Details");
+//          }),
         ],
       ),
     );

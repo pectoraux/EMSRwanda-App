@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'color_override.dart';
 import 'supplemental/cut_corners_border.dart';
@@ -7,6 +8,7 @@ import 'constants.dart';
 import 'quick_user_actions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'auth.dart';
+import 'animated_logo.dart';
 
 class EditUserPage extends StatefulWidget {
   EditUserPage({Key key, this.auth}) : super(key: key);
@@ -17,7 +19,12 @@ class EditUserPage extends StatefulWidget {
   EditUserPageState createState() => EditUserPageState();
 }
 
-class EditUserPageState extends State<EditUserPage> {
+class EditUserPageState extends State<EditUserPage>  with SingleTickerProviderStateMixin {
+  AnimationController controller;
+  Animation<double> animation;
+
+
+
   final _userNameController = TextEditingController();
   final _userRoleController = TextEditingController();
   final _userName = GlobalKey(debugLabel: 'User Name');
@@ -28,14 +35,9 @@ class EditUserPageState extends State<EditUserPage> {
   List<DropdownMenuItem> _roleMenuItems;
   String _roleValue;
   String defaultPassword = "Laterite";
+  String userId;
+  bool error = false;
 
-
-  @override
-  void initState() {
-    super.initState();
-    _createDropdownMenuItems(2, roles);
-    _setDefaults();
-  }
 
   /// Creates fresh list of [DropdownMenuItem] widgets, given a list of [Unit]s.
   void _createDropdownMenuItems(int idx, List<String> list) {
@@ -58,6 +60,18 @@ class EditUserPageState extends State<EditUserPage> {
     });
   }
 
+  @override
+  initState() {
+    super.initState();
+    controller = new AnimationController(
+        duration: const Duration(milliseconds: 2000), vsync: this);
+    animation = new Tween(begin: 0.0, end: 300.0).animate(controller);
+    controller.forward();
+
+    _createDropdownMenuItems(2, roles);
+    _setDefaults();
+  }
+
   /// Sets the default values for the 'from' and 'to' [Dropdown]s, and the
   /// updated output value if a user had previously entered an input.
   void _setDefaults() {
@@ -65,6 +79,14 @@ class EditUserPageState extends State<EditUserPage> {
       _roleValue = roles[0];
     });
   }
+
+//  String makeUser() async {
+//    FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+//    FirebaseUser user = await _firebaseAuth.createUserWithEmailAndPassword(email:_userNameController.text, password: defaultPassword).then((muser){
+//      userId = muser.uid;
+//    });
+//    return userId;
+//  }
 
   Widget _createDropdown(int idx, String currentValue, ValueChanged<dynamic>
 
@@ -87,22 +109,22 @@ class EditUserPageState extends State<EditUserPage> {
           canvasColor: Colors.grey[50],
         ),
         child: DropdownButtonHideUnderline(
-          child: new SingleChildScrollView(
-          child: new ConstrainedBox(
-        constraints: new BoxConstraints(
-        minHeight: 8.0,
-      ),
-      child: DropdownButtonHideUnderline(
-        child: new Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-          DropdownButton(
-            value: currentValue,
-            items: _roleMenuItems,
-            onChanged: onChanged,
-            style: TodoColors.textStyle2,
-          ),],))))
+            child: new SingleChildScrollView(
+                child: new ConstrainedBox(
+                    constraints: new BoxConstraints(
+                      minHeight: 8.0,
+                    ),
+                    child: DropdownButtonHideUnderline(
+                        child: new Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: <Widget>[
+                            DropdownButton(
+                              value: currentValue,
+                              items: _roleMenuItems,
+                              onChanged: onChanged,
+                              style: TodoColors.textStyle2,
+                            ),],))))
         ),
       ),
     );
@@ -124,12 +146,13 @@ class EditUserPageState extends State<EditUserPage> {
         SizedBox(height: 20.0),
         Column(
           children: <Widget>[
-            Image.asset('assets/diamond.png'),
-            SizedBox(height: 16.0),
-            Text(
-              'Create A New User',
-              style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),
-            ),
+//            Image.asset('assets/diamond.png'),
+//            SizedBox(height: 16.0),
+//            Text(
+//              'Create A New User',
+//              style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),
+//            ),
+            AnimatedLogo(animation: animation, message: 'Create A New User', factor: 1.0,),
           ],
         ),
 
@@ -189,43 +212,45 @@ class EditUserPageState extends State<EditUserPage> {
               onPressed: () {
                 if (_userNameController.value.text.trim() != "" &&
                     _roleValue != "Project Staff Roles") {
-                  String uid = "";
-                  Future<String> userId =  widget.auth.createUser(_userNameController.text, defaultPassword);
+                  FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+                  var st = FirebaseAuth.instance.onAuthStateChanged;
+                  Future<FirebaseUser> muser = _firebaseAuth.createUserWithEmailAndPassword(email:_userNameController.text, password: defaultPassword);
+                  st.listen((onDone) {
+                    userId = onDone.uid;
 
-//                  print('User Id: ${uid}');
+//                    setState(() {
 
-                  Map<String, String> user = <String, String>{
-                    'userName': _userNameController.text,
-                    'userRole': _roleValue,
-                    'userPassword': defaultPassword,
-                    'userStatus': 'Active',
-                    'firstName': '',
-                    'lastName': '',
-                    'email1': '',
-                    'email2': '',
-                    'sex': '',
-                    'country': '',
-                    'mainPhone': '',
-                    'phone1': '',
-                    'phone2': '',
-                    'passportNo': '',
-                    'bankAcctNo': '',
-                    'bankName': '',
-                    'insurance': '',
-                    'insuranceNo': '',
-                    'insuranceCpy': '',
-                    'tin': '',
-                    'cvStatusElec': '',
-                    'dob': '',
-                    'nationalID': '',
-                    'emergencyContactName': '',
-                    'emergencyContactPhone': '',
-                  };
-                  bool error = false;
-
-                  setState(() {
-                    Firestore.instance.collection('users').document(_userNameController.text)
-                    .setData(user).whenComplete(() {
+//                  });
+                  muser.whenComplete(() {
+                    Map<String, String> user_data = <String, String>{
+                      'userName': userId,
+                      'userRole': _roleValue,
+                      'userPassword': defaultPassword,
+                      'userStatus': 'Active',
+                      'firstName': '',
+                      'lastName': '',
+                      'email1': _userNameController.text,
+                      'email2': '',
+                      'sex': '',
+                      'country': '',
+                      'mainPhone': '',
+                      'phone1': '',
+                      'phone2': '',
+                      'passportNo': '',
+                      'bankAcctNo': '',
+                      'bankName': '',
+                      'insurance': '',
+                      'insuranceNo': '',
+                      'insuranceCpy': '',
+                      'tin': '',
+                      'cvStatusElec': '',
+                      'dob': '',
+                      'nationalID': '',
+                      'emergencyContactName': '',
+                      'emergencyContactPhone': '',
+                    };
+                    Firestore.instance.collection('users').document(userId)
+                        .setData(user_data).whenComplete(() {
 
                     }).catchError((e) {
                       error = true;
@@ -233,10 +258,12 @@ class EditUserPageState extends State<EditUserPage> {
                           Colors.redAccent);
                     });
                   });
-                  _roleValue = roles[0];
-                  _userNameController.clear();
-                  error? '': showInSnackBar(
-                      "User Created Successfully", TodoColors.baseColors[_colorIndex]);
+                    _roleValue = roles[0];
+                    _userNameController.clear();
+                    error? '': showInSnackBar(
+                        "User Created Successfully", TodoColors.baseColors[_colorIndex]);
+                  });
+
                 } else {
                   showInSnackBar("Please Specify A Value For All Fields",
                       Colors.redAccent);

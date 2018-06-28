@@ -4,13 +4,17 @@ import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
 import 'quick_project_actions.dart';
 import 'color_override.dart';
+import 'animated_logo.dart';
 
 class EditProjectPage extends StatefulWidget {
   @override
   EditProjectPageState createState() => EditProjectPageState();
 }
 
-class EditProjectPageState extends State<EditProjectPage> {
+class EditProjectPageState extends State<EditProjectPage> with SingleTickerProviderStateMixin {
+  AnimationController controller;
+  Animation<double> animation;
+
   final _projectTitleController = TextEditingController();
   final _projectDescriptionController = TextEditingController();
   final _projectTitle = GlobalKey(debugLabel: 'Project Title');
@@ -40,6 +44,11 @@ class EditProjectPageState extends State<EditProjectPage> {
   @override
   void initState() {
     super.initState();
+    controller = new AnimationController(
+        duration: const Duration(milliseconds: 2000), vsync: this);
+    animation = new Tween(begin: 0.0, end: 300.0).animate(controller);
+    controller.forward();
+
     _createDropdownMenuItems(0, locations);
     _createDropdownMenuItems(1, tags);
     _createDropdownMenuItems(2, roles);
@@ -160,12 +169,13 @@ class EditProjectPageState extends State<EditProjectPage> {
         SizedBox(height: 20.0),
         Column(
           children: <Widget>[
-            Image.asset('assets/diamond.png'),
-            SizedBox(height: 16.0),
-            Text(
-              'Create A New Project',
-              style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),
-            ),
+//            Image.asset('assets/diamond.png'),
+//            SizedBox(height: 16.0),
+//            Text(
+//              'Create A New Project',
+//              style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),
+//            ),
+            AnimatedLogo(animation: animation, message: 'Create A New Project', factor: 1.0,),
           ],
         ),
 

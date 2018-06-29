@@ -38,20 +38,23 @@ class _RootPageState extends State<RootPage> {
 
   @override
   Widget build(BuildContext context) {
+    Widget result;
     switch (authStatus) {
       case AuthStatus.notSignedIn:
-        return new LoginPage(
-          title: 'Flutter Login',
+        result = LoginPage(
+          title: 'Login Page',
           auth: widget.auth,
           onSignIn: () => _updateAuthStatus(AuthStatus.signedIn),
         );
+        break;
       case AuthStatus.signedIn:
-        return new CategoryRoute(
+        result =  new CategoryRoute(
             auth: widget.auth,
             onSignOut: () => _updateAuthStatus(AuthStatus.notSignedIn)
         );
+        break;
     }
-    return Container();
+    return result;
   }
 
 

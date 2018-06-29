@@ -11,9 +11,10 @@ import 'auth.dart';
 import 'animated_logo.dart';
 
 class EditUserPage extends StatefulWidget {
-  EditUserPage({Key key, this.auth}) : super(key: key);
+  EditUserPage({Key key, this.auth, this.currentUserPassword}) : super(key: key);
 
   final BaseAuth auth;
+  final String currentUserPassword;
 
   @override
   EditUserPageState createState() => EditUserPageState();
@@ -35,9 +36,9 @@ class EditUserPageState extends State<EditUserPage>  with SingleTickerProviderSt
   List<DropdownMenuItem> _roleMenuItems;
   String _roleValue;
   String defaultPassword = "Laterite";
-  String userId;
   bool error = false;
-
+  String oldEmail, oldPassword;
+FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   /// Creates fresh list of [DropdownMenuItem] widgets, given a list of [Unit]s.
   void _createDropdownMenuItems(int idx, List<String> list) {
@@ -79,14 +80,6 @@ class EditUserPageState extends State<EditUserPage>  with SingleTickerProviderSt
       _roleValue = roles[0];
     });
   }
-
-//  String makeUser() async {
-//    FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-//    FirebaseUser user = await _firebaseAuth.createUserWithEmailAndPassword(email:_userNameController.text, password: defaultPassword).then((muser){
-//      userId = muser.uid;
-//    });
-//    return userId;
-//  }
 
   Widget _createDropdown(int idx, String currentValue, ValueChanged<dynamic>
 
@@ -136,9 +129,9 @@ class EditUserPageState extends State<EditUserPage>  with SingleTickerProviderSt
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final converter = ListView(
+  Widget _buildListItem(BuildContext context, DocumentSnapshot document){
+
+    return ListView(
       padding: EdgeInsets.symmetric(horizontal: 10.0),
       children: <Widget>[
         new QuickUserActions(),
@@ -146,12 +139,6 @@ class EditUserPageState extends State<EditUserPage>  with SingleTickerProviderSt
         SizedBox(height: 20.0),
         Column(
           children: <Widget>[
-//            Image.asset('assets/diamond.png'),
-//            SizedBox(height: 16.0),
-//            Text(
-//              'Create A New User',
-//              style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),
-//            ),
             AnimatedLogo(animation: animation, message: 'Create A New User', factor: 1.0,),
           ],
         ),
@@ -198,8 +185,10 @@ class EditUserPageState extends State<EditUserPage>  with SingleTickerProviderSt
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),
               ),
               onPressed: () {
-                _userNameController.clear();
-                _userRoleController.clear();
+                setState(() {
+                  _userNameController.clear();
+                  _roleValue = roles[0];
+                });
               },
             ),
             RaisedButton(
@@ -212,58 +201,51 @@ class EditUserPageState extends State<EditUserPage>  with SingleTickerProviderSt
               onPressed: () {
                 if (_userNameController.value.text.trim() != "" &&
                     _roleValue != "Project Staff Roles") {
-                  FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-                  var st = FirebaseAuth.instance.onAuthStateChanged;
-                  Future<FirebaseUser> muser = _firebaseAuth.createUserWithEmailAndPassword(email:_userNameController.text, password: defaultPassword);
-                  st.listen((onDone) {
-                    userId = onDone.uid;
+                String email = _userNameController.text+'@laterite.com';
+                String mrole = _roleValue;
 
-//                    setState(() {
-
-//                  });
-                  muser.whenComplete(() {
-                    Map<String, String> user_data = <String, String>{
-                      'userName': userId,
-                      'userRole': _roleValue,
-                      'userPassword': defaultPassword,
-                      'userStatus': 'Active',
-                      'firstName': '',
-                      'lastName': '',
-                      'email1': _userNameController.text,
-                      'email2': '',
-                      'sex': '',
-                      'country': '',
-                      'mainPhone': '',
-                      'phone1': '',
-                      'phone2': '',
-                      'passportNo': '',
-                      'bankAcctNo': '',
-                      'bankName': '',
-                      'insurance': '',
-                      'insuranceNo': '',
-                      'insuranceCpy': '',
-                      'tin': '',
-                      'cvStatusElec': '',
-                      'dob': '',
-                      'nationalID': '',
-                      'emergencyContactName': '',
-                      'emergencyContactPhone': '',
-                    };
-                    Firestore.instance.collection('users').document(userId)
-                        .setData(user_data).whenComplete(() {
-
-                    }).catchError((e) {
-                      error = true;
-                      showInSnackBar("Failed To Create User\n${e}",
-                          Colors.redAccent);
-                    });
+                widget.auth.createUser(email, defaultPassword).then((newId) {
+                  Map<String, String> user_data = <String, String>{
+                    'userName': newId,
+                    'userRole': mrole,
+                    'userPassword': defaultPassword,
+                    'userStatus': 'Active',
+                    'firstName': '',
+                    'lastName': '',
+                    'email1': email,
+                    'email2': '',
+                    'sex': '',
+                    'country': '',
+                    'mainPhone': '',
+                    'phone1': '',
+                    'phone2': '',
+                    'passportNo': '',
+                    'bankAcctNo': '',
+                    'bankName': '',
+                    'insurance': '',
+                    'insuranceNo': '',
+                    'insuranceCpy': '',
+                    'tin': '',
+                    'cvStatusElec': '',
+                    'dob': '',
+                    'nationalID': '',
+                    'emergencyContactName': '',
+                    'emergencyContactPhone': '',
+                    'editing':'false'
+                  };
+                  Firestore.instance.runTransaction((transaction) async {
+                    CollectionReference reference =
+                    Firestore.instance.collection('tables').document('users').collection(newId);
+                    await reference.add(user_data);
                   });
+                });
                     _roleValue = roles[0];
                     _userNameController.clear();
                     error? '': showInSnackBar(
                         "User Created Successfully", TodoColors.baseColors[_colorIndex]);
-                  });
 
+                  widget.auth.signOut();
+                  widget.auth.signIn(oldEmail, widget.currentUserPassword);
                 } else {
                   showInSnackBar("Please Specify A Value For All Fields",
                       Colors.redAccent);
@@ -274,20 +256,43 @@ class EditUserPageState extends State<EditUserPage>  with SingleTickerProviderSt
         ),
       ],
     );
+  }
 
-    return OrientationBuilder(
-      builder: (BuildContext context, Orientation orientation) {
-        if (orientation == Orientation.portrait) {
-          return converter;
-        } else {
-          return Center(
-            child: Container(
-              width: 450.0,
-              child: converter,
-            ),
-          );
+  @override
+  Widget build(BuildContext context) {
+    return new StreamBuilder<DocumentSnapshot>(
+        stream: Firestore.instance.collection('tables').document('users').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (!snapshot.hasData) {
+            return new Center(
+                child: new CircularProgressIndicator()
+            );
+          } else if (snapshot.data != null) {
+
+            _firebaseAuth.currentUser().then((user) {
+              setState(() {
+                oldEmail = user.email;
+              });
+            });
+
+            final converter = _buildListItem(context, snapshot.data);
+
+            return OrientationBuilder(
+              builder: (BuildContext context, Orientation orientation) {
+                if (orientation == Orientation.portrait) {
+                  return converter;
+                } else {
+                  return Center(
+                    child: Container(
+                      width: 450.0,
+                      child: converter,
+                    ),
+                  );
+                }
+              },
+            );
+          }
         }
-      },
     );
   }
 

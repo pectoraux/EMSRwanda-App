@@ -7,6 +7,9 @@ import 'view_projects.dart';
 import 'constants.dart';
 
 class MainMenu extends StatelessWidget {
+final String currentUserId;
+
+MainMenu({Key key, this.currentUserId}): super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -72,19 +75,19 @@ class MainMenu extends StatelessWidget {
   void onTap(BuildContext context, String command) {
     if (command == "Primary Details") {
       Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => ViewPrimaryPage()));
+          MaterialPageRoute(builder: (_) => ViewPrimaryPage(currentUserId: currentUserId,)));
     } else if (command == "Banking Details") {
       Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => ViewBankingPage()));
+          MaterialPageRoute(builder: (_) => ViewBankingPage(currentUserId: currentUserId,)));
     } else if (command == "Insurance Details") {
       Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => ViewInsurancePage()));
+          MaterialPageRoute(builder: (_) => ViewInsurancePage(currentUserId: currentUserId,)));
     } else if (command == "Project Details") {
       Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => ViewProjectsPage(colorIndex: 0,)));
     } else if (command == "Emergency Details") {
       Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => ViewEmergencyPage()));
+          MaterialPageRoute(builder: (_) => ViewEmergencyPage(currentUserId: currentUserId,)));
     }
   }
 

@@ -4,11 +4,17 @@ import 'constants.dart';
 import 'color_override.dart';
 
 class EditPasswordPage extends StatefulWidget {
+  final String currentUserId;
+  EditPasswordPage({Key key, this.currentUserId}): super(key: key);
+
   @override
   EditPasswordPageState createState() => EditPasswordPageState();
 }
 
-class EditPasswordPageState extends State<EditPasswordPage> {
+class EditPasswordPageState extends State<EditPasswordPage> with SingleTickerProviderStateMixin {
+  AnimationController controller;
+  Animation<double> animation;
+  static String oldPassword = "", newPassword = "", newPasswordConfirmation ='';
   final _oldPasswordController = TextEditingController();
   final _newPasswordController = TextEditingController();
   final _newPasswordConfirmationController = TextEditingController();

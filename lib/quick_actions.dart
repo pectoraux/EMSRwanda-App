@@ -8,6 +8,8 @@ import 'edit_profile.dart';
 
 /// QuickActions represents the horizontal list of rectangular buttons below the header
 class QuickActions extends StatelessWidget {
+  final String currentUserId;
+  QuickActions({Key key, this.currentUserId}): super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -47,11 +49,11 @@ class QuickActions extends StatelessWidget {
                 left: 10.0, bottom: 20.0, right: 10.0, top: 10.0),
             scrollDirection: Axis.horizontal,
             children: <Widget>[
+//              _buildAction(context,
+//                  "Edit\nProfile", () {}, Colors.blue, blueGradient,
+//                  new AssetImage("assets/images/microphone.png")),
               _buildAction(context,
-                  "Edit\nProfile", () {}, Colors.blue, blueGradient,
-                  new AssetImage("assets/images/microphone.png")),
-              _buildAction(context,
-                  "Change\nPassword", () {}, Colors.purple, purpleGraient,
+                  "Change\nPassword", () {}, Colors.blue, blueGradient,
                   new AssetImage("assets/images/wallet.png")),
               _buildAction(context,
                   "Disable\nAccount", () {}, Colors.red, redGradient,
@@ -141,7 +143,7 @@ class QuickActions extends StatelessWidget {
           MaterialPageRoute(builder: (_) => EditProfilePage()));
     } else if (title == "Change\nPassword") {
       Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => EditPasswordPage()));
+          MaterialPageRoute(builder: (_) => EditPasswordPage(currentUserId: currentUserId,)));
     } else if (title == "Disable\nAccount") {
       new Container(
         width: 450.0,

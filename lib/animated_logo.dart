@@ -11,7 +11,7 @@ class AnimatedLogo extends AnimatedWidget {
     final Animation<double> animation = listenable;
     return new Center(
       child: new Container(
-        height: animation.value/2.0,
+        height: animation.value/3.0,
         width: animation.value/factor,
         child: Column(
             children: <Widget>[
@@ -20,13 +20,13 @@ class AnimatedLogo extends AnimatedWidget {
                 Image.asset('assets/diamond.png',),
                 flex: 1,
               ),
-              SizedBox(height: 16.0),
-              Expanded(
+//              SizedBox(height: 16.0),
+
+              Card(
                 child:Text(
                   message,
                   style: TodoColors.textStyle6,
-                ),
-                flex: 1,),
+                ),),
             ]
         ),
       ),

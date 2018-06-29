@@ -3,7 +3,6 @@ import 'supplemental/cut_corners_border.dart';
 import 'auth.dart';
 import 'color_override.dart';
 import 'constants.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/animation.dart';
 import 'animated_logo.dart';
 
@@ -32,13 +31,14 @@ class _LoginPageState extends State<LoginPage>   with SingleTickerProviderStateM
   }
 
   static final formKey = new GlobalKey<FormState>();
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   var _login = GlobalKey(debugLabel: 'Login');
-  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool active = true;
   String _authHint = 'Type in your details and press the Login button';
-
-
+  String userId;
+  String logingIn = "Login";
 
 
   bool validateAndSave() {
@@ -53,21 +53,33 @@ class _LoginPageState extends State<LoginPage>   with SingleTickerProviderStateM
   void validateAndSubmit() async {
     if (validateAndSave()) {
       try {
-        String userId = await widget.auth.signIn(_usernameController.text, _passwordController.text);
+        String uid = await widget.auth.signIn(_emailController.text, _passwordController.text);
         setState(() {
-          _authHint = 'Signed In\n\nUser id: $userId';
+          _authHint = 'Signed In\n\nUser id: $uid';
+          userId = uid;
         });
-        widget.onSignIn();
+        final snackbar = SnackBar(
+          content: Text('Email: ${_emailController.text}, password: ${_passwordController.text}'),
+        );
 
+        scaffoldKey.currentState.showSnackBar(snackbar);
+        widget.onSignIn();
       }
       catch (e) {
         setState(() {
-          _authHint = 'Sign In Error\n\n${e.toString()}';
+          String error = e.toString();
+          int start = error.indexOf('(')+1;
+          int end = error.indexOf(')');
+          String formattedError = error.substring(start, end);
+          _authHint = 'Sign In Error\n\n${formattedError.split(',')[1]}';
+          active = true;
+//          print("USER ID: $_authHint");
         });
         print(e);
       }
     } else {
       setState(() {
+        active = true;
         _authHint = '';
       });
     }
@@ -93,6 +105,7 @@ class _LoginPageState extends State<LoginPage>   with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: TodoColors.baseColors[0],
       body: SafeArea(
         child: ListView(
@@ -139,11 +152,11 @@ class _LoginPageState extends State<LoginPage>   with SingleTickerProviderStateM
                     child: TextFormField(
                       key: new Key('Username'),
                       autocorrect: false,
-                      controller: _usernameController,
+                      controller: _emailController,
                       validator: (val) => val.isEmpty ? 'Email can\'t be empty.' : null,
-                      onSaved: (val) => _usernameController.text = val,
+                      onSaved: (val) => _emailController.text = val.split('@')[0]+'@laterite.com',
                       decoration: InputDecoration(
-                        labelText: 'Email',
+                        labelText: 'Username',
                         border: CutCornersBorder(),
                       ),
                     ),
@@ -172,33 +185,38 @@ class _LoginPageState extends State<LoginPage>   with SingleTickerProviderStateM
                           borderRadius: BorderRadius.all(Radius.circular(7.0)),
                         ),
                         onPressed: () {
-                          _usernameController.clear();
+                          setState(() {
+                            active = true;
+                          });
+                          _emailController.clear();
                           _passwordController.clear();
                         },
                       ),
-                      active? RaisedButton(
-                          child: Text('LOG IN', style: TextStyle(color: TodoColors.baseColors[0]),),
+                      RaisedButton(
+                          child: active ?
+                          Text('LOG IN', style: TextStyle(color: TodoColors.baseColors[0]),)
+                          : new CircularProgressIndicator(),
                           elevation: 8.0,
                           key: _login,
                           shape: BeveledRectangleBorder(
                             borderRadius: BorderRadius.all(Radius.circular(7.0)),
                           ),
                           onPressed: (){
-                            validateAndSubmit();
+                            setState(() {
+                              active = false;
+                              validateAndSubmit();
+                            });
                           }
-                      ):Content,
+                      )
                     ],
                   ),],),
             ),
-            hintText()
-
+            hintText(),
           ],
         ),
       ),
     );
   }
-
-  Widget Content;
 
   Widget padded({Widget child}) {
     return new Padding(

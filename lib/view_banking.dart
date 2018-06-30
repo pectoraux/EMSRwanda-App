@@ -58,7 +58,7 @@ class ViewBankingPageState extends State<ViewBankingPage> with SingleTickerProvi
           SizedBox(height: 20.0),
           Column(
             children: <Widget>[
-              AnimatedLogo(animation: animation, message: 'Your Banking Details', factor: 1.0,),
+              AnimatedLogo(animation: animation, message: 'Your Banking Details', factor: 1.0, colorIndex: _colorIndex,),
             ],
           ),
           Form(

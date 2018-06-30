@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
 import 'color_override.dart';
+import 'animated_logo.dart';
 
 class EditPasswordPage extends StatefulWidget {
   final String currentUserId;
@@ -14,6 +15,7 @@ class EditPasswordPage extends StatefulWidget {
 class EditPasswordPageState extends State<EditPasswordPage> with SingleTickerProviderStateMixin {
   AnimationController controller;
   Animation<double> animation;
+
   static String oldPassword = "", newPassword = "", newPasswordConfirmation ='';
   final _oldPasswordController = TextEditingController();
   final _newPasswordController = TextEditingController();
@@ -24,6 +26,14 @@ class EditPasswordPageState extends State<EditPasswordPage> with SingleTickerPro
       debugLabel: 'New Password Confirmation');
   int _colorIndex = 0;
 
+  initState() {
+    super.initState();
+    controller = new AnimationController(
+        duration: const Duration(milliseconds: 2000), vsync: this);
+    animation = new Tween(begin: 0.0, end: 300.0).animate(controller);
+    controller.forward();
+  }
+
   @override
   Widget build(BuildContext context) {
     final converter = ListView(
@@ -33,12 +43,7 @@ class EditPasswordPageState extends State<EditPasswordPage> with SingleTickerPro
         SizedBox(height: 30.0),
         Column(
           children: <Widget>[
-            Image.asset('assets/diamond.png'),
-            SizedBox(height: 16.0),
-            Text(
-              'Change Your Password',
-              style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),
-            ),
+            AnimatedLogo(animation: animation, message: 'Change Your Password', factor: 2.0, colorIndex: _colorIndex,),
           ],
         ),
 

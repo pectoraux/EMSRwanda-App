@@ -66,7 +66,7 @@ class EditRolesPageState extends State<EditRolesPage> with SingleTickerProviderS
 //                style: TodoColors.textStyle.apply(
 //                    color: TodoColors.baseColors[_colorIndex]),
 //              ),
-              AnimatedLogo(animation: animation, message: 'Create A New Role', factor: 1.0,),
+              AnimatedLogo(animation: animation, message: 'Create A New Role', factor: 1.0, colorIndex: _colorIndex,),
             ],
           ),
 

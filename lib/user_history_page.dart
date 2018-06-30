@@ -45,7 +45,6 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
       ),
     ];
 
-    final profile = getProfile();
 
     return new Scaffold(
       resizeToAvoidBottomPadding: false,

@@ -31,7 +31,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  String currentUserRole, currentUserPassword, currentUserId;
+  String currentUserRole, currentUserPassword, currentUserId, firstName, lastName, location;
   bool canCreateRole = false, canCreateProject = false, canCreateTag = false, canCreateUser = false, canGrantPermission = false;
   /// This controller can be used to programmatically
   /// set the current displayed page
@@ -41,7 +41,7 @@ class _ProfilePageState extends State<ProfilePage> {
   /// Indicating the current displayed page
   int _page = 0;
 
-  Widget _buildPage(BuildContext context, DocumentSnapshot roleDocument) {
+  Widget _buildPage(BuildContext context, DocumentSnapshot roleDocument, Profile profile) {
 
     var navigationItems;
     var items;
@@ -52,7 +52,7 @@ class _ProfilePageState extends State<ProfilePage> {
           canCreateUser = roleDocument['canCreateUser'] ? true : false;
           canGrantPermission = roleDocument['canGrantPermission'] ? true : false;
 
-    final profile = getProfile();
+
 
       if(canCreateRole || canCreateProject || canCreateTag || canCreateTag || canCreateUser){
 
@@ -196,17 +196,19 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context){
 
     widget.auth.currentUser().then((userId) async {
-      String val = await Firestore.instance.collection('tables/users/$userId').getDocuments().then((doc){
-        return doc.documents[0]['userRole'];
+      List<String> results = await Firestore.instance.collection('tables/users/$userId').getDocuments().then((doc){
+        return [doc.documents[0]['userRole'], doc.documents[0]['userPassword'], doc.documents[0]['firstName'],
+        doc.documents[0]['lastName'], doc.documents[0]['locations'][0]];
       });
-      String passwd = await Firestore.instance.collection('tables/users/$userId').getDocuments().then((doc){
-        return doc.documents[0]['userPassword'];
-      });
-      setState(() {
-        currentUserRole = val;
-        currentUserPassword = passwd;
-        currentUserId = userId;
-      });
+
+        setState(() {
+          currentUserRole = results[0];
+          currentUserPassword = results[1];
+          currentUserId = userId;
+          firstName = results[2];
+          lastName = results[3];
+          location = results[4];
+        });
 
     });
 
@@ -221,7 +223,15 @@ class _ProfilePageState extends State<ProfilePage> {
           } else{
             try {
 //              print("Role Document => => => ${snapshot.data.documents[0].data}");
-              return _buildPage(context, snapshot.data.documents[0]);
+              final profile = new Profile()
+                ..firstName = firstName
+                ..lastName = lastName
+                ..location = location
+                ..age = 35
+                ..rating = 4.6
+                ..numberProjects = 17;
+
+              return _buildPage(context, snapshot.data.documents[0], profile);
             }catch(e){
               return Center(
                 child:CircularProgressIndicator(),

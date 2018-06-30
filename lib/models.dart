@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Profile {
@@ -37,11 +40,19 @@ class Profile {
   }
 }
 
-Profile getProfile() {
+Profile getProfile(BaseAuth auth)  {
+  String firstName;
 
+  auth.currentUser().then((userId) async {
+    firstName = await Firestore.instance.collection('tables/users/$userId')
+        .getDocuments()
+        .then((doc) {
+      return doc.documents[0]['firstName'];
+    });
+  });
 
   return new Profile()
-    ..firstName = "emma"//Firestore.instance.collection('users').document('firstName')
+    ..firstName = firstName
     ..lastName = "Watson"
     ..location = "Kigali"
     ..age = 35

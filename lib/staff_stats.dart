@@ -44,7 +44,6 @@ class StaffNStatsPageState extends State<StaffNStatsPage> {
           title: new Text("Scan QR Code")),
     ];
 
-    final profile = getProfile();
 
     return new Scaffold(
       resizeToAvoidBottomPadding: false,

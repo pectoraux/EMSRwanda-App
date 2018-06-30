@@ -63,7 +63,7 @@ class ViewEmergencyPageState extends State<ViewEmergencyPage> with SingleTickerP
           SizedBox(height: 20.0),
           Column(
             children: <Widget>[
-              AnimatedLogo(animation: animation, message: 'Your Emergency Details', factor: 1.0,),
+              AnimatedLogo(animation: animation, message: 'Your Emergency Details', factor: 1.0, colorIndex: _colorIndex,),
             ],
           ),
           Form(

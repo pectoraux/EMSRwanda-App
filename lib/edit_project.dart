@@ -175,7 +175,7 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
 //              'Create A New Project',
 //              style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),
 //            ),
-            AnimatedLogo(animation: animation, message: 'Create A New Project', factor: 1.0,),
+            AnimatedLogo(animation: animation, message: 'Create A New Project', factor: 1.0, colorIndex: _colorIndex,),
           ],
         ),
 

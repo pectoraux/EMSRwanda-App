@@ -50,8 +50,6 @@ class ProjectsPageState extends State<ProjectsPage> {
       ),
     ];
 
-    final profile = getProfile();
-
     return new Scaffold(
       resizeToAvoidBottomPadding: false,
       body: new PageView(

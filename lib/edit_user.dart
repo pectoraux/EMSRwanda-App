@@ -139,7 +139,7 @@ FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
         SizedBox(height: 20.0),
         Column(
           children: <Widget>[
-            AnimatedLogo(animation: animation, message: 'Create A New User', factor: 1.0,),
+            AnimatedLogo(animation: animation, message: 'Create A New User', factor: 1.0, colorIndex: _colorIndex,),
           ],
         ),
 
@@ -231,6 +231,7 @@ FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
                     'nationalID': '',
                     'emergencyContactName': '',
                     'emergencyContactPhone': '',
+                    'locations':'',
                     'editing':'false'
                   };
                   Firestore.instance.runTransaction((transaction) async {

@@ -64,7 +64,7 @@ class ViewInsurancePageState extends State<ViewInsurancePage> with SingleTickerP
           SizedBox(height: 20.0),
           Column(
             children: <Widget>[
-              AnimatedLogo(animation: animation, message: 'Your Insurance Details', factor: 1.0,),
+              AnimatedLogo(animation: animation, message: 'Your Insurance Details', factor: 1.0, colorIndex: _colorIndex,),
             ],
           ),
           Form(

@@ -221,7 +221,7 @@ class EditTagPageState extends State<EditTagPage> with SingleTickerProviderState
 //                'Create A New Tag',
 //                style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),
 //              ),
-              AnimatedLogo(animation: animation, message: 'Create A New Tag', factor: 1.0,),
+              AnimatedLogo(animation: animation, message: 'Create A New Tag', factor: 1.0, colorIndex: _colorIndex,),
             ],
           ),
 

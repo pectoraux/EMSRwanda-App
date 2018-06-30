@@ -137,7 +137,7 @@ class _LoginPageState extends State<LoginPage>   with SingleTickerProviderStateM
 //                    )
 //                ),
                 SizedBox(height: 20.0),
-          AnimatedLogo(animation: animation, message: 'LATERITE', factor: 2.9,),
+          AnimatedLogo(animation: animation, message: 'LATERITE', factor: 2.0, colorIndex: 0,),
 
               ],
             ),
@@ -195,7 +195,9 @@ class _LoginPageState extends State<LoginPage>   with SingleTickerProviderStateM
                       RaisedButton(
                           child: active ?
                           Text('LOG IN', style: TextStyle(color: TodoColors.baseColors[0]),)
-                          : new CircularProgressIndicator(),
+                          :
+// new CircularProgressIndicator(backgroundColor: TodoColors.baseColors[0],),
+                          LinearProgressIndicator(value: animation.value),
                           elevation: 8.0,
                           key: _login,
                           shape: BeveledRectangleBorder(

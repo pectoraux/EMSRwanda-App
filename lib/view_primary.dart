@@ -111,7 +111,7 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
             SizedBox(height: 20.0),
             Column(
               children: <Widget>[
-                AnimatedLogo(animation: animation, message: 'Your Primary Details', factor: 1.0,),
+                AnimatedLogo(animation: animation, message: 'Your Primary Details', factor: 1.0, colorIndex: _colorIndex,),
               ],
             ),
             Form(
@@ -340,15 +340,15 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
                 'passportNo': passportNo,
 //                'bankAcctNo': bankAcctNo,
 //                'bankName': bankName,
-                'insurance': insurance,
-                'insuranceNo': insuranceNo,
-                'insuranceCpy': insuranceCpy,
+//                'insurance': insurance,
+//                'insuranceNo': insuranceNo,
+//                'insuranceCpy': insuranceCpy,
                 'tin': tin,
                 'cvStatusElec': cvStatusElec,
                 'dob': dob,
                 'nationalID': nationalID,
-                'emergencyContactName': emergencyContactName,
-                'emergencyContactPhone': emergencyContactPhone,
+//                'emergencyContactName': emergencyContactName,
+//                'emergencyContactPhone': emergencyContactPhone,
                 'editing':!snapshot['editing'],
               });
             });
@@ -442,7 +442,7 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
                     return Center(
                       child: Container(
                         width: 450.0,
-                          child:Scaffold(body: converter),
+                          child:converter,
                       ),
                     );
                   }

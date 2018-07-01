@@ -309,7 +309,7 @@ class EditTagPageState extends State<EditTagPage> with SingleTickerProviderState
 
                       Firestore.instance.runTransaction((transaction) async {
                         CollectionReference reference =
-                        Firestore.instance.collection('tables/tags/myTags').reference();
+                        Firestore.instance.collection('tags').reference();
                         await reference.add(tag_data);
                       });
                     }
@@ -320,7 +320,7 @@ class EditTagPageState extends State<EditTagPage> with SingleTickerProviderState
                     });
 
                     showInSnackBar(
-                        "Tag Created Successfully", TodoColors.accent);
+                        "Tag Created Successfully", TodoColors.baseColors[_colorIndex]);
                   } else {
                     showInSnackBar("Please Specify A Value For All Fields",
                         Colors.redAccent);
@@ -335,7 +335,7 @@ class EditTagPageState extends State<EditTagPage> with SingleTickerProviderState
   @override
   Widget build(BuildContext context) {
     return new StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('tables/tags/myTags').snapshots(),
+        stream: Firestore.instance.collection('tags').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
             return new Center(

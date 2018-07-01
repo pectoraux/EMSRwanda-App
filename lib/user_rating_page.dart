@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'supplemental/cut_corners_border.dart';
 import 'package:flutter/material.dart';
 import 'constants.dart';
@@ -7,9 +9,11 @@ import 'my_rating_dialog.dart';
 
 class UserRatingPage extends StatefulWidget {
   final int colorIndex;
+  final DocumentSnapshot document;
 
   const UserRatingPage({
     @required this.colorIndex,
+    this.document,
   }) : assert(colorIndex != null);
 
   @override
@@ -38,7 +42,7 @@ class UserRatingPageState extends State<UserRatingPage> {
               title: Row (
 
               children: <Widget>[
-                Text('Erin Niamkey'),
+                Text('${widget.document['firstName']} ${widget.document['lastName']}'),
               ],
               ),
               background: SizedBox.expand

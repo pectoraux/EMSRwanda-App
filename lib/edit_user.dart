@@ -11,10 +11,11 @@ import 'auth.dart';
 import 'animated_logo.dart';
 
 class EditUserPage extends StatefulWidget {
-  EditUserPage({Key key, this.auth, this.currentUserPassword}) : super(key: key);
+  EditUserPage({Key key, this.auth, this.currentUserPassword, this.roles}) : super(key: key);
 
   final BaseAuth auth;
   final String currentUserPassword;
+  final List<String> roles;
 
   @override
   EditUserPageState createState() => EditUserPageState();
@@ -32,13 +33,14 @@ class EditUserPageState extends State<EditUserPage>  with SingleTickerProviderSt
   final _userRole = GlobalKey(debugLabel: 'User Role');
   final _userPassword = GlobalKey(debugLabel: 'User Password');
   int _colorIndex = 0;
-  List<String> roles = ["Project Staff Roles", "Enumerator", "Project Lead", "Project Supervisor", "Administrator"];
+//  List<String> roles = ["Project Staff Roles"];
   List<DropdownMenuItem> _roleMenuItems;
   String _roleValue;
   String defaultPassword = "Laterite";
   bool error = false;
   String oldEmail, oldPassword;
 FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  List<String> results = [];
 
   /// Creates fresh list of [DropdownMenuItem] widgets, given a list of [Unit]s.
   void _createDropdownMenuItems(int idx, List<String> list) {
@@ -69,15 +71,17 @@ FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
     animation = new Tween(begin: 0.0, end: 300.0).animate(controller);
     controller.forward();
 
-    _createDropdownMenuItems(2, roles);
+    _createDropdownMenuItems(2, widget.roles);
     _setDefaults();
+
+
   }
 
   /// Sets the default values for the 'from' and 'to' [Dropdown]s, and the
   /// updated output value if a user had previously entered an input.
   void _setDefaults() {
     setState(() {
-      _roleValue = roles[0];
+      _roleValue = widget.roles[0];
     });
   }
 
@@ -86,6 +90,7 @@ FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   onChanged)
 
   {
+
     return Container(
       decoration: BoxDecoration(
         // This sets the color of the [DropdownButton] itself
@@ -187,7 +192,7 @@ FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
               onPressed: () {
                 setState(() {
                   _userNameController.clear();
-                  _roleValue = roles[0];
+                  _roleValue = widget.roles[0];
                 });
               },
             ),
@@ -199,13 +204,14 @@ FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),
               ),
               onPressed: () {
-                if (_userNameController.value.text.trim() != "" &&
-                    _roleValue != "Project Staff Roles") {
+//                _userNameController.value.text.trim() != "" &&
+//                    _roleValue != "Project Staff Roles"
+                if (true) {
                 String email = _userNameController.text+'@laterite.com';
                 String mrole = _roleValue;
-
+                List<String> userLocations = [];
                 widget.auth.createUser(email, defaultPassword).then((newId) {
-                  Map<String, String> user_data = <String, String>{
+                  Map<String, Object> user_data = <String, Object>{
                     'userName': newId,
                     'userRole': mrole,
                     'userPassword': defaultPassword,
@@ -231,21 +237,21 @@ FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
                     'nationalID': '',
                     'emergencyContactName': '',
                     'emergencyContactPhone': '',
-                    'locations':'',
-                    'editing':'false'
+                    'locations':userLocations.toString(),
+                    'editing': false,
                   };
                   Firestore.instance.runTransaction((transaction) async {
-                    CollectionReference reference =
-                    Firestore.instance.collection('tables/users/myUsers').reference();
-                    await reference.add(user_data);
+                    DocumentReference reference =
+                    Firestore.instance.document('users/${newId}');
+                    await reference.setData(user_data);
                   });
                 });
-                    _roleValue = roles[0];
+                    _roleValue = widget.roles[0];
                     _userNameController.clear();
                     error? '': showInSnackBar(
                         "User Created Successfully", TodoColors.baseColors[_colorIndex]);
 
-                  widget.auth.signOut();
+//                  widget.auth.signOut();
                   widget.auth.signIn(oldEmail, widget.currentUserPassword);
                 } else {
                   showInSnackBar("Please Specify A Value For All Fields",
@@ -266,14 +272,29 @@ FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
+
+
+//    print("=> => => => => => => ${roles.toString()}");
+
+//, "Enumerator", "Project Lead", "Project Supervisor", "Administrator"
     return new StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('tables/users/myUsers').snapshots(),
+        stream: Firestore.instance.collection('users').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
             return new Center(
                 child: new CircularProgressIndicator()
             );
           } else {
+
+          print("=> => => => ${_firebaseAuth.currentUser().then((user) async {
+
+
+setState(() {
+  oldEmail = user.email;
+
+//  print('OLDEMAIL:  => => $oldEmail');
+});
+          })}");
             final converter = _buildListItem(
                 context, snapshot.data.documents.first);
 

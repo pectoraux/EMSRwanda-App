@@ -9,6 +9,11 @@ import 'color_override.dart';
 import 'animated_logo.dart';
 
 class EditProjectPage extends StatefulWidget {
+  EditProjectPage({Key key, this.roles, this.tags, this.devices}) : super(key: key);
+  final List<String> roles;
+  final List<String> tags;
+  final List<String> devices;
+//  static int len;
   @override
   EditProjectPageState createState() => EditProjectPageState();
 }
@@ -16,6 +21,7 @@ class EditProjectPage extends StatefulWidget {
 class EditProjectPageState extends State<EditProjectPage> with SingleTickerProviderStateMixin {
   AnimationController controller;
   Animation<double> animation;
+
 
   final _projectTitleController = TextEditingController();
   final _projectDescriptionController = TextEditingController();
@@ -27,23 +33,23 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
   String dropdown2Value;
   String _value = null;
   String dropdown3Value = 'Four';
-  List devices = [
-    "iPad",
-    "Microphone",
-    "Dictaphone",
-    "Phone",
-  ];
+//  List devices = [
+//    "iPad",
+//    "Microphone",
+//    "Dictaphone",
+//    "Phone",
+//  ];
   List<DropdownMenuItem> _locationMenuItems, _tagMenuItems, _roleMenuItems;
   List<String> locations = ["Locations", "Gasabo", "Remera", "Kisimenti", "Gaculiro", "Kacyiru"];
-  List<String> tags = ["Tags", "Over18", "Male", "Female", "Education", "Sensitive"];
-  List<String> roles = ["Project Staff Roles", "Enumerator", "Project Lead", "Project Supervisor", "Administrator"];
+//  List<String> tags = ["Tags", "Over18", "Male", "Female", "Education", "Sensitive"];
+//  List<String> roles = ["Project Staff Roles", "Enumerator", "Project Lead", "Project Supervisor", "Administrator"];
   String _tagValue, _locationValue, _roleValue;
   int _colorIndex = 0;
   Set<String> selectedLocations = new Set(), selectedTags = new Set(), selectedDevices = new Set();
   Map<String, Object> devicesWithRole = new Map<String, Object>();
-  List devices_values = [false, false, false, false];
-  List<Color> _mcolors = [
-    Colors.brown[500], Colors.brown[500], Colors.brown[500], Colors.brown[500]];
+//  static int len = widget.len;
+  List devices_values;
+  List<Color> _mcolors;
 
   @override
   void initState() {
@@ -52,10 +58,9 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
         duration: const Duration(milliseconds: 2000), vsync: this);
     animation = new Tween(begin: 0.0, end: 300.0).animate(controller);
     controller.forward();
-
     _createDropdownMenuItems(0, locations);
-    _createDropdownMenuItems(1, tags);
-    _createDropdownMenuItems(2, roles);
+    _createDropdownMenuItems(1, widget.tags);
+    _createDropdownMenuItems(2, widget.roles);
     _setDefaults();
   }
 
@@ -88,9 +93,11 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
   /// updated output value if a user had previously entered an input.
   void _setDefaults() {
     setState(() {
+      devices_values = List<bool>.generate(widget.devices.length, (int index) => (false));
+      _mcolors = List<Color>.generate(widget.devices.length, (int index) => (Colors.brown[500]));
       _locationValue = locations[0];
-      _tagValue = tags[0];
-      _roleValue = roles[0];
+      _tagValue = widget.tags[0];
+      _roleValue = widget.roles[0];
     });
   }
 
@@ -273,7 +280,7 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
             if (_tagValue != "Tags") {
               setState(() {
                 selectedTags.add(_tagValue);
-                _tagValue = tags[0];
+                _tagValue = widget.tags[0];
               });
 
               showInSnackBar("Tag Added Successfully", TodoColors.baseColors[_colorIndex]);
@@ -290,13 +297,13 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
         GridView.count(
           shrinkWrap: true,
           crossAxisCount: 3,
-          children: new List.generate(devices.length, (i) =>
+          children: new List.generate(widget.devices.length, (i) =>
           new InkWell(
             onTap: () {
               setState(() {
                 if (_mcolors[i] == Colors.brown[500]) {
                   _mcolors[i] = TodoColors.baseColors[_colorIndex];
-                  selectedDevices.add(devices[i]);
+                  selectedDevices.add(widget.devices[i]);
                 } else {
                   _mcolors[i] = Colors.brown[500];
                 }
@@ -307,7 +314,7 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
               color: _mcolors[i],
               child: new Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: new Center(child: new Text(devices[i])),
+                child: new Center(child: new Text(widget.devices[i])),
               ),
             ),
           ),
@@ -340,7 +347,7 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
                   _mcolors.insert(i, Colors.brown[500]);
                 }
                 devicesWithRole.addAll({_roleValue: selectedDevices});
-                _roleValue = roles[0];
+                _roleValue = widget.roles[0];
                 selectedDevices = new Set();
               });
               showInSnackBar(
@@ -381,6 +388,9 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
                 _projectDescriptionController.clear();
                 setState(() {
                   _sendRequestToAvailableUsers = false;
+                  _roleValue = widget.roles[0];
+                  _tagValue = widget.tags[0];
+                  _locationValue = locations[0];
                 });
               },
             ),
@@ -406,7 +416,7 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
 
                   Firestore.instance.runTransaction((transaction) async {
                     CollectionReference reference =
-                    Firestore.instance.collection('tables/projects/myProjects').reference();
+                    Firestore.instance.collection('projects').reference();
                     await reference.add(project_data);
                   });
                   _projectTitleController.clear();
@@ -469,7 +479,7 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
   @override
   Widget build(BuildContext context) {
     return new StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('tables/projects/myProjects').snapshots(),
+        stream: Firestore.instance.collection('projects').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
             return new Center(

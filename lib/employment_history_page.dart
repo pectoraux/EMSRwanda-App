@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'supplemental/cut_corners_border.dart';
 import 'package:flutter/material.dart';
 import 'project_details.dart';
@@ -10,14 +12,18 @@ class EmploymentHistoryPage extends StatefulWidget
   final int colorIndex;
   final bool isMadeByYou;
   final bool noButton;
+  final DocumentSnapshot document;
 
   const EmploymentHistoryPage({
     @required this.colorIndex,
     @required this.isMadeByYou,
     @required this.noButton,
+    this.document,
   }) : assert(colorIndex != null),
         assert(isMadeByYou != null),
        assert(noButton != null);
+//  assert(document != null);
+
 
   @override
   _EmploymentHistoryPageState createState() => _EmploymentHistoryPageState();
@@ -45,7 +51,8 @@ class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
           leading: new BackButton(key: _bkey, color: Colors.black,),
           elevation: 0.0,
           backgroundColor: Colors.transparent,
-          title: Text('Projects Erin Worked On', style: TodoColors.textStyle.apply(color: TodoColors.baseColors[widget.colorIndex])),
+          title: Text('Projects ${widget.document['firstName']} Worked On',
+              style: TodoColors.textStyle.apply(color: TodoColors.baseColors[widget.colorIndex])),
           actions: <Widget>
           [
             Container

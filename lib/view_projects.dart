@@ -68,10 +68,10 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
           ],
         ),
         body: StreamBuilder<QuerySnapshot>(
-            stream: Firestore.instance.collection('tables/projects/myProjects').getDocuments().asStream(),
+            stream: Firestore.instance.collection('projects').getDocuments().asStream(),
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (!snapshot.hasData) {
-                print("SNAPSHOT => => => ${snapshot.data.documents}");
+                print("SNAPSHOTn => => => ${snapshot.data.documents}");
                 return new Center
                   (
                     child: new CircularProgressIndicator()

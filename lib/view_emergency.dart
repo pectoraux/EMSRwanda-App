@@ -201,22 +201,25 @@ class ViewEmergencyPageState extends State<ViewEmergencyPage> with SingleTickerP
   Widget build(BuildContext context) {
     final padding = Padding(padding: _padding);
 
-    return new StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('tables/users/${widget.currentUserId}').snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+    return new StreamBuilder<DocumentSnapshot>(
+        stream: Firestore.instance.document('users/${widget.currentUserId}').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (!snapshot.hasData)
           {
             return new Center(
                 child: new CircularProgressIndicator()
             );
-          }else{
-            final converter = _buildListItem(context, snapshot.data.documents.first);
+          }else if (snapshot.data != null) {
+//            DocumentSnapshot document = snapshot.data.documents.where((doc){
+//    return (doc['userName'] == widget.currentUserId) ? true : false;
+//              }).first;
+
+            final converter = _buildListItem(context, snapshot.data);
 
             return Padding(
               padding:
               _padding,
-              child:
-              OrientationBuilder(
+              child: OrientationBuilder(
                 builder: (BuildContext
                 context, Orientation orientation) {
                   if (orientation == Orientation.portrait) {
@@ -226,19 +229,19 @@ class ViewEmergencyPageState extends State<ViewEmergencyPage> with SingleTickerP
                     return Center(
                       child: Container(
                         width: 450.0,
-                        child: converter,
+                        child:converter,
                       ),
                     );
                   }
                 }
                 ,
               ),
-
             );
           }
 
         });
   }
+
   void showInSnackBar(String value, Color c) {
     Scaffold.of(context).showSnackBar(new SnackBar(
       content: new Text(value),

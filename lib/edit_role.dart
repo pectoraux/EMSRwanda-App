@@ -202,7 +202,7 @@ class EditRolesPageState extends State<EditRolesPage> with SingleTickerProviderS
 
         Firestore.instance.runTransaction((transaction) async {
           CollectionReference reference =
-          Firestore.instance.collection('tables/roles/myRoles').reference();
+          Firestore.instance.collection('roles').reference();
           await reference.add(role_data);
         });
       }
@@ -240,7 +240,7 @@ class EditRolesPageState extends State<EditRolesPage> with SingleTickerProviderS
       @override
       Widget build(BuildContext context) {
         return new StreamBuilder<QuerySnapshot>(
-            stream: Firestore.instance.collection('tables/roles/myRoles').snapshots(),
+            stream: Firestore.instance.collection('roles').snapshots(),
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (!snapshot.hasData) {
                 return new Center(

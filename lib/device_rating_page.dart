@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'supplemental/cut_corners_border.dart';
 import 'package:flutter/material.dart';
 import 'constants.dart';
@@ -7,10 +9,12 @@ import 'my_rating_dialog.dart';
 
 class DeviceRatingPage extends StatefulWidget {
   final int colorIndex;
-
+  final String deviceRatingDocumentID;
   const DeviceRatingPage({
     @required this.colorIndex,
-  }) : assert(colorIndex != null);
+    @required this.deviceRatingDocumentID,
+  }) : assert(colorIndex != null),
+  assert(deviceRatingDocumentID != null);
 
   @override
   DeviceRatingPageState createState() => DeviceRatingPageState();
@@ -20,8 +24,8 @@ class DeviceRatingPageState extends State<DeviceRatingPage> {
   final _replyController = TextEditingController();
   final _reply = GlobalKey(debugLabel: 'Reply');
 
-  @override
-  Widget build(BuildContext context) {
+
+    Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
     double rating = 3.5;
     return Scaffold
       (
@@ -38,7 +42,7 @@ class DeviceRatingPageState extends State<DeviceRatingPage> {
               title: Row (
 
                 children: <Widget>[
-                  Text('Ipad'),
+                  Text(document['deviceName']),
                 ],
               ),
               background: SizedBox.expand
@@ -92,7 +96,7 @@ class DeviceRatingPageState extends State<DeviceRatingPage> {
                               children: <Widget>
                               [
                                 Padding(padding: EdgeInsets.only(right: 16.0)),
-                                Text('RATE DEVICE',
+                                Text('RATE ${document['deviceName']}',
                                     style: TextStyle(color: Colors.white))
                               ],
                             ),
@@ -702,5 +706,40 @@ class DeviceRatingPageState extends State<DeviceRatingPage> {
         ],
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new StreamBuilder<QuerySnapshot>(
+        stream: Firestore.instance.collection('devices').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (!snapshot.hasData) {
+            return new Center(
+                child: new CircularProgressIndicator()
+            );
+          } else {
+            DocumentSnapshot document = snapshot.data.documents.where((doc){
+              return doc.documentID == widget.deviceRatingDocumentID;}).first;
+
+
+            final converter = _buildListItem(
+                context, document);
+
+            return OrientationBuilder(
+              builder: (BuildContext context, Orientation orientation) {
+                if (orientation == Orientation.portrait) {
+                  return converter;
+                } else {
+                  return Center(
+                    child: Container(
+                      width: 450.0,
+                      child: converter,
+                    ),
+                  );
+                }
+              },
+            );
+          }
+        });
   }
 }

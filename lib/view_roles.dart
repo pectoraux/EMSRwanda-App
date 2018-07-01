@@ -131,7 +131,7 @@ class ViewRolesPageState extends State<ViewRolesPage> {
           ],
         ),
         body:  StreamBuilder<QuerySnapshot>(
-            stream: Firestore.instance.collection('tables/roles/myRoles').getDocuments().asStream(),
+            stream: Firestore.instance.collection('roles').getDocuments().asStream(),
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (!snapshot.hasData) {
                 print("SNAPSHOTn => => => ${snapshot.data.documents}");

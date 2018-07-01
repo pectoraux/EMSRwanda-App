@@ -73,7 +73,7 @@ class ViewUsersPageState extends State<ViewUsersPage> {
           ],
         ),
         body: StreamBuilder<QuerySnapshot>(
-            stream: Firestore.instance.collection('tables/users/myUsers').getDocuments().asStream(),
+            stream: Firestore.instance.collection('users').getDocuments().asStream(),
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (!snapshot.hasData) {
                 print("SNAPSHOTn => => => ${snapshot.data.documents}");
@@ -115,7 +115,7 @@ class ViewUsersPageState extends State<ViewUsersPage> {
                               child:Text(user['locations'].toString().substring(1,user['locations'].toString().length-1),
                                 style: TextStyle(color: TodoColors.baseColors[widget.colorIndex]), softWrap: true, overflow: TextOverflow.fade,) ),
 
-                          Expanded(child:Text('Erin Niamkey', style: TodoColors.textStyle6), flex: 1,),
+                          Expanded(child:Text('${user['firstName']} ${user['lastName']}', style: TodoColors.textStyle6), flex: 1,),
                         ],
                       ),
                       Material

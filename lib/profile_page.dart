@@ -36,6 +36,7 @@ class _ProfilePageState extends State<ProfilePage> {
   /// This controller can be used to programmatically
   /// set the current displayed page
   PageController _pageController;
+  List<String> roles = [], devices = [], deviceTypes = [], tags = [];
 
 
   /// Indicating the current displayed page
@@ -90,7 +91,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     Icons.work, color: getColor(navigationItems.length),),
                   title: new Text("Projects",)
               ));
-          items.add(EditProjectPage());
+          items.add(EditProjectPage( roles: roles, tags: tags, devices: devices,));
         }
         if (canCreateTag) {
           navigationItems.add(
@@ -109,7 +110,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   title: new Text("Devices",)
               )
           );
-          items.add(EditDevicePage());
+          items.add(EditDevicePage(deviceTypes: deviceTypes,));
         }
         if (canCreateUser) {
           navigationItems.add(
@@ -118,7 +119,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     color: getColor(navigationItems.length),),
                   title: new Text("Users",)
               ));
-          items.add(EditUserPage(auth: widget.auth, currentUserPassword: currentUserPassword,));
+          items.add(EditUserPage(auth: widget.auth, currentUserPassword: currentUserPassword, roles: roles,));
 
         };
 
@@ -199,9 +200,9 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context){
 
     widget.auth.currentUser().then((userId) async {
-      List<String> results = await Firestore.instance.collection('tables/users/$userId').getDocuments().then((doc){
-        return [doc.documents[0]['userRole'], doc.documents[0]['userPassword'], doc.documents[0]['firstName'],
-        doc.documents[0]['lastName'], doc.documents[0]['locations'][0]];
+      List<String> results =
+      await Firestore.instance.document('users/${userId}').get().then((doc){
+        return [doc['userRole'], doc['userPassword'], doc['firstName'], doc['lastName'], doc['locations'].toString()];
       });
 
         setState(() {
@@ -210,16 +211,66 @@ class _ProfilePageState extends State<ProfilePage> {
           currentUserId = userId;
           firstName = results[2];
           lastName = results[3];
-          location = results[4];
+          location = results[4].substring(results[4].indexOf('[')+1, results[4].indexOf(']'));
         });
-
     });
 
+    widget.auth.currentUser().then((userId) async {
+      List<String> mResults = ["Project Staffs Roles"];
+      await Firestore.instance.collection('roles').getDocuments().asStream().forEach((snap){
+//        print('=< =< =< ${snap.documents.forEach((role){return role['roleName']})}');
+        for(var role in snap.documents){
+//          print('Role: ${role['roleName']}');
+          mResults.add(role['roleName']);
+        }
+      });
+      setState(() {
+        roles =  mResults;
+      });
+    });
+
+    widget.auth.currentUser().then((userId) async {
+      List<String> mResults = ["Device Type"];
+//      List<String> mResults2 = [];
+      await Firestore.instance.collection('devices').getDocuments().asStream().forEach((snap){
+//        print('=< =< =< ${snap.documents.forEach((role){return role['roleName']})}');
+        for(var device in snap.documents){
+//          print('Role: ${role['roleName']}');
+          mResults.add(device['deviceType']);
+//          mResults2.add(device['deviceName']);
+        }
+      });
+      setState(() {
+        mResults.add('Other');
+        deviceTypes =  mResults.toSet().toList();
+        devices = mResults;
+        devices.removeAt(0);
+        devices.removeLast();
+      });
+    });
+
+    widget.auth.currentUser().then((userId) async {
+      List<String> mResults = ["Tags"];
+      await Firestore.instance.collection('tags').getDocuments().asStream().forEach((snap){
+//        print('=< =< =< ${snap.documents.forEach((role){return role['roleName']})}');
+        for(var tag in snap.documents){
+//          print('Role: ${role['roleName']}');
+          mResults.add(tag['tagName']);
+        }
+      });
+      setState(() {
+        tags =  mResults;
+      });
+    });
+
+
+
     return new StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('tables/roles/myRoles').snapshots(),
+        stream: Firestore.instance.collection('roles').snapshots(),
         builder: (BuildContext context,
             AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
+//            print("Role Document => => => ${snapshot}");
             return new Center(
                 child: new CircularProgressIndicator()
             );
@@ -248,5 +299,6 @@ class _ProfilePageState extends State<ProfilePage> {
         }
     );
   }
+
 }
 

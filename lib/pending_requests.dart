@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'supplemental/cut_corners_border.dart';
@@ -536,7 +537,8 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
           (
             child: child,
           // Do onTap() if it isn't null, otherwise do print()
-            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => new EmploymentHistoryPage(colorIndex: widget.colorIndex, isMadeByYou: _madeByYou, noButton: false,),),),
+            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) =>
+            new EmploymentHistoryPage(colorIndex: widget.colorIndex, isMadeByYou: _madeByYou, noButton: false,),),),
         )
     );
   }

@@ -67,7 +67,7 @@ class ViewTagsPageState extends State<ViewTagsPage> {
           ],
         ),
         body: StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('tables/tags/myTags').getDocuments().asStream(),
+        stream: Firestore.instance.collection('tags').getDocuments().asStream(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (!snapshot.hasData) {
         print("SNAPSHOTn => => => ${snapshot.data.documents}");

@@ -81,6 +81,7 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
   static String emergencyContactPhone = "";
   List<bool> changed = [false, false, false, false, false, false, false, false,false,false,false,false,false,false,false,false,false,false,false,false,false];
   static final formKey = new GlobalKey<FormState>();
+  List<String> locations = ["Locations", "Gasabo", "Remera", "Kisimenti", "Gaculiro", "Kacyiru"];
 
   bool validateAndSave() {
     final form = formKey.currentState;
@@ -423,16 +424,20 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
   Widget build(BuildContext context) {
     final padding = Padding(padding: _padding);
 
-    return new StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('tables/users/${widget.currentUserId}').snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+    return new StreamBuilder<DocumentSnapshot>(
+        stream: Firestore.instance.document('users/${widget.currentUserId}').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (!snapshot.hasData)
     {
       return new Center(
           child: new CircularProgressIndicator()
       );
-    }else{
-            final converter = _buildListItem(context, snapshot.data.documents.first);
+    }else if (snapshot.data != null) {
+//            DocumentSnapshot document = snapshot.data.documents.where((doc){
+//    return (doc['userName'] == widget.currentUserId) ? true : false;
+//              }).first;
+
+            final converter = _buildListItem(context, snapshot.data);
 
             return Padding(
               padding:

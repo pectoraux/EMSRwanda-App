@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'employment_history_page.dart';
 import 'user_rating_page.dart';
@@ -33,8 +34,7 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
   /// Indicating the current displayed page
   int _page = 0;
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
     final navigationItems = <BottomNavigationBarItem>[
       new BottomNavigationBarItem(
           icon: new Icon(Icons.work, color: getColor(0),),
@@ -53,9 +53,9 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
       resizeToAvoidBottomPadding: false,
       body: new PageView(
           children: [
-            new EmploymentHistoryPage(colorIndex: widget.colorIndex, isMadeByYou: false, noButton: true),
-            new UserRatingPage(colorIndex: widget.colorIndex,),
-            new ViewDevicesPage(colorIndex: widget.colorIndex),
+            new EmploymentHistoryPage(colorIndex: widget.colorIndex, isMadeByYou: false, noButton: true, document: document,),
+            new UserRatingPage(colorIndex: widget.colorIndex, document: document,),
+            new ViewDevicesPage(colorIndex: widget.colorIndex, document: document,),
           ],
           controller: _pageController,
           onPageChanged: onPageChanged
@@ -109,6 +109,42 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
     } else {
       return iconColor;
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    return new StreamBuilder<QuerySnapshot>(
+        stream: Firestore.instance.collection('users').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (!snapshot.hasData) {
+            return new Center(
+                child: new CircularProgressIndicator()
+            );
+          } else {
+            DocumentSnapshot document = snapshot.data.documents.where((doc){
+              return doc.documentID == widget.userDocumentID;}).first;
+
+
+            final converter = _buildListItem(
+                context, document);
+
+            return OrientationBuilder(
+              builder: (BuildContext context, Orientation orientation) {
+                if (orientation == Orientation.portrait) {
+                  return converter;
+                } else {
+                  return Center(
+                    child: Container(
+                      width: 450.0,
+                      child: converter,
+                    ),
+                  );
+                }
+              },
+            );
+          }
+        });
   }
 }
 

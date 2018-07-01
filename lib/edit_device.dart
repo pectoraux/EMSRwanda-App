@@ -165,6 +165,11 @@ class EditDevicePageState extends State<EditDevicePage> with SingleTickerProvide
     });
   }
 
+  dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final converter = ListView(
@@ -175,12 +180,6 @@ class EditDevicePageState extends State<EditDevicePage> with SingleTickerProvide
         SizedBox(height: 20.0),
         Column(
           children: <Widget>[
-//            Image.asset('assets/diamond.png'),
-//            SizedBox(height: 16.0),
-//            Text(
-//              'Create A New Device',
-//              style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),
-//            ),
             AnimatedLogo(animation: animation, message: 'Create A New Device', factor: 1.0, colorIndex: _colorIndex,),
           ],
         ),

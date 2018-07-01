@@ -12,10 +12,13 @@ import 'edit_user.dart';
 
 class UserHistoryPage extends StatefulWidget {
   final int colorIndex;
+  final String userDocumentID;
 
   const UserHistoryPage({
     @required this.colorIndex,
-  }) : assert(colorIndex != null);
+    @required this.userDocumentID
+  }) : assert(colorIndex != null),
+        assert(userDocumentID != null);
 
   @override
   _UserHistoryPageState createState() => _UserHistoryPageState();

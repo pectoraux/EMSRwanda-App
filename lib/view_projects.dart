@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -28,6 +29,9 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
     final _projectLocations = GlobalKey(debugLabel: 'Project Locations');
     final _projectTags = GlobalKey(debugLabel: 'Project Tags');
 
+    List<StaggeredTile> mTiles = [];
+    ScrollController controller = new ScrollController();
+
     return Scaffold
       (
         appBar: AppBar
@@ -35,7 +39,7 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
           leading: new BackButton(key: _bkey, color: Colors.black,),
           elevation: 2.0,
           backgroundColor: Colors.white,
-          title: Text('Your Projects', style: TodoColors.textStyle6),
+          title: Text('Available Projects', style: TodoColors.textStyle6),
           actions: <Widget>
           [
             Container
@@ -63,13 +67,29 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
             )
           ],
         ),
-        body: StaggeredGridView.count(
+        body: StreamBuilder<QuerySnapshot>(
+            stream: Firestore.instance.collection('tables/projects/myProjects').getDocuments().asStream(),
+            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (!snapshot.hasData) {
+                print("SNAPSHOT => => => ${snapshot.data.documents}");
+                return new Center
+                  (
+                    child: new CircularProgressIndicator()
+                );
+              }
+        return StaggeredGridView.count(
           crossAxisCount: 2,
           crossAxisSpacing: 12.0,
           mainAxisSpacing: 12.0,
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          children: <Widget>[
-            _buildTile(
+          controller: controller,
+          children: snapshot.data.documents.map((project) {
+
+//                print(role.documentID + ': ' + role['roleName']);
+
+                 mTiles.add(StaggeredTile.extent(2, 110.0));
+
+            return _buildTile(
               Padding
                 (
                 padding: const EdgeInsets.all(24.0),
@@ -81,409 +101,42 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
                     [
                       Column
                         (
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('Kigali, Gisenyi',
-                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
-                          Text('FSI', style: TodoColors.textStyle6)
+                        SizedBox(width: 180.0,
+                            child:Text(project['locations'].toString().substring(1,project['locations'].toString().length-1),
+                             style: TextStyle(color: TodoColors.baseColors[widget.colorIndex]), softWrap: true, overflow: TextOverflow.fade,) ),
+                        Expanded(child:Text(project['projectTitle'], style: TodoColors.textStyle6,),flex: 1,)
                         ],
                       ),
                       Material
                         (
                           color: TodoColors.baseColors[widget.colorIndex],
                           borderRadius: BorderRadius.circular(24.0),
-                          child: Center
+                            child:  Center
                             (
-                              child: Padding
+                              child:Padding
                                 (
                                 padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline, color: Colors.white,
+                                child: Icon(Icons.work, color: Colors.white,
                                     size: 30.0),
                               )
-                          )
+                              ),
                       )
                     ]
                 ),
               ),
-              onTap: onTap,
-            ),
-            _buildTile(
-              Padding
-                (
-                padding: const EdgeInsets.all(24.0),
-                child: Row
-                  (
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>
-                    [
-                      Column
-                        (
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>
-                        [
-                          Text('Remera, Gaculiro',
-                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
-                          Text('CookStoves', style: TodoColors.textStyle6)
-                        ],
-                      ),
-                      Material
-                        (
-                          color: TodoColors.baseColors[widget.colorIndex],
-                          borderRadius: BorderRadius.circular(24.0),
-                          child: Center
-                            (
-                              child: Padding
-                                (
-                                padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline, color: Colors.white,
-                                    size: 30.0),
-                              )
-                          )
-                      )
-                    ]
-                ),
-              ),
-              onTap: onTap,
-            ),
-            _buildTile(
-              Padding
-                (
-                padding: const EdgeInsets.all(24.0),
-                child: Row
-                  (
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>
-                    [
-                      Column
-                        (
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>
-                        [
-                          Text('Kacyiru, Kimironko',
-                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
-                          Text('MISM', style: TodoColors.textStyle6)
-                        ],
-                      ),
-                      Material
-                        (
-                          color: TodoColors.baseColors[widget.colorIndex],
-                          borderRadius: BorderRadius.circular(24.0),
-                          child: Center
-                            (
-                              child: Padding
-                                (
-                                padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline, color: Colors.white,
-                                    size: 30.0),
-                              )
-                          )
-                      )
-                    ]
-                ),
-              ),
-              onTap: onTap,
-            ),
-            _buildTile(
-              Padding
-                (
-                padding: const EdgeInsets.all(24.0),
-                child: Row
-                  (
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>
-                    [
-                      Column
-                        (
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>
-                        [
-                          Text('Kiyovu, Nyamirambo',
-                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
-                          Text('PEPSI', style: TodoColors.textStyle6)
-                        ],
-                      ),
-                      Material
-                        (
-                          color: TodoColors.baseColors[widget.colorIndex],
-                          borderRadius: BorderRadius.circular(24.0),
-                          child: Center
-                            (
-                              child: Padding
-                                (
-                                padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline, color: Colors.white,
-                                    size: 30.0),
-                              )
-                          )
-                      )
-                    ]
-                ),
-              ),
-              onTap: onTap,
-            ),
-            _buildTile(
-              Padding
-                (
-                padding: const EdgeInsets.all(24.0),
-                child: Row
-                  (
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>
-                    [
-                      Column
-                        (
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>
-                        [
-                          Text('Kigali, Gaculiro',
-                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
-                          Text('Students Report', style: TodoColors.textStyle6)
-                        ],
-                      ),
-                      Material
-                        (
-                          color: TodoColors.baseColors[widget.colorIndex],
-                          borderRadius: BorderRadius.circular(24.0),
-                          child: Center
-                            (
-                              child: Padding
-                                (
-                                padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline, color: Colors.white,
-                                    size: 30.0),
-                              )
-                          )
-                      )
-                    ]
-                ),
-              ),
-              onTap: onTap,
-            ),
-            _buildTile(
-              Padding
-                (
-                padding: const EdgeInsets.all(24.0),
-                child: Row
-                  (
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>
-                    [
-                      Column
-                        (
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>
-                        [
-                          Text('Kacyiru',
-                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
-                          Text('MISM', style: TodoColors.textStyle6)
-                        ],
-                      ),
-                      Material
-                        (
-                          color: TodoColors.baseColors[widget.colorIndex],
-                          borderRadius: BorderRadius.circular(24.0),
-                          child: Center
-                            (
-                              child: Padding
-                                (
-                                padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline, color: Colors.white,
-                                    size: 30.0),
-                              )
-                          )
-                      )
-                    ]
-                ),
-              ),
-              onTap: onTap,
-            ),
-            _buildTile(
-              Padding
-                (
-                padding: const EdgeInsets.all(24.0),
-                child: Row
-                  (
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>
-                    [
-                      Column
-                        (
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>
-                        [
-                          Text('Kiyovu',
-                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
-                          Text('RRA Survey', style: TodoColors.textStyle6)
-                        ],
-                      ),
-                      Material
-                        (
-                          color: TodoColors.baseColors[widget.colorIndex],
-                          borderRadius: BorderRadius.circular(24.0),
-                          child: Center
-                            (
-                              child: Padding
-                                (
-                                padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline, color: Colors.white,
-                                    size: 30.0),
-                              )
-                          )
-                      )
-                    ]
-                ),
-              ),
-              onTap: onTap,
-            ),
-            _buildTile(
-              Padding
-                (
-                padding: const EdgeInsets.all(24.0),
-                child: Row
-                  (
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>
-                    [
-                      Column
-                        (
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>
-                        [
-                          Text('Gisenyi',
-                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
-                          Text('ALI', style: TodoColors.textStyle6)
-                        ],
-                      ),
-                      Material
-                        (
-                          color: TodoColors.baseColors[widget.colorIndex],
-                          borderRadius: BorderRadius.circular(24.0),
-                          child: Center
-                            (
-                              child: Padding
-                                (
-                                padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline, color: Colors.white,
-                                    size: 30.0),
-                              )
-                          )
-                      )
-                    ]
-                ),
-              ),
-              onTap: onTap,
-            ),
-            _buildTile(
-              Padding
-                (
-                padding: const EdgeInsets.all(24.0),
-                child: Row
-                  (
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>
-                    [
-                      Column
-                        (
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>
-                        [
-                          Text('Gaculiro',
-                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
-                          Text('LATI', style: TodoColors.textStyle6)
-                        ],
-                      ),
-                      Material
-                        (
-                          color: TodoColors.baseColors[widget.colorIndex],
-                          borderRadius: BorderRadius.circular(24.0),
-                          child: Center
-                            (
-                              child: Padding
-                                (
-                                padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline, color: Colors.white,
-                                    size: 30.0),
-                              )
-                          )
-                      )
-                    ]
-                ),
-              ),
-              onTap: onTap,
-            ),
-            _buildTile(
-              Padding
-                (
-                padding: const EdgeInsets.all(24.0),
-                child: Row
-                  (
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>
-                    [
-                      Column
-                        (
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>
-                        [
-                          Text('Remera',
-                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
-                          Text('VINE', style: TodoColors.textStyle6)
-                        ],
-                      ),
-                      Material
-                        (
-                          color: TodoColors.baseColors[widget.colorIndex],
-                          borderRadius: BorderRadius.circular(24.0),
-                          child: Center
-                            (
-                              child: Padding
-                                (
-                                padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline, color: Colors.white,
-                                    size: 30.0),
-                              )
-                          )
-                      )
-                    ]
-                ),
-              ),
-            ),
+              project.documentID
+              );
+          }).toList(),
+
+          staggeredTiles: mTiles,
+        );
 
 
-          ],
-          staggeredTiles: [
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-          ],
-        )
+            }),
     );
   }
 
@@ -535,7 +188,8 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
     );
   }
 
-  Widget _buildTile(Widget child, {Function() onTap}) {
+
+  Widget _buildTile2(Widget child, {Function() onTap}) {
     return Material(
         elevation: 14.0,
         borderRadius: BorderRadius.circular(12.0),
@@ -552,5 +206,20 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
   }
 
 
+  Widget _buildTile(Widget child, String roleID) {
+    return Material(
+        elevation: 14.0,
+        borderRadius: BorderRadius.circular(12.0),
+        shadowColor: Color(0x802196F3),
+        child: InkWell
+          (
+          // Do onTap() if it isn't null, otherwise do print()
+            onTap: onTap != null ? () => onTap() : () {
+              print('Not set yet');
+            },
+            child: child
+        )
+    );
+  }
 }
 

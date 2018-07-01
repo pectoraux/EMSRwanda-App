@@ -5,6 +5,7 @@ class AnimatedLogo extends AnimatedWidget {
   final int colorIndex;
   final String message;
   final double factor;
+  final loginPage;
 
   AnimatedLogo({
     Key key,
@@ -12,10 +13,12 @@ class AnimatedLogo extends AnimatedWidget {
     @required this.factor,
     @required this.message,
     @required animation,
+    this.loginPage,
   }) : super(key: key, listenable: animation);
 
   Widget build(BuildContext context) {
     final Animation<double> animation = listenable;
+
     return new Center(
       child: new Container(
         height: animation.value/2.0,
@@ -33,18 +36,20 @@ class AnimatedLogo extends AnimatedWidget {
 //              Card(
 //                color: TodoColors.baseColors[colorIdx],
               Expanded(
-            child: Material( child:
+            child: loginPage == null ? Material( child:
             Theme(
               // Create a unique theme with "ThemeData"
               data: ThemeData(
-                accentColor: Colors.yellow,
+//                accentColor: Colors.yellow,
               ),
                 child: Text(
                   message,
                   style: TodoColors.textStyle6.apply(color: TodoColors.baseColors[colorIndex],),
 //                    softWrap: true, overflow: TextOverflow.fade,
                 ),
-            ),),
+            ),) : Text(
+              message,
+              style: TodoColors.textStyle6,),
               flex: 1,
     ),
             ]

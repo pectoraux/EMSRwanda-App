@@ -236,7 +236,7 @@ FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
                   };
                   Firestore.instance.runTransaction((transaction) async {
                     CollectionReference reference =
-                    Firestore.instance.collection('tables').document('users').collection(newId);
+                    Firestore.instance.collection('tables/users/myUsers').reference();
                     await reference.add(user_data);
                   });
                 });
@@ -259,24 +259,23 @@ FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
     );
   }
 
+  dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return new StreamBuilder<DocumentSnapshot>(
-        stream: Firestore.instance.collection('tables').document('users').snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+    return new StreamBuilder<QuerySnapshot>(
+        stream: Firestore.instance.collection('tables/users/myUsers').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
             return new Center(
                 child: new CircularProgressIndicator()
             );
-          } else if (snapshot.data != null) {
-
-            _firebaseAuth.currentUser().then((user) {
-              setState(() {
-                oldEmail = user.email;
-              });
-            });
-
-            final converter = _buildListItem(context, snapshot.data);
+          } else {
+            final converter = _buildListItem(
+                context, snapshot.data.documents.first);
 
             return OrientationBuilder(
               builder: (BuildContext context, Orientation orientation) {
@@ -293,8 +292,7 @@ FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
               },
             );
           }
-        }
-    );
+        });
   }
 
   void showInSnackBar(String value, Color c) {

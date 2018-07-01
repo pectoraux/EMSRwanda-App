@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -27,6 +28,9 @@ class ViewTagsPageState extends State<ViewTagsPage> {
     final _tagName = GlobalKey(debugLabel: 'Tag Name');
     final _tagTypeController = TextEditingController();
     final _tagType = GlobalKey(debugLabel: 'Tag Type');
+    List<StaggeredTile> mTiles = [];
+    ScrollController controller = new ScrollController();
+
     return Scaffold
       (
         appBar: AppBar
@@ -62,13 +66,30 @@ class ViewTagsPageState extends State<ViewTagsPage> {
             )
           ],
         ),
-        body: StaggeredGridView.count(
+        body: StreamBuilder<QuerySnapshot>(
+        stream: Firestore.instance.collection('tables/tags/myTags').getDocuments().asStream(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (!snapshot.hasData) {
+        print("SNAPSHOTn => => => ${snapshot.data.documents}");
+        return new Center
+        (
+        child: new CircularProgressIndicator()
+        );
+        }
+
+        return StaggeredGridView.count(
           crossAxisCount: 2,
           crossAxisSpacing: 12.0,
           mainAxisSpacing: 12.0,
+          controller: controller,
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          children: <Widget>[
-            _buildTile(
+          children: snapshot.data.documents.map((tag) {
+
+    print(tag.documentID + ': ' + tag['tagName']);
+
+    mTiles.add(StaggeredTile.extent(2, 110.0));
+
+    return _buildTile(
               Padding
                 (
                 padding: const EdgeInsets.all(24.0),
@@ -84,9 +105,9 @@ class ViewTagsPageState extends State<ViewTagsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-                          Text('User Related Tag',
+                          Text(tag['tagType'],
                               style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
-                          Text('Female', style: TodoColors.textStyle6)
+                          Text(tag['tagName'], style: TodoColors.textStyle6)
                         ],
                       ),
                       Material
@@ -98,267 +119,30 @@ class ViewTagsPageState extends State<ViewTagsPage> {
                               child: Padding
                                 (
                                 padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline, color: Colors.white,
+                                child: Icon(Icons.title, color: Colors.white,
                                     size: 30.0),
-                              )
-                          )
-                      )
-                    ]
-                ),
-              ),
-            ),
-            _buildTile(
-              Padding
-                (
-                padding: const EdgeInsets.all(24.0),
-                child: Row
-                  (
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>
-                    [
-                      Column
-                        (
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>
-                        [
-                          Text('User Related Tag',
-                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
-                          Text('Male', style: TodoColors.textStyle6)
-                        ],
-                      ),
-                      Material
-                        (
-                          color: TodoColors.baseColors[widget.colorIndex],
-                          borderRadius: BorderRadius.circular(24.0),
-                          child: Center
-                            (
-                              child: Padding
-                                (
-                                padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline, color: Colors.white,
-                                    size: 30.0),
-                              )
-                          )
-                      )
-                    ]
-                ),
-              ),
-            ),
-            _buildTile(
-              Padding
-                (
-                padding: const EdgeInsets.all(24.0),
-                child: Row
-                  (
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>
-                    [
-                      Column
-                        (
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>
-                        [
-                          Text('User Related Tag',
-                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
-                          Text('Over 18', style: TodoColors.textStyle6)
-                        ],
-                      ),
-                      Material
-                        (
-                          color: TodoColors.baseColors[widget.colorIndex],
-                          borderRadius: BorderRadius.circular(24.0),
-                          child: Center
-                            (
-                              child: Padding
-                                (
-                                padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline, color: Colors.white,
-                                    size: 30.0),
-                              )
-                          )
-                      )
-                    ]
-                ),
-              ),
-            ),
-            _buildTile(
-              Padding
-                (
-                padding: const EdgeInsets.all(24.0),
-                child: Row
-                  (
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>
-                    [
-                      Column
-                        (
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>
-                        [
-                          Text('Project Related Tag',
-                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
-                          Text('Humanitarian', style: TodoColors.textStyle6)
-                        ],
-                      ),
-                      Material
-                        (
-                          color: TodoColors.baseColors[widget.colorIndex],
-                          borderRadius: BorderRadius.circular(24.0),
-                          child: Center
-                            (
-                              child: Padding
-                                (
-                                padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline, color: Colors.white,
-                                    size: 30.0),
-                              )
-                          )
-                      )
-                    ]
-                ),
-              ),
-            ),
-            _buildTile(
-              Padding
-                (
-                padding: const EdgeInsets.all(24.0),
-                child: Row
-                  (
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>
-                    [
-                      Column
-                        (
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>
-                        [
-                          Text('Project Related Tag',
-                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
-                          Text('Education', style: TodoColors.textStyle6)
-                        ],
-                      ),
-                      Material
-                        (
-                          color: TodoColors.baseColors[widget.colorIndex],
-                          borderRadius: BorderRadius.circular(24.0),
-                          child: Center
-                            (
-                              child: Padding
-                                (
-                                padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline, color: Colors.white,
-                                    size: 30.0),
-                              )
-                          )
-                      )
-                    ]
-                ),
-              ),
-            ),
-            _buildTile(
-              Padding
-                (
-                padding: const EdgeInsets.all(24.0),
-                child: Row
-                  (
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>
-                    [
-                      Column
-                        (
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>
-                        [
-                          Text('Project Related Tag',
-                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
-                          Text('Digging', style: TodoColors.textStyle6)
-                        ],
-                      ),
-                      Material
-                        (
-                          color: TodoColors.baseColors[widget.colorIndex],
-                          borderRadius: BorderRadius.circular(24.0),
-                          child: Center
-                            (
-                              child: Padding
-                                (
-                                padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline, color: Colors.white,
-                                    size: 30.0),
-                              )
-                          )
-                      )
-                    ]
-                ),
-              ),
-            ),
-            _buildTile(
-              Padding
-                (
-                padding: const EdgeInsets.all(24.0),
-                child: Row
-                  (
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>
-                    [
-                      Column
-                        (
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>
-                        [
-                          Text('Project Related Tag',
-                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
-                          Text('Sensitive', style: TodoColors.textStyle6)
-                        ],
-                      ),
-                      Material
-                        (
-                          color: TodoColors.baseColors[widget.colorIndex],
-                          borderRadius: BorderRadius.circular(24.0),
-                          child: Center
-                            (
-                              child: Padding
-                                (
-                                padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline, color: Colors.white,
-                                    size: 30.0),
-                              )
-                          )
-                      )
-                    ]
-                ),
-              ),
-            ),
-          ],
-          staggeredTiles: [
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-          ],
-        )
+    )
+    )
+    )
+    ]
+    ),
+    ),
+    tag.documentID
+            );
+          }).toList(),
+
+
+
+          staggeredTiles: mTiles,
+        );
+
+
+        }),
     );
   }
 
-  Widget _buildTile(Widget child, {Function() onTap}) {
+
+  Widget _buildTile(Widget child, String tagID) {
     return Material(
         elevation: 14.0,
         borderRadius: BorderRadius.circular(12.0),
@@ -368,7 +152,7 @@ class ViewTagsPageState extends State<ViewTagsPage> {
           // Do onTap() if it isn't null, otherwise do print()
             onTap: () =>
                 Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => UpdateTagPage())),
+                    MaterialPageRoute(builder: (_) => UpdateTagPage(colorIndex:widget.colorIndex, tagDocumentID: tagID,))),
             child: child
         )
     );

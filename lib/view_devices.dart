@@ -100,7 +100,7 @@ class ViewDevicesPageState extends State<ViewDevicesPage> {
                               child: Padding
                                 (
                                 padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline, color: Colors.white,
+                                child: Icon(Icons.devices, color: Colors.white,
                                     size: 30.0),
                               )
                           )

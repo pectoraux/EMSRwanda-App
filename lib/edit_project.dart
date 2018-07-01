@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'profile_icons.dart';
 import 'package:flutter/material.dart';
 import 'supplemental/cut_corners_border.dart';
@@ -18,7 +20,8 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
   final _projectTitleController = TextEditingController();
   final _projectDescriptionController = TextEditingController();
   final _projectTitle = GlobalKey(debugLabel: 'Project Title');
-  final _projectDescription = GlobalKey(debugLabel: 'Project Description');
+  final _myProjectDescription = GlobalKey(debugLabel: 'Project Description');
+  static final formKey = new GlobalKey<FormState>();
 
   bool _sendRequestToAvailableUsers = false;
   String dropdown2Value;
@@ -31,12 +34,13 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
     "Phone",
   ];
   List<DropdownMenuItem> _locationMenuItems, _tagMenuItems, _roleMenuItems;
-  List<String> locations = [" Locations", " Gasabo", " Remera", " Kisimenti", " Gaculiro", " Kacyiru"];
+  List<String> locations = ["Locations", "Gasabo", "Remera", "Kisimenti", "Gaculiro", "Kacyiru"];
   List<String> tags = ["Tags", "Over18", "Male", "Female", "Education", "Sensitive"];
   List<String> roles = ["Project Staff Roles", "Enumerator", "Project Lead", "Project Supervisor", "Administrator"];
   String _tagValue, _locationValue, _roleValue;
   int _colorIndex = 0;
-
+  Set<String> selectedLocations = new Set(), selectedTags = new Set(), selectedDevices = new Set();
+  Map<String, Object> devicesWithRole = new Map<String, Object>();
   List devices_values = [false, false, false, false];
   List<Color> _mcolors = [
     Colors.brown[500], Colors.brown[500], Colors.brown[500], Colors.brown[500]];
@@ -159,8 +163,8 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
     return true;
   }
 
-  @override
-  Widget build(BuildContext context) {
+
+    Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
     final converter = ListView(
       padding: EdgeInsets.symmetric(horizontal: 10.0),
       children: <Widget>[
@@ -169,16 +173,15 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
         SizedBox(height: 20.0),
         Column(
           children: <Widget>[
-//            Image.asset('assets/diamond.png'),
-//            SizedBox(height: 16.0),
-//            Text(
-//              'Create A New Project',
-//              style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),
-//            ),
             AnimatedLogo(animation: animation, message: 'Create A New Project', factor: 1.0, colorIndex: _colorIndex,),
           ],
         ),
 
+        Form(
+        key: formKey,
+        child: new Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children:<Widget>[
         SizedBox(height: 12.0),
         PrimaryColorOverride(
           color: TodoColors.baseColors[_colorIndex],
@@ -193,11 +196,13 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
           ),
         ),
 
+
         const SizedBox(height: 12.0),
         PrimaryColorOverride(
           color: TodoColors.baseColors[_colorIndex],
           child: TextField(
-            key: _projectDescription,
+            key: _myProjectDescription,
+            maxLines: null,
             controller: _projectDescriptionController,
             decoration: InputDecoration(
               labelText: 'Project Description',
@@ -210,6 +215,17 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
         const SizedBox(height: 12.0),
         _createDropdown(0, _locationValue, _updateLocationValue),
 
+        SizedBox(height: 3.0,),
+
+       selectedLocations.isNotEmpty? SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+      child: Chip(
+        backgroundColor: TodoColors.baseColors[_colorIndex],
+      label: new Text(selectedLocations.toString()
+          .substring(selectedLocations.toString().indexOf('{')+1, selectedLocations.toString().indexOf('}'))),
+      ),
+      ):Container(),
+        SizedBox(height: 3.0,),
         RaisedButton(
           child: Text('ADD LOCATION'),
           textColor: TodoColors.baseColors[_colorIndex],
@@ -220,6 +236,7 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
           onPressed: () {
             if (_locationValue != "Locations") {
               setState(() {
+                selectedLocations.add(_locationValue);
                 _locationValue = locations[0];
               });
               showInSnackBar("Location Added Successfully", TodoColors.baseColors[_colorIndex]);
@@ -234,6 +251,17 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
         const SizedBox(height: 12.0),
         _createDropdown(1, _tagValue, _updateTagValue),
 
+        SizedBox(height: 3.0,),
+        selectedTags.isNotEmpty? SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Chip(
+            backgroundColor: TodoColors.baseColors[_colorIndex],
+            label: new Text(selectedTags.toString()
+                .substring(selectedTags.toString().indexOf('{')+1, selectedTags.toString().indexOf('}'))),
+          ),
+        ):Container(),
+        SizedBox(height: 3.0,),
+
         RaisedButton(
           child: Text('ADD TAG'),
           textColor: TodoColors.baseColors[_colorIndex],
@@ -244,6 +272,7 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
           onPressed: () {
             if (_tagValue != "Tags") {
               setState(() {
+                selectedTags.add(_tagValue);
                 _tagValue = tags[0];
               });
 
@@ -267,6 +296,7 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
               setState(() {
                 if (_mcolors[i] == Colors.brown[500]) {
                   _mcolors[i] = TodoColors.baseColors[_colorIndex];
+                  selectedDevices.add(devices[i]);
                 } else {
                   _mcolors[i] = Colors.brown[500];
                 }
@@ -284,7 +314,15 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
           ),
 
         ),
-
+        SizedBox(height: 3.0,),
+        devicesWithRole.isNotEmpty? SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Chip(
+            backgroundColor: TodoColors.baseColors[_colorIndex],
+            label: new Text(devicesWithRole.toString()),
+          ),
+        ):Container(),
+        SizedBox(height: 3.0,),
         const SizedBox(height: 12.0),
         RaisedButton(
           child: Text('ADD DEVICES TO ROLE'),
@@ -298,10 +336,12 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
 
               setState(() {
                 for (int i = 0; i < _mcolors.length; i++) {
-                  _mcolors.removeAt(i);
+                    _mcolors.removeAt(i);
                   _mcolors.insert(i, Colors.brown[500]);
                 }
+                devicesWithRole.addAll({_roleValue: selectedDevices});
                 _roleValue = roles[0];
+                selectedDevices = new Set();
               });
               showInSnackBar(
                   "Device(s) Added Successfully To Role", TodoColors.baseColors[_colorIndex]);
@@ -326,6 +366,7 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
           secondary: new Icon(
             LineAwesomeIcons.user, color: TodoColors.baseColors[_colorIndex], size: 30.0,),
         ),
+
 
         ButtonBar(
           children: <Widget>[
@@ -352,8 +393,29 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),
               ),
               onPressed: () {
-                if (_projectTitleController.value.text.trim() != "" &&
-                    _projectDescriptionController.value.text.trim() != "") {
+//                _projectTitleController.text.trim() != "" &&
+//                    _projectDescriptionController.text.trim() != ""
+                if (true) {
+                  Map<String, Object> project_data = <String, Object>{
+                    'projectTitle': _projectTitleController.text,
+                    'projectDescription': _projectDescriptionController.text,
+                    'locations':selectedLocations.toList(),
+                    'tags': selectedTags.toList(),
+                    'devicesPerRole': devicesWithRole.toString(),
+                  };
+
+                  Firestore.instance.runTransaction((transaction) async {
+                    CollectionReference reference =
+                    Firestore.instance.collection('tables/projects/myProjects').reference();
+                    await reference.add(project_data);
+                  });
+                  _projectTitleController.clear();
+                  _projectDescriptionController.clear();
+                  selectedLocations = new Set();
+                  selectedTags = new Set();
+                  devicesWithRole = new Map<String, Object>();
+                  selectedDevices = new Set();
+
                   showInSnackBar(
                       "Project Created Successfully", TodoColors.baseColors[_colorIndex]);
                 } else {
@@ -364,6 +426,7 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
             ),
           ],
         ),
+      ])),
       ],
     );
 
@@ -396,6 +459,42 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
     } else {
       return Colors.brown[500];
     }
+  }
+
+  dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new StreamBuilder<QuerySnapshot>(
+        stream: Firestore.instance.collection('tables/projects/myProjects').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (!snapshot.hasData) {
+            return new Center(
+                child: new CircularProgressIndicator()
+            );
+          } else {
+            final converter = _buildListItem(
+                context, snapshot.data.documents.first);
+
+            return OrientationBuilder(
+              builder: (BuildContext context, Orientation orientation) {
+                if (orientation == Orientation.portrait) {
+                  return converter;
+                } else {
+                  return Center(
+                    child: Container(
+                      width: 450.0,
+                      child: converter,
+                    ),
+                  );
+                }
+              },
+            );
+          }
+        });
   }
 }
 

@@ -24,6 +24,7 @@ class EditRolesPageState extends State<EditRolesPage> with SingleTickerProviderS
   bool _createRolePermission = false;
   bool _createTagPermission = false;
   bool _grantUserPermission = false;
+  bool _createDevicePermission = false;
   List devices = [
     "ipad",
     "Microphone",
@@ -59,13 +60,6 @@ class EditRolesPageState extends State<EditRolesPage> with SingleTickerProviderS
           SizedBox(height: 20.0),
           Column(
             children: <Widget>[
-//              Image.asset('assets/diamond.png'),
-//              SizedBox(height: 16.0),
-//              Text(
-//                'Create A New Role',
-//                style: TodoColors.textStyle.apply(
-//                    color: TodoColors.baseColors[_colorIndex]),
-//              ),
               AnimatedLogo(animation: animation, message: 'Create A New Role', factor: 1.0, colorIndex: _colorIndex,),
             ],
           ),
@@ -139,6 +133,19 @@ class EditRolesPageState extends State<EditRolesPage> with SingleTickerProviderS
               size: 30.0,),
           ),
           new CheckboxListTile(
+            title: Text('Can Create Device', style: TodoColors.textStyle2,),
+            value: _createDevicePermission,
+            activeColor: TodoColors.baseColors[_colorIndex],
+            onChanged: (bool permission) {
+              setState(() {
+                _createDevicePermission = permission;
+              });
+            },
+            secondary: new Icon(
+              Icons.devices, color: TodoColors.baseColors[_colorIndex],
+              size: 30.0,),
+          ),
+          new CheckboxListTile(
             title: Text('Can Grant Permission', style: TodoColors.textStyle2,),
             value: _grantUserPermission,
             activeColor: TodoColors.baseColors[_colorIndex],
@@ -168,6 +175,7 @@ class EditRolesPageState extends State<EditRolesPage> with SingleTickerProviderS
                     _createProjectPermission = false;
                     _createRolePermission = false;
                     _createTagPermission = false;
+                    _createDevicePermission = false;
                     _grantUserPermission = false;
                   });
                 },
@@ -182,27 +190,34 @@ class EditRolesPageState extends State<EditRolesPage> with SingleTickerProviderS
                 onPressed: () {
                   if (_roleNameController.value.text.trim() != "") {
       if(!allFalse(changed)) {
-//      Firestore.instance.runTransaction((transaction) async {
-//      DocumentSnapshot freshSnap =
-//      await transaction.g(document.reference);
-//      await transaction.set(document.reference, {
-//              'roleName':roleName
-//      });});
+        Map<String, Object> role_data = <String, Object>{
+          'roleName': roleName,
+          'canCreateUser': _createUserPermission,
+          'canCreateProject': _createProjectPermission,
+          'canCreateTag':_createTagPermission,
+          'canCreateRole':_createRolePermission,
+          'canCreateDevice': _createDevicePermission,
+          'canGrantPermission':_grantUserPermission
+        };
 
-
-        Firestore.instance.collection('roles').document()
-            .setData({ 'roleName': roleName, });
+        Firestore.instance.runTransaction((transaction) async {
+          CollectionReference reference =
+          Firestore.instance.collection('tables/roles/myRoles').reference();
+          await reference.add(role_data);
+        });
       }
+
       _roleNameController.clear();
       setState(() {
         _createUserPermission = false;
         _createProjectPermission = false;
         _createRolePermission = false;
         _createTagPermission = false;
+        _createDevicePermission = false;
         _grantUserPermission = false;
       });
       showInSnackBar(
-      "Role Created Successfully", TodoColors.accent);
+      "Role Created Successfully", TodoColors.baseColors[_colorIndex]);
       
                   } else {
                     showInSnackBar(
@@ -216,32 +231,40 @@ class EditRolesPageState extends State<EditRolesPage> with SingleTickerProviderS
         ],
       );
     }
+
+  dispose() {
+    controller.dispose();
+    super.dispose();
+  }
     
       @override
       Widget build(BuildContext context) {
         return new StreamBuilder<QuerySnapshot>(
-            stream: Firestore.instance.collection('roles').snapshots(),
+            stream: Firestore.instance.collection('tables/roles/myRoles').snapshots(),
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (!snapshot.hasData) return new Center(
-                  child: new CircularProgressIndicator()
-              );
-              final converter = _buildListItem(
-                  context, snapshot.data.documents[0]);
+              if (!snapshot.hasData) {
+                return new Center(
+                    child: new CircularProgressIndicator()
+                );
+              } else {
+                final converter = _buildListItem(
+                    context, snapshot.data.documents.first);
 
-              return OrientationBuilder(
-                builder: (BuildContext context, Orientation orientation) {
-                  if (orientation == Orientation.portrait) {
-                    return converter;
-                  } else {
-                    return Center(
-                      child: Container(
-                        width: 450.0,
-                        child: converter,
-                      ),
-                    );
-                  }
-                },
-              );
+                return OrientationBuilder(
+                  builder: (BuildContext context, Orientation orientation) {
+                    if (orientation == Orientation.portrait) {
+                      return converter;
+                    } else {
+                      return Center(
+                        child: Container(
+                          width: 450.0,
+                          child: converter,
+                        ),
+                      );
+                    }
+                  },
+                );
+              }
             });
   }
 

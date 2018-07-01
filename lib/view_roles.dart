@@ -131,15 +131,16 @@ class ViewRolesPageState extends State<ViewRolesPage> {
           ],
         ),
         body:  StreamBuilder<QuerySnapshot>(
-            stream: Firestore.instance.collection('roles').getDocuments().asStream(),
+            stream: Firestore.instance.collection('tables/roles/myRoles').getDocuments().asStream(),
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (!snapshot.hasData)
+              if (!snapshot.hasData) {
+                print("SNAPSHOTn => => => ${snapshot.data.documents}");
                 return new Center
-                (
-                  child: new CircularProgressIndicator()
-              );
-
-
+                  (
+                    child: new CircularProgressIndicator()
+                );
+              }
+//              print("SNAPSHOT => => => ${snapshot.data.documents}");
         return StaggeredGridView.count(
           crossAxisCount: 2,
           crossAxisSpacing: 12.0,
@@ -180,7 +181,7 @@ class ViewRolesPageState extends State<ViewRolesPage> {
                                   child: Padding
                                     (
                                     padding: const EdgeInsets.all(16.0),
-                                    child: Icon(Icons.timeline, color: Colors.white,
+                                    child: Icon(Icons.library_add, color: Colors.white,
                                         size: 30.0),
                                   )
                               )
@@ -188,6 +189,7 @@ class ViewRolesPageState extends State<ViewRolesPage> {
                         ]
                     ),
                   ),
+                    role.documentID
                 );
               }).toList(),
 
@@ -201,7 +203,7 @@ class ViewRolesPageState extends State<ViewRolesPage> {
     );
   }
 
-  Widget _buildTile(Widget child, {Function() onTap}) {
+  Widget _buildTile(Widget child, String roleID) {
     return Material(
         elevation: 14.0,
         borderRadius: BorderRadius.circular(12.0),
@@ -211,7 +213,7 @@ class ViewRolesPageState extends State<ViewRolesPage> {
           // Do onTap() if it isn't null, otherwise do print()
             onTap: () =>
                 Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => UpdateRolePage())),
+                    MaterialPageRoute(builder: (_) => UpdateRolePage(colorIndex:widget.colorIndex, roleDocumentID: roleID,))),
             child: child
         )
     );

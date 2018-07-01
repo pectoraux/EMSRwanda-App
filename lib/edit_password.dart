@@ -34,6 +34,11 @@ class EditPasswordPageState extends State<EditPasswordPage> with SingleTickerPro
     controller.forward();
   }
 
+  dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final converter = ListView(

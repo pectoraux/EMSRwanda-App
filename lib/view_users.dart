@@ -1,9 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'supplemental/cut_corners_border.dart';
+import 'profile_icons.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'constants.dart';
 import 'user_history_page.dart';
-
+import 'color_override.dart';
 import 'my_user_dialog.dart';
 
 class ViewUsersPage extends StatefulWidget {
@@ -32,6 +33,8 @@ class ViewUsersPageState extends State<ViewUsersPage> {
     final _tagsController = TextEditingController();
     final _userLocations = GlobalKey(debugLabel: 'Users Locations');
     final _tags = GlobalKey(debugLabel: 'Project or User Related Tags');
+    List<StaggeredTile> mTiles = [];
+    ScrollController controller = new ScrollController();
 
     return Scaffold
       (
@@ -40,7 +43,7 @@ class ViewUsersPageState extends State<ViewUsersPage> {
           leading: new BackButton(key: _bkey, color: Colors.black,),
           elevation: 2.0,
           backgroundColor: Colors.white,
-          title: Text('Search Results', style: TodoColors.textStyle6),
+          title: Text('Available Users', style: TodoColors.textStyle6),
           actions: <Widget>
           [
             Container
@@ -69,422 +72,86 @@ class ViewUsersPageState extends State<ViewUsersPage> {
             )
           ],
         ),
-        body: StaggeredGridView.count(
+        body: StreamBuilder<QuerySnapshot>(
+            stream: Firestore.instance.collection('tables/users/myUsers').getDocuments().asStream(),
+            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (!snapshot.hasData) {
+                print("SNAPSHOTn => => => ${snapshot.data.documents}");
+                return new Center
+                  (
+                    child: new CircularProgressIndicator()
+                );
+              }
+//              print("SNAPSHOT => => => ${snapshot.data.documents}");
+              return StaggeredGridView.count(
           crossAxisCount: 2,
           crossAxisSpacing: 12.0,
           mainAxisSpacing: 12.0,
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          children: <Widget>[
-            _buildTile(
-              Padding
-                (
-                padding: const EdgeInsets.all(24.0),
-                child: Row
-                  (
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>
-                    [
-                      Column
-                        (
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>
-                        [
-                          Text('Kigali',
-                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
-                          Text('Erin Niamkey', style: TodoColors.textStyle6)
-                        ],
-                      ),
-                      Material
-                        (
-                          color: TodoColors.baseColors[widget.colorIndex],
-                          borderRadius: BorderRadius.circular(24.0),
-                          child: Center
-                            (
-                              child: Padding
-                                (
-                                padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline, color: Colors.white,
-                                    size: 30.0),
-                              )
-                          )
-                      )
-                    ]
-                ),
-              ),
-            ),
-            _buildTile(
-              Padding
-                (
-                padding: const EdgeInsets.all(24.0),
-                child: Row
-                  (
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>
-                    [
-                      Column
-                        (
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>
-                        [
-                          Text('Remera',
-                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
-                          Text('Bernard Nshima', style: TodoColors.textStyle6)
-                        ],
-                      ),
-                      Material
-                        (
-                          color: TodoColors.baseColors[widget.colorIndex],
-                          borderRadius: BorderRadius.circular(24.0),
-                          child: Center
-                            (
-                              child: Padding
-                                (
-                                padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline, color: Colors.white,
-                                    size: 30.0),
-                              )
-                          )
-                      )
-                    ]
-                ),
-              ),
-            ),
-            _buildTile(
-              Padding
-                (
-                padding: const EdgeInsets.all(24.0),
-                child: Row
-                  (
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>
-                    [
-                      Column
-                        (
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>
-                        [
-                          Text('Kacyiru',
-                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
-                          Text('Celine Dion', style: TodoColors.textStyle6)
-                        ],
-                      ),
-                      Material
-                        (
-                          color: TodoColors.baseColors[widget.colorIndex],
-                          borderRadius: BorderRadius.circular(24.0),
-                          child: Center
-                            (
-                              child: Padding
-                                (
-                                padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline, color: Colors.white,
-                                    size: 30.0),
-                              )
-                          )
-                      )
-                    ]
-                ),
-              ),
-            ),
-            _buildTile(
-              Padding
-                (
-                padding: const EdgeInsets.all(24.0),
-                child: Row
-                  (
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>
-                    [
-                      Column
-                        (
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>
-                        [
-                          Text('Kiyovu',
-                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
-                          Text('Eric Niamkey', style: TodoColors.textStyle6)
-                        ],
-                      ),
-                      Material
-                        (
-                          color: TodoColors.baseColors[widget.colorIndex],
-                          borderRadius: BorderRadius.circular(24.0),
-                          child: Center
-                            (
-                              child: Padding
-                                (
-                                padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline, color: Colors.white,
-                                    size: 30.0),
-                              )
-                          )
-                      )
-                    ]
-                ),
-              ),
-            ),
-            _buildTile(
-              Padding
-                (
-                padding: const EdgeInsets.all(24.0),
-                child: Row
-                  (
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>
-                    [
-                      Column
-                        (
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>
-                        [
-                          Text('Gaculiro',
-                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
-                          Text('Kossi Koffi', style: TodoColors.textStyle6)
-                        ],
-                      ),
-                      Material
-                        (
-                          color: TodoColors.baseColors[widget.colorIndex],
-                          borderRadius: BorderRadius.circular(24.0),
-                          child: Center
-                            (
-                              child: Padding
-                                (
-                                padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline, color: Colors.white,
-                                    size: 30.0),
-                              )
-                          )
-                      )
-                    ]
-                ),
-              ),
-            ),
-            _buildTile(
-              Padding
-                (
-                padding: const EdgeInsets.all(24.0),
-                child: Row
-                  (
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>
-                    [
-                      Column
-                        (
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>
-                        [
-                          Text('Kimironko',
-                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
-                          Text('Anne Judith', style: TodoColors.textStyle6)
-                        ],
-                      ),
-                      Material
-                        (
-                          color: TodoColors.baseColors[widget.colorIndex],
-                          borderRadius: BorderRadius.circular(24.0),
-                          child: Center
-                            (
-                              child: Padding
-                                (
-                                padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline, color: Colors.white,
-                                    size: 30.0),
-                              )
-                          )
-                      )
-                    ]
-                ),
-              ),
-            ),
-            _buildTile(
-              Padding
-                (
-                padding: const EdgeInsets.all(24.0),
-                child: Row
-                  (
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>
-                    [
-                      Column
-                        (
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>
-                        [
-                          Text('Kiyovu',
-                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
-                          Text('Mariam Adah', style: TodoColors.textStyle6)
-                        ],
-                      ),
-                      Material
-                        (
-                          color: TodoColors.baseColors[widget.colorIndex],
-                          borderRadius: BorderRadius.circular(24.0),
-                          child: Center
-                            (
-                              child: Padding
-                                (
-                                padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline, color: Colors.white,
-                                    size: 30.0),
-                              )
-                          )
-                      )
-                    ]
-                ),
-              ),
-            ),
-            _buildTile(
-              Padding
-                (
-                padding: const EdgeInsets.all(24.0),
-                child: Row
-                  (
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>
-                    [
-                      Column
-                        (
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>
-                        [
-                          Text('Gisenyi',
-                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
-                          Text('Ali Jean', style: TodoColors.textStyle6)
-                        ],
-                      ),
-                      Material
-                        (
-                          color: TodoColors.baseColors[widget.colorIndex],
-                          borderRadius: BorderRadius.circular(24.0),
-                          child: Center
-                            (
-                              child: Padding
-                                (
-                                padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline, color: Colors.white,
-                                    size: 30.0),
-                              )
-                          )
-                      )
-                    ]
-                ),
-              ),
-            ),
-            _buildTile(
-              Padding
-                (
-                padding: const EdgeInsets.all(24.0),
-                child: Row
-                  (
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>
-                    [
-                      Column
-                        (
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>
-                        [
-                          Text('Gaculiro',
-                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
-                          Text('Micheal Jackson', style: TodoColors.textStyle6)
-                        ],
-                      ),
-                      Material
-                        (
-                          color: TodoColors.baseColors[widget.colorIndex],
-                          borderRadius: BorderRadius.circular(24.0),
-                          child: Center
-                            (
-                              child: Padding
-                                (
-                                padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline, color: Colors.white,
-                                    size: 30.0),
-                              )
-                          )
-                      )
-                    ]
-                ),
-              ),
-            ),
-            _buildTile(
-              Padding
-                (
-                padding: const EdgeInsets.all(24.0),
-                child: Row
-                  (
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>
-                    [
-                      Column
-                        (
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>
-                        [
-                          Text('Remera',
-                              style: TextStyle(color: TodoColors.baseColors[widget.colorIndex])),
-                          Text('Ninegan Tchakpa', style: TodoColors.textStyle6)
-                        ],
-                      ),
-                      Material
-                        (
-                          color: TodoColors.baseColors[widget.colorIndex],
-                          borderRadius: BorderRadius.circular(24.0),
-                          child: Center
-                            (
-                              child: Padding
-                                (
-                                padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline, color: Colors.white,
-                                    size: 30.0),
-                              )
-                          )
-                      )
-                    ]
-                ),
-              ),
-            ),
+                controller: controller,
+                children: snapshot.data.documents.map((user) {
 
+//                  print(user.documentID + ': ' + user['userName']);
 
-          ],
-          staggeredTiles: [
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-            StaggeredTile.extent(2, 110.0),
-          ],
-        )
+                  mTiles.add(StaggeredTile.extent(2, 110.0));
+
+                  return _buildTile(
+              Padding
+                (
+                padding: const EdgeInsets.all(24.0),
+                child: Row
+                  (
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>
+                    [
+                      Column
+                        (
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>
+                        [
+                          SizedBox(width: 180.0,
+                              child:Text(user['locations'].toString().substring(1,user['locations'].toString().length-1),
+                                style: TextStyle(color: TodoColors.baseColors[widget.colorIndex]), softWrap: true, overflow: TextOverflow.fade,) ),
+
+                          Expanded(child:Text('Erin Niamkey', style: TodoColors.textStyle6), flex: 1,),
+                        ],
+                      ),
+                      Material
+                        (
+                          color: TodoColors.baseColors[widget.colorIndex],
+                          borderRadius: BorderRadius.circular(24.0),
+                          child: Center
+                            (
+                              child: Padding
+                                (
+                                padding: const EdgeInsets.all(16.0),
+                                child: Icon(LineAwesomeIcons.user, color: Colors.white,
+                                    size: 30.0),
+                              )
+                          )
+                      )
+                    ]
+                ),
+              ),
+    user.documentID
     );
-  }
+  }).toList(),
 
-  Widget _buildTile(Widget child, {Function() onTap}) {
+
+
+  staggeredTiles: mTiles,
+  );
+
+
+}),
+);
+}
+
+
+
+  Widget _buildTile(Widget child, String userID) {
     return Material(
         elevation: 14.0,
         borderRadius: BorderRadius.circular(12.0),
@@ -494,25 +161,12 @@ class ViewUsersPageState extends State<ViewUsersPage> {
           // Do onTap() if it isn't null, otherwise do print()
             onTap: () =>
                 Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => UserHistoryPage(colorIndex: widget.colorIndex,))),
+                    MaterialPageRoute(builder: (_) => UserHistoryPage(colorIndex:widget.colorIndex, userDocumentID: userID,))),
             child: child
         )
     );
   }
 }
 
-class PrimaryColorOverride extends StatelessWidget {
-  const PrimaryColorOverride({Key key, this.color, this.child})
-      : super(key: key);
 
-  final Color color;
-  final Widget child;
 
-  @override
-  Widget build(BuildContext context) {
-    return Theme(
-      child: child,
-      data: Theme.of(context).copyWith(primaryColor: color),
-    );
-  }
-}

@@ -101,6 +101,11 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
     controller.forward();
   }
 
+  dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
   Widget _buildListItem(BuildContext context, DocumentSnapshot document){
     String editText = document['editing'] ? 'SAVE':'EDIT';
       return

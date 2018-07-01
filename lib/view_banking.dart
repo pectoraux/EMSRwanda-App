@@ -48,6 +48,11 @@ class ViewBankingPageState extends State<ViewBankingPage> with SingleTickerProvi
     controller.forward();
   }
 
+  dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
   Widget _buildListItem(BuildContext context, DocumentSnapshot document){
     String editText = document['editing'] ? 'SAVE':'EDIT';
     return

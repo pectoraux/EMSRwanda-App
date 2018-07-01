@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'profile_icons.dart';
 import 'package:flutter/material.dart';
 import 'color_override.dart';
@@ -29,7 +31,8 @@ class EditTagPageState extends State<EditTagPage> with SingleTickerProviderState
   List<String> sex = ["Sex", "Male", "Female"];
   List<DropdownMenuItem> _tagTypeMenuItems, _ageMenuItems, _symbolMenuItems, _symbol2MenuItems, _menuMenuItems, _sexMenuItems;
   String _tagTypeValue, _ageValue, _symbolValue, _symbol2Value, _menuValue, _sexValue;
-
+  List<bool> changed = [false, false, false];
+  String tagName = "", tagType = "", tagDescription = "";
 
   @override
   initState() {
@@ -154,6 +157,7 @@ class EditTagPageState extends State<EditTagPage> with SingleTickerProviderState
   void _updateTagTypeValue(dynamic name) {
     setState(() {
       _tagTypeValue = name;
+      changed[1] = true;
     });
   }
 
@@ -205,9 +209,20 @@ class EditTagPageState extends State<EditTagPage> with SingleTickerProviderState
      );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final converter = ListView(
+  dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+  bool allFalse(List<bool> lst){
+    for(bool l in lst){
+      if (l == true) return false;
+    }
+    return true;
+
+  }
+
+  Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
+    return ListView(
         padding: EdgeInsets.symmetric(horizontal: 10.0),
         children: <Widget>[
           new QuickTagActions(),
@@ -215,13 +230,10 @@ class EditTagPageState extends State<EditTagPage> with SingleTickerProviderState
           SizedBox(height: 20.0),
           Column(
             children: <Widget>[
-//              Image.asset('assets/diamond.png'),
-//              SizedBox(height: 16.0),
-//              Text(
-//                'Create A New Tag',
-//                style: TodoColors.textStyle.apply(color: TodoColors.baseColors[_colorIndex]),
-//              ),
-              AnimatedLogo(animation: animation, message: 'Create A New Tag', factor: 1.0, colorIndex: _colorIndex,),
+              AnimatedLogo(animation: animation,
+                message: 'Create A New Tag',
+                factor: 1.0,
+                colorIndex: _colorIndex,),
             ],
           ),
 
@@ -231,6 +243,7 @@ class EditTagPageState extends State<EditTagPage> with SingleTickerProviderState
             child: TextField(
               key: _tagName,
               controller: _tagNameController,
+              onChanged: (text) { changed[0] = true; tagName = text;},
               decoration: InputDecoration(
                 labelText: 'Tag Name',
                 border: CutCornersBorder(),
@@ -241,9 +254,10 @@ class EditTagPageState extends State<EditTagPage> with SingleTickerProviderState
           const SizedBox(height: 12.0),
           _createDropdown(3, _tagTypeValue, _updateTagTypeValue),
 
-    (_tagTypeValue == "User Related") ? SizedBox(height: 12.0): SizedBox(height: 0.0,),
-    (_tagTypeValue == "User Related") ?
-    _createMenuAndSymbol():new Container(),
+          (_tagTypeValue == "User Related") ? SizedBox(height: 12.0) : SizedBox(
+            height: 0.0,),
+          (_tagTypeValue == "User Related") ?
+          _createMenuAndSymbol() : new Container(),
 
           const SizedBox(height: 12.0),
           PrimaryColorOverride(
@@ -251,6 +265,7 @@ class EditTagPageState extends State<EditTagPage> with SingleTickerProviderState
             child: TextField(
               key: _tagDescription,
               controller: _tagDescriptionController,
+              onChanged: (text) { changed[1] = true; tagDescription = text;},
               decoration: InputDecoration(
                 labelText: 'Tag Description',
                 border: CutCornersBorder(),
@@ -280,9 +295,24 @@ class EditTagPageState extends State<EditTagPage> with SingleTickerProviderState
                   borderRadius: BorderRadius.all(Radius.circular(7.0)),
                 ),
                 onPressed: () {
-                  if (_tagNameController.value.text.trim() != "" &&
-                      _tagTypeController.value.text.trim() != "" &&
-                      _tagDescriptionController.value.text.trim() != "") {
+//                  _tagNameController.value.text.trim() != "" &&
+//                      _tagTypeController.value.text.trim() != "" &&
+//                      _tagDescriptionController.value.text.trim() != ""
+                  if (true) {
+
+                    if(!allFalse(changed)) {
+                      Map<String, Object> tag_data = <String, Object>{
+                        'tagName': _tagNameController.text,
+                        'tagType': _tagTypeValue,
+                        'tagDescription': _tagDescriptionController.text,
+                      };
+
+                      Firestore.instance.runTransaction((transaction) async {
+                        CollectionReference reference =
+                        Firestore.instance.collection('tables/tags/myTags').reference();
+                        await reference.add(tag_data);
+                      });
+                    }
                     setState(() {
                       _tagTypeValue = tagTypes[0];
                       _tagNameController.clear();
@@ -300,22 +330,39 @@ class EditTagPageState extends State<EditTagPage> with SingleTickerProviderState
             ],
           ),
         ]);
-
-    return OrientationBuilder(
-      builder: (BuildContext context, Orientation orientation) {
-        if (orientation == Orientation.portrait) {
-          return converter;
-        } else {
-          return Center(
-            child: Container(
-              width: 450.0,
-              child: converter,
-            ),
-          );
-        }
-      },
-    );
   }
+
+  @override
+  Widget build(BuildContext context) {
+    return new StreamBuilder<QuerySnapshot>(
+        stream: Firestore.instance.collection('tables/tags/myTags').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (!snapshot.hasData) {
+            return new Center(
+                child: new CircularProgressIndicator()
+            );
+          } else {
+            final converter = _buildListItem(
+                context, snapshot.data.documents.first);
+
+            return OrientationBuilder(
+              builder: (BuildContext context, Orientation orientation) {
+                if (orientation == Orientation.portrait) {
+                  return converter;
+                } else {
+                  return Center(
+                    child: Container(
+                      width: 450.0,
+                      child: converter,
+                    ),
+                  );
+                }
+              },
+            );
+          }
+        });
+  }
+
 
   void showInSnackBar(String value, Color c) {
     Scaffold.of(context).showSnackBar(new SnackBar(

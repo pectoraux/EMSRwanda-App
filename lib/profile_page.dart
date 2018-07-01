@@ -32,7 +32,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   String currentUserRole, currentUserPassword, currentUserId, firstName, lastName, location;
-  bool canCreateRole = false, canCreateProject = false, canCreateTag = false, canCreateUser = false, canGrantPermission = false;
+  bool canCreateRole = false, canCreateProject = false, canCreateTag = false, canCreateUser = false, canCreateDevice = false,  canGrantPermission = false;
   /// This controller can be used to programmatically
   /// set the current displayed page
   PageController _pageController;
@@ -50,11 +50,12 @@ class _ProfilePageState extends State<ProfilePage> {
           canCreateProject = roleDocument['canCreateProject'] ? true : false;
           canCreateTag = roleDocument['canCreateTag'] ? true : false;
           canCreateUser = roleDocument['canCreateUser'] ? true : false;
+          canCreateDevice = roleDocument['canCreateDevice'] ? true : false;
           canGrantPermission = roleDocument['canGrantPermission'] ? true : false;
 
 
 
-      if(canCreateRole || canCreateProject || canCreateTag || canCreateTag || canCreateUser){
+      if(canCreateRole || canCreateProject || canCreateTag || canCreateTag || canCreateUser || canCreateDevice){
 
         navigationItems = <BottomNavigationBarItem>[];
         items = <Widget>[];
@@ -100,7 +101,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ));
           items.add(EditTagPage());
         }
-        if (canCreateUser) {
+        if (canCreateDevice) {
           navigationItems.add(
               BottomNavigationBarItem(
                   icon: new Icon(Icons.devices,
@@ -109,6 +110,8 @@ class _ProfilePageState extends State<ProfilePage> {
               )
           );
           items.add(EditDevicePage());
+        }
+        if (canCreateUser) {
           navigationItems.add(
               new BottomNavigationBarItem(
                   icon: new Icon(Icons.person,
@@ -213,7 +216,7 @@ class _ProfilePageState extends State<ProfilePage> {
     });
 
     return new StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('tables/roles/$currentUserRole').snapshots(),
+        stream: Firestore.instance.collection('tables/roles/myRoles').snapshots(),
         builder: (BuildContext context,
             AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
@@ -222,7 +225,10 @@ class _ProfilePageState extends State<ProfilePage> {
             );
           } else{
             try {
-//              print("Role Document => => => ${snapshot.data.documents[0].data}");
+              DocumentSnapshot document = snapshot.data.documents.where((doc){
+                return doc['roleName'] == currentUserRole;}).first;
+//              print("Role Document => => => ${document.data}");
+
               final profile = new Profile()
                 ..firstName = firstName
                 ..lastName = lastName
@@ -231,7 +237,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ..rating = 4.6
                 ..numberProjects = 17;
 
-              return _buildPage(context, snapshot.data.documents[0], profile);
+              return _buildPage(context, document, profile);
             }catch(e){
               return Center(
                 child:CircularProgressIndicator(),

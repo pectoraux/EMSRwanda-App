@@ -154,7 +154,7 @@ String _currentCategoryName;
   Widget condition(Category c)
 
   {
-  if(c.name == "Profile"){
+  if(c.name == "Dashboard"){
   return MaterialApp
   (
   title: 'Profile Page',

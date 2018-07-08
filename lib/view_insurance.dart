@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'color_override.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
-import 'edit_profile.dart';
+import 'loading_screen.dart';
 import 'animated_logo.dart';
 
 class ViewInsurancePage extends StatefulWidget {
@@ -212,7 +212,7 @@ class ViewInsurancePageState extends State<ViewInsurancePage> with SingleTickerP
           if (!snapshot.hasData)
           {
             return new Center(
-                child: new CircularProgressIndicator()
+                child: new BarLoadingScreen(),
             );
           }else if (snapshot.data != null) {
 //            DocumentSnapshot document = snapshot.data.documents.where((doc){

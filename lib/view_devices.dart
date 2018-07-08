@@ -3,17 +3,19 @@ import 'package:flutter/material.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'constants.dart';
-import 'color_override.dart';
+import 'loading_screen.dart';
 import 'my_devices_dialog.dart';
 import 'device_rating_page.dart';
 
 class ViewDevicesPage extends StatefulWidget {
   final int colorIndex;
-  final DocumentSnapshot document;
+  final String documentID;
+  final String folder;
 
   const ViewDevicesPage({
     @required this.colorIndex,
-    this.document,
+    this.documentID,
+    this.folder,
   }) : assert(colorIndex != null);
 
   @override
@@ -21,6 +23,7 @@ class ViewDevicesPage extends StatefulWidget {
 }
 
 class ViewDevicesPageState extends State<ViewDevicesPage> {
+  List project_devices = [], user_devices = [];
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +37,39 @@ class ViewDevicesPageState extends State<ViewDevicesPage> {
     List<StaggeredTile> mTiles = [];
     ScrollController controller = new ScrollController();
 
+    if(widget.documentID != null ) {
+
+      if(widget.folder == 'projectDevices') {
+        Firestore.instance.collection(
+            'projects/${widget.documentID}/devices')
+            .getDocuments()
+            .then((query) {
+          List results = [];
+          setState(() {
+            for (DocumentSnapshot doc in query.documents) {
+              results.add(doc.documentID);
+            }
+            project_devices = results;
+          });
+        });
+      } else if(widget.folder == 'userDevices') {
+        Firestore.instance.collection(
+            'users/${widget.documentID}/devices')
+            .getDocuments()
+            .then((query) {
+          List results = [];
+          setState(() {
+            for (DocumentSnapshot doc in query.documents) {
+              results.add(doc.documentID);
+            }
+            user_devices = results;
+          });
+        });
+      }
+    }
+
+    print('JJJJJJJJJJJJ => => => ${project_devices}');
+
     return Scaffold
       (
         appBar: AppBar
@@ -41,7 +77,7 @@ class ViewDevicesPageState extends State<ViewDevicesPage> {
           leading: new BackButton(key: _bkey, color: Colors.black,),
           elevation: 2.0,
           backgroundColor: Colors.white,
-          title: Text('Available Devices', style: TodoColors.textStyle6),
+          title: Text('Devices', style: TodoColors.textStyle6),
           actions: <Widget>
           [
             Container
@@ -70,17 +106,16 @@ class ViewDevicesPageState extends State<ViewDevicesPage> {
           ],
         ),
         body: StreamBuilder<QuerySnapshot>(
-            stream:  (widget.document != null) ?
-            Firestore.instance.collection('users/${widget.document.documentID}/userDevices').getDocuments().asStream()
-            :Firestore.instance.collection('devices').getDocuments().asStream(),
+            stream: Firestore.instance.collection('devices').getDocuments().asStream(),
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (!snapshot.hasData) {
-                print("SNAPSHOTn => => => ${snapshot.data.documents}");
                 return new Center
                   (
-                    child: new CircularProgressIndicator()
+                    child: new BarLoadingScreen(),
                 );
               }
+
+
 
               return StaggeredGridView.count(
           crossAxisCount: 2,
@@ -90,9 +125,29 @@ class ViewDevicesPageState extends State<ViewDevicesPage> {
                 padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 children: snapshot.data.documents.map((device) {
 
-                  print(device.documentID + ': ' + device['deviceName']);
+
 
                   mTiles.add(StaggeredTile.extent(2, 110.0));
+
+                  if(widget.documentID != null && (widget.folder == 'projectDevices')) {
+                    if (!project_devices.contains('${device.documentID}')) {
+//                      print(device.documentID + ': ' + device['deviceName']);
+                      return Container();
+                    }
+                  }
+                  if(widget.documentID != null  && (widget.folder == 'userDevices')) {
+                    if (!user_devices.contains('${device.documentID}')) {
+                      return Container();
+                    }
+                  }
+
+                  String deviceName = "${device['deviceName']}";
+                  String deviceStatus = device['deviceStatus'];
+
+                  if(deviceName.trim().isEmpty)
+                    deviceName = 'Missing Device Name';
+                  if(deviceStatus.trim().isEmpty)
+                    deviceStatus = 'Missing Device Status';
 
                   return _buildTile(
               Padding
@@ -110,10 +165,10 @@ class ViewDevicesPageState extends State<ViewDevicesPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                         [
-              Text(device['deviceStatus'],
-              style: TextStyle(color: (device['deviceStatus'] == 'Available')?
+              Text(deviceStatus,
+              style: TextStyle(color: (deviceStatus == 'Available')?
               TodoColors.baseColors[widget.colorIndex] : Colors.redAccent)),
-              Text(device['deviceName'], style: TodoColors.textStyle6)
+              Text(deviceName, style: TodoColors.textStyle6)
                         ],
                       ),
                       Material

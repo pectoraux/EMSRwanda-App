@@ -1,3 +1,4 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'view_insurance.dart';
 import 'view_primary.dart';
@@ -8,8 +9,9 @@ import 'constants.dart';
 
 class MainMenu extends StatelessWidget {
 final String currentUserId;
+final FirebaseStorage storage;
 
-MainMenu({Key key, this.currentUserId}): super(key: key);
+MainMenu({Key key, this.currentUserId, this.storage}): super(key: key);
 
   @override
   Widget build(BuildContext context) {

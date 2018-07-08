@@ -6,7 +6,7 @@ import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
 import 'date_and_time_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'progress_bar.dart';
+import 'loading_screen.dart';
 
 class EditProfilePage extends StatefulWidget {
   @override
@@ -731,7 +731,7 @@ class EditProfilePageState extends State<EditProfilePage> {
     {
     if (!snapshot.hasData) return
       new Center(
-          child: new CircularProgressIndicator()
+          child: new BarLoadingScreen(),
       );
 //      new Text('Loading...', style: TodoColors.textStyle2.apply(color: TodoColors.baseColors[_colorIndex]),);
 

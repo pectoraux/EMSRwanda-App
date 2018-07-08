@@ -5,6 +5,7 @@ import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
 import 'color_override.dart';
 import 'animated_logo.dart';
+import 'loading_screen.dart';
 
 class ViewBankingPage extends StatefulWidget {
   final String currentUserId;
@@ -203,7 +204,7 @@ class ViewBankingPageState extends State<ViewBankingPage> with SingleTickerProvi
           if (!snapshot.hasData)
           {
             return new Center(
-                child: new CircularProgressIndicator()
+                child: new BarLoadingScreen(),
             );
           }else if (snapshot.data != null) {
 //            DocumentSnapshot document = snapshot.data.documents.where((doc){

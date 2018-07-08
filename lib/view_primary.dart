@@ -1,15 +1,21 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'progress_bar.dart';
+import 'loading_screen.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
 import 'animated_logo.dart';
 import 'color_override.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:path/path.dart' as p;
 
 class ViewPrimaryPage extends StatefulWidget {
   final String currentUserId;
-  ViewPrimaryPage({Key key, this.currentUserId}): super(key: key);
+  final FirebaseStorage storage;
+  ViewPrimaryPage({Key key, this.currentUserId, this.storage}): super(key: key);
 
   @override
   ViewPrimaryPageState createState() => ViewPrimaryPageState();
@@ -18,7 +24,8 @@ class ViewPrimaryPage extends StatefulWidget {
 class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProviderStateMixin {
   AnimationController controller;
   Animation<double> animation;
-
+  String imagePath;
+  File _image;
   final _userName = GlobalKey(debugLabel: 'Username');
   final _userStatus = GlobalKey(debugLabel: 'User Status');
   final _firstName = GlobalKey(debugLabel: 'First Name');
@@ -82,6 +89,59 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
   List<bool> changed = [false, false, false, false, false, false, false, false,false,false,false,false,false,false,false,false,false,false,false,false,false];
   static final formKey = new GlobalKey<FormState>();
   List<String> locations = ["Locations", "Gasabo", "Remera", "Kisimenti", "Gaculiro", "Kacyiru"];
+  String profile_photo = "Change Your Profile Photo";
+  String path_stem = '/storage/emulated/0/Android/data/com.example.flutterqrscan/files/Pictures/';
+  bool showLoadingAnimation = false;
+  String _imagePath = '';
+  String imageUrlStr = '';
+  
+  Future getImage(String src) async {
+    var image = await ImagePicker.pickImage(source: src == 'Camera' ? ImageSource.camera : ImageSource.gallery);
+    
+    setState(() {
+      _image = image;
+    });
+  }
+
+  // Method for uploading image
+  Future _uploadImage(File image) async {
+
+    FirebaseAuth _auth = FirebaseAuth.instance;
+    FirebaseUser user = await _auth.currentUser();
+    // fetch file name
+    String fileName = p.basename(image.path);
+    print('image base file name: ${fileName}');
+    String lastImageName = getLastToken(user.photoUrl);
+
+        if(lastImageName.isNotEmpty) {
+//          print('MMMMMMMMMMM => => => $lastImageName');
+          FirebaseStorage.instance.ref().child(
+              "users_photos/$lastImageName").delete();
+        }
+
+
+    final StorageReference ref = FirebaseStorage.instance.ref().child(
+        "users_photos/$fileName");
+
+    final StorageUploadTask uploadTask = ref.putFile(image, StorageMetadata(contentLanguage: "en"));
+    print('STEP 1 Done - ${new DateTime.now()} ');
+
+    print("=> => => ${user.providerData.first.photoUrl}");
+
+    final Uri downloadUrl = (await uploadTask.future).downloadUrl;
+    print('STEP 2 Done - ${new DateTime.now()} ');
+
+    print('Download url received: $downloadUrl');
+    UserUpdateInfo userInfo = new UserUpdateInfo();
+    userInfo.photoUrl='$downloadUrl';
+    userInfo.displayName='';
+    _auth.updateProfile(userInfo);
+    setState(() {
+      this.showLoadingAnimation = false;
+      print("Loading animation ended");
+    });
+  }
+
 
   bool validateAndSave() {
     final form = formKey.currentState;
@@ -100,13 +160,24 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
         duration: const Duration(milliseconds: 2000), vsync: this);
     animation = new Tween(begin: 0.0, end: 300.0).animate(controller);
     controller.forward();
+    setDefaults();
+  }
+  void setDefaults()async {
+      FirebaseAuth _auth = FirebaseAuth.instance;
+      FirebaseUser user = await _auth.currentUser();
+      imageUrlStr = user.photoUrl;
   }
 
-  dispose() {
-    controller.dispose();
-    super.dispose();
-  }
+//  dispose() {
+//    controller.dispose();
+//    super.dispose();
+//  }
 
+  String getLastToken(String str){
+      String last = p.basename(str);
+      return last.substring(last.indexOf('users_photos%2F')+15, last.indexOf('.jpg')+4);
+  }
+  
   Widget _buildListItem(BuildContext context, DocumentSnapshot document){
     String editText = document['editing'] ? 'SAVE':'EDIT';
       return
@@ -120,11 +191,94 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
                 AnimatedLogo(animation: animation, message: 'Your Primary Details', factor: 1.0, colorIndex: _colorIndex,),
               ],
             ),
+            Center(
+      child: new Container(
+      width: 70.0, height: 60.0,
+      decoration: new BoxDecoration(
+      image: new DecorationImage(
+      image: _image == null ? Image.network(imageUrlStr).image: AssetImage(_image.path),
+      fit: BoxFit.cover),
+      borderRadius: new BorderRadius.all(new Radius.circular(20.0)),
+      boxShadow: <BoxShadow>[
+      new BoxShadow(
+      color: Colors.black26, blurRadius: 5.0, spreadRadius: 1.0),
+      ],
+      ),
+      ),
+    ),
             Form(
               key: formKey,
               child: new Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children:<Widget>[
+
+                  SizedBox(height: 12.0),
+                  document['editing'] ?
+                  FlatButton (
+                    child: Text (_image == null ? 'Update Your Profile Photo': 'Image Name:\n' + p.basename(_image.path),
+                      style: TodoColors.textStyle.apply(color: Theme
+                        .of(context)
+                        .disabledColor),),
+                    padding: EdgeInsets.all(20.0),
+                    color: TodoColors.baseColors[_colorIndex],
+                    shape: BeveledRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(7.0)),
+                    ),
+                    onPressed: () {
+                      new Container(
+                        width: 450.0,
+                      );
+
+                      showDialog<Null>(
+                        context: context,
+                        barrierDismissible: false, // user must tap button!
+                        builder: (BuildContext context) {
+                          return new AlertDialog(
+                            content: new SingleChildScrollView(
+                              child: new ListBody(
+                              children:<Widget>[
+                              FlatButton(
+                                child: Text('CANCEL'),
+                                textColor: TodoColors.baseColors[_colorIndex],
+                                shape: BeveledRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(7.0)),
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              RaisedButton(
+                                child: Text('TAKE A NEW PHOTO'),
+                                textColor: TodoColors.baseColors[_colorIndex],
+                                elevation: 8.0,
+                                shape: BeveledRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(7.0)),
+                                ),
+                                onPressed: () {getImage('Camera'); Navigator.of(context).pop();},
+                              ),
+                              SizedBox(height: 12.0),
+                              RaisedButton(
+                                child: Text('PICK FROM GALLERY'),
+                                textColor: TodoColors.baseColors[_colorIndex],
+                                elevation: 8.0,
+                                shape: BeveledRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(7.0)),
+                                ),
+                                onPressed: () {getImage('Gallery'); Navigator.of(context).pop();},
+                              ),
+                              SizedBox(height: 12.0),
+                            ],
+                          ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ): Container(),
+
             SizedBox(height: 12.0),
             ListTile(
               title: Container(
@@ -300,7 +454,7 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
     shape: BeveledRectangleBorder(
     borderRadius: BorderRadius.all(Radius.circular(7.0)),
     ),
-    onPressed: () {
+    onPressed: ()  {
 
         setState(() {
           if(editText == 'SAVE') {
@@ -358,6 +512,7 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
                 'editing':!snapshot['editing'],
               });
             });
+            _uploadImage(_image);
     }else {
     Firestore.instance.runTransaction((transaction) async {
     DocumentSnapshot snapshot = await transaction. get (
@@ -380,6 +535,9 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
     );
   }
 
+  void onTap(){
+
+  }
 
   Widget _buildTile(BuildContext context, DocumentSnapshot document, String fieldName, String label, GlobalKey mkey,
       TextEditingController controller, int idx){
@@ -430,7 +588,7 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
           if (!snapshot.hasData)
     {
       return new Center(
-          child: new CircularProgressIndicator()
+          child: new BarLoadingScreen(),
       );
     }else if (snapshot.data != null) {
 //            DocumentSnapshot document = snapshot.data.documents.where((doc){
@@ -464,6 +622,7 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
 
         });
   }
+
 
   void showInSnackBar(String value, Color c) {
     Scaffold.of(context).showSnackBar(new SnackBar(

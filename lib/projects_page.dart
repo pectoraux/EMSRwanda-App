@@ -55,9 +55,9 @@ class ProjectsPageState extends State<ProjectsPage> {
       body: new PageView(
           children: [
             new SearchProjectsPage(colorIndex: widget.colorIndex),
-            new OngoingProjectPage(colorIndex: widget.colorIndex),
-            new UpcomingProjectPage(colorIndex: widget.colorIndex),
-            new ClosedProjectPage(colorIndex: widget.colorIndex),
+            new OngoingProjectsPage(colorIndex: widget.colorIndex),
+            new UpcomingProjectsPage(colorIndex: widget.colorIndex),
+            new ClosedProjectsPage(colorIndex: widget.colorIndex),
           ],
           controller: _pageController,
           onPageChanged: onPageChanged

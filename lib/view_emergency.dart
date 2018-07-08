@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
-import 'edit_profile.dart';
+import 'loading_screen.dart';
 import 'color_override.dart';
 import 'animated_logo.dart';
 
@@ -207,7 +207,7 @@ class ViewEmergencyPageState extends State<ViewEmergencyPage> with SingleTickerP
           if (!snapshot.hasData)
           {
             return new Center(
-                child: new CircularProgressIndicator()
+                child: new BarLoadingScreen(),
             );
           }else if (snapshot.data != null) {
 //            DocumentSnapshot document = snapshot.data.documents.where((doc){

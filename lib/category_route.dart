@@ -4,7 +4,7 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'closed_projects.dart';
+import 'loading_screen.dart';
 import 'projects_page.dart';
 import 'upcoming_projects.dart';
 import 'view_users.dart';
@@ -18,7 +18,7 @@ import 'category_tile.dart';
 import 'unit.dart';
 import 'pending_requests.dart';
 import 'animated_weeks_page.dart';
-import 'profile_page.dart';
+import 'dashboard.dart';
 import 'constants.dart';
 import 'auth.dart';
 //import 'package:url_launcher/url_launcher.dart';
@@ -45,6 +45,7 @@ class _CategoryRouteState extends State<CategoryRoute> {
   Category _defaultCategory;
   Category _currentCategory;
 String _currentCategoryName;
+  int _colorIndex = 0;
   // Widgets are supposed to be deeply immutable objects. We can update and edit
   // _categories as we build our app, and when we pass it into a widget's
   // `children` property, we call .toList() on it.
@@ -154,6 +155,8 @@ String _currentCategoryName;
   Widget condition(Category c)
 
   {
+
+
   if(c.name == "Dashboard"){
   return MaterialApp
   (
@@ -242,7 +245,8 @@ String _currentCategoryName;
   child: Container(
   height: 180.0,
   width: 180.0,
-  child: CircularProgressIndicator(),
+  child: CircularProgressIndicator(
+    valueColor: new AlwaysStoppedAnimation<Color>(Colors.white),),
   ),
   );
   }

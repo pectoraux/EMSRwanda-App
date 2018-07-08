@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'profile_icons.dart';
 import 'package:flutter/material.dart';
 import 'supplemental/cut_corners_border.dart';
@@ -6,6 +8,9 @@ import 'quick_role_actions.dart';
 import 'color_override.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'animated_logo.dart';
+import 'loading_screen.dart';
+import 'package:flutter/services.dart';
+import 'package:connectivity/connectivity.dart';
 
 class EditRolesPage extends StatefulWidget {
   @override
@@ -15,7 +20,9 @@ class EditRolesPage extends StatefulWidget {
 class EditRolesPageState extends State<EditRolesPage> with SingleTickerProviderStateMixin {
   AnimationController controller;
   Animation<double> animation;
-
+  String _connectionStatus = 'Unknown';
+  final Connectivity _connectivity = new Connectivity();
+  StreamSubscription<ConnectivityResult> _connectivitySubscription;
 
   final _roleNameController = TextEditingController();
   final _roleName = GlobalKey(debugLabel: 'Role Name');
@@ -49,7 +56,14 @@ class EditRolesPageState extends State<EditRolesPage> with SingleTickerProviderS
         duration: const Duration(milliseconds: 2000), vsync: this);
     animation = new Tween(begin: 0.0, end: 300.0).animate(controller);
     controller.forward();
+
+    initConnectivity();
+    _connectivitySubscription =
+        _connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
+          setState(() => _connectionStatus = result.toString());
+        });
   }
+
 
     Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
       return ListView(
@@ -181,13 +195,14 @@ class EditRolesPageState extends State<EditRolesPage> with SingleTickerProviderS
                 },
               ),
               RaisedButton(
-                child: Text('CREATE'),
-                textColor: TodoColors.baseColors[_colorIndex],
+                child: Text(_connectionStatus == 'ConnectivityResult.none' ? 'Not Connected'
+                    :'CREATE'),
+                textColor: _connectionStatus == 'ConnectivityResult.none' ? Colors.redAccent : TodoColors.baseColors[_colorIndex],
                 elevation: 8.0,
                 shape: BeveledRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(7.0)),
                 ),
-                onPressed: () {
+                onPressed: _connectionStatus == 'ConnectivityResult.none' ? () => onTap() :() {
                   if (_roleNameController.value.text.trim() != "") {
       if(!allFalse(changed)) {
         Map<String, Object> role_data = <String, Object>{
@@ -234,6 +249,7 @@ class EditRolesPageState extends State<EditRolesPage> with SingleTickerProviderS
 
   dispose() {
     controller.dispose();
+    _connectivitySubscription.cancel();
     super.dispose();
   }
     
@@ -244,7 +260,7 @@ class EditRolesPageState extends State<EditRolesPage> with SingleTickerProviderS
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (!snapshot.hasData) {
                 return new Center(
-                    child: new CircularProgressIndicator()
+                    child: new BarLoadingScreen()
                 );
               } else {
                 final converter = _buildListItem(
@@ -266,6 +282,34 @@ class EditRolesPageState extends State<EditRolesPage> with SingleTickerProviderS
                 );
               }
             });
+  }
+
+  // Platform messages are asynchronous, so we initialize in an async method.
+  Future<Null> initConnectivity() async {
+    String connectionStatus;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      connectionStatus = (await _connectivity.checkConnectivity()).toString();
+    } on PlatformException catch (e) {
+      print(e.toString());
+      connectionStatus = 'Failed to get connectivity.';
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _connectionStatus = connectionStatus;
+    });
+  }
+
+  void onTap(){
+    showInSnackBar(
+        "You Need To Be Connected To Create A New Role", Colors.red);
   }
 
   void showInSnackBar(String value, Color c) {

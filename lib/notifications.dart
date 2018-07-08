@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'supplemental/cut_corners_border.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'color_override.dart';
 import 'constants.dart';
 import 'my_notification_dialog.dart';
 

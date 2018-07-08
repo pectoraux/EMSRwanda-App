@@ -5,6 +5,7 @@ import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'animated_logo.dart';
+import 'loading_screen.dart';
 
 class UpdateRolePage extends StatefulWidget {
   final int colorIndex;
@@ -258,7 +259,7 @@ class UpdateRolePageState extends State<UpdateRolePage>  with SingleTickerProvid
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
             return new Center(
-                child: new CircularProgressIndicator()
+                child: new BarLoadingScreen(),
             );
           } else {
             DocumentSnapshot document = snapshot.data.documents.where((doc){

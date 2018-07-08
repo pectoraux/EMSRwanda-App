@@ -19,6 +19,9 @@ dependencies:
   flutter_circular_chart:
   cloud_firestore:
   url_launcher:
+  connectivity: "^0.3.1"
+  firebase_storage: "^1.0.0"
+  image_picker:
 
 dev_dependencies:
   flutter_test:

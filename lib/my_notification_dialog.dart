@@ -3,8 +3,6 @@ import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
 import 'color_override.dart';
 import 'date_and_time_picker.dart';
-import 'package:intl/intl.dart';
-import 'dart:async';
 
 class MyNotificationDialog extends StatefulWidget {
   final int colorIndex;

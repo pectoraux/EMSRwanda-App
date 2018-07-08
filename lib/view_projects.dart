@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'constants.dart';
-import 'color_override.dart';
+import 'loading_screen.dart';
 import 'my_project_dialog.dart';
 
 class ViewProjectsPage extends StatefulWidget {
@@ -71,10 +71,9 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
             stream: Firestore.instance.collection('projects').getDocuments().asStream(),
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (!snapshot.hasData) {
-                print("SNAPSHOTn => => => ${snapshot.data.documents}");
                 return new Center
                   (
-                    child: new CircularProgressIndicator()
+                    child: new BarLoadingScreen(),
                 );
               }
         return StaggeredGridView.count(

@@ -5,7 +5,7 @@ import 'constants.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'color_override.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'progress_bar.dart';
+import 'loading_screen.dart';
 
 class ViewRolesPage extends StatefulWidget {
   final int colorIndex;
@@ -137,7 +137,7 @@ class ViewRolesPageState extends State<ViewRolesPage> {
                 print("SNAPSHOTn => => => ${snapshot.data.documents}");
                 return new Center
                   (
-                    child: new CircularProgressIndicator()
+                    child: new BarLoadingScreen(),
                 );
               }
 //              print("SNAPSHOT => => => ${snapshot.data.documents}");

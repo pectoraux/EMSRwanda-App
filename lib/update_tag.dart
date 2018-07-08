@@ -4,6 +4,7 @@ import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
 import 'color_override.dart';
 import 'animated_logo.dart';
+import 'loading_screen.dart';
 
 class UpdateTagPage extends StatefulWidget {
   final int colorIndex;
@@ -151,7 +152,7 @@ class UpdateTagPageState extends State<UpdateTagPage> with SingleTickerProviderS
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
             return new Center(
-                child: new CircularProgressIndicator()
+                child: new BarLoadingScreen(),
             );
           } else {
             DocumentSnapshot document = snapshot.data.documents.where((doc){

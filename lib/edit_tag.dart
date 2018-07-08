@@ -1,12 +1,16 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'profile_icons.dart';
+import 'loading_screen.dart';
 import 'package:flutter/material.dart';
 import 'color_override.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
 import 'quick_tag_actions.dart';
 import 'animated_logo.dart';
+import 'package:flutter/services.dart';
+import 'package:connectivity/connectivity.dart';
 
 class EditTagPage extends StatefulWidget {
   @override
@@ -16,6 +20,9 @@ class EditTagPage extends StatefulWidget {
 class EditTagPageState extends State<EditTagPage> with SingleTickerProviderStateMixin {
   AnimationController controller;
   Animation<double> animation;
+  String _connectionStatus = 'Unknown';
+  final Connectivity _connectivity = new Connectivity();
+  StreamSubscription<ConnectivityResult> _connectivitySubscription;
 
   final _tagNameController = TextEditingController();
   final _tagTypeController = TextEditingController();
@@ -53,6 +60,12 @@ class EditTagPageState extends State<EditTagPage> with SingleTickerProviderState
     _setMenuDefaults(5);
     _setMenuDefaults(6);
     _setMenuDefaults(7);
+
+    initConnectivity();
+    _connectivitySubscription =
+        _connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
+          setState(() => _connectionStatus = result.toString());
+        });
   }
 
   /// Creates fresh list of [DropdownMenuItem] widgets, given a list of [Unit]s.
@@ -211,6 +224,7 @@ class EditTagPageState extends State<EditTagPage> with SingleTickerProviderState
 
   dispose() {
     controller.dispose();
+    _connectivitySubscription.cancel();
     super.dispose();
   }
   bool allFalse(List<bool> lst){
@@ -257,7 +271,7 @@ class EditTagPageState extends State<EditTagPage> with SingleTickerProviderState
           (_tagTypeValue == "User Related") ? SizedBox(height: 12.0) : SizedBox(
             height: 0.0,),
           (_tagTypeValue == "User Related") ?
-          _createMenuAndSymbol() : new Container(),
+          _createMenuAndSymbol() : Container(),
 
           const SizedBox(height: 12.0),
           PrimaryColorOverride(
@@ -288,13 +302,15 @@ class EditTagPageState extends State<EditTagPage> with SingleTickerProviderState
                 },
               ),
               RaisedButton(
-                child: Text('CREATE'),
-                textColor: TodoColors.baseColors[_colorIndex],
+                child: Text(_connectionStatus == 'ConnectivityResult.none' ? 'Not Connected'
+                    :'CREATE'),
+                textColor: _connectionStatus == 'ConnectivityResult.none' ? Colors.redAccent : TodoColors.baseColors[_colorIndex],
                 elevation: 8.0,
+                splashColor: Colors.blueGrey,
                 shape: BeveledRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(7.0)),
                 ),
-                onPressed: () {
+                onPressed: _connectionStatus == 'ConnectivityResult.none' ? () => onTap() :() {
 //                  _tagNameController.value.text.trim() != "" &&
 //                      _tagTypeController.value.text.trim() != "" &&
 //                      _tagDescriptionController.value.text.trim() != ""
@@ -339,7 +355,7 @@ class EditTagPageState extends State<EditTagPage> with SingleTickerProviderState
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
             return new Center(
-                child: new CircularProgressIndicator()
+                child: new BarLoadingScreen()
             );
           } else {
             final converter = _buildListItem(
@@ -363,6 +379,32 @@ class EditTagPageState extends State<EditTagPage> with SingleTickerProviderState
         });
   }
 
+  // Platform messages are asynchronous, so we initialize in an async method.
+  Future<Null> initConnectivity() async {
+    String connectionStatus;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      connectionStatus = (await _connectivity.checkConnectivity()).toString();
+    } on PlatformException catch (e) {
+      print(e.toString());
+      connectionStatus = 'Failed to get connectivity.';
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _connectionStatus = connectionStatus;
+    });
+  }
+  void onTap(){
+    showInSnackBar(
+        "You Need To Be Connected To Create A New Tag", Colors.red);
+  }
 
   void showInSnackBar(String value, Color c) {
     Scaffold.of(context).showSnackBar(new SnackBar(

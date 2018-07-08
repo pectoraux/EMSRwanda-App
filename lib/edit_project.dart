@@ -1,5 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'date_and_time_picker.dart';
 import 'profile_icons.dart';
 import 'package:flutter/material.dart';
 import 'supplemental/cut_corners_border.dart';
@@ -7,6 +10,9 @@ import 'constants.dart';
 import 'quick_project_actions.dart';
 import 'color_override.dart';
 import 'animated_logo.dart';
+import 'loading_screen.dart';
+import 'package:flutter/services.dart';
+import 'package:connectivity/connectivity.dart';
 
 class EditProjectPage extends StatefulWidget {
   EditProjectPage({Key key, this.roles, this.tags, this.devices}) : super(key: key);
@@ -21,13 +27,23 @@ class EditProjectPage extends StatefulWidget {
 class EditProjectPageState extends State<EditProjectPage> with SingleTickerProviderStateMixin {
   AnimationController controller;
   Animation<double> animation;
-
+  String _connectionStatus = 'Unknown';
+  final Connectivity _connectivity = new Connectivity();
+  StreamSubscription<ConnectivityResult> _connectivitySubscription;
+  FirebaseAuth _auth = FirebaseAuth.instance;
 
   final _projectTitleController = TextEditingController();
   final _projectDescriptionController = TextEditingController();
   final _projectTitle = GlobalKey(debugLabel: 'Project Title');
   final _myProjectDescription = GlobalKey(debugLabel: 'Project Description');
   static final formKey = new GlobalKey<FormState>();
+
+
+  DateTime _fromDate;
+  TimeOfDay _fromTime;
+  DateTime _toDate;
+  TimeOfDay _toTime;
+
 
   bool _sendRequestToAvailableUsers = false;
   String dropdown2Value;
@@ -62,6 +78,17 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
     _createDropdownMenuItems(1, widget.tags);
     _createDropdownMenuItems(2, widget.roles);
     _setDefaults();
+
+    initConnectivity();
+    _connectivitySubscription =
+        _connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
+          setState(() => _connectionStatus = result.toString());
+        });
+
+    _fromDate = new DateTime.now();
+    _fromTime = const TimeOfDay(hour: 7, minute: 28);
+    _toDate = new DateTime.now();
+    _toTime = const TimeOfDay(hour: 7, minute: 28);
   }
 
   /// Creates fresh list of [DropdownMenuItem] widgets, given a list of [Unit]s.
@@ -360,6 +387,30 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
           },
         ),
 
+        SizedBox(height: 12.0),
+        DatePicker(
+          labelText: 'From (time)',
+          selectedDate: _fromDate,
+          selectDate: (DateTime date) {
+            setState(() {
+              _fromDate = date;
+            });
+          },
+        ),
+
+        SizedBox(height: 12.0),
+        PrimaryColorOverride(
+          color: TodoColors.baseColors[_colorIndex],
+          child: DatePicker(
+            labelText: 'To (time)',
+            selectedDate: _toDate,
+            selectDate: (DateTime date) {
+              setState(() {
+                _toDate = date;
+              });
+            },
+          ),
+        ),
         const SizedBox(height: 12.0),
         new CheckboxListTile(
           title: Text('Send Requests', style: TodoColors.textStyle2,),
@@ -396,22 +447,27 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
             ),
 
             RaisedButton(
-              child: Text('CREATE'),
-              textColor: TodoColors.baseColors[_colorIndex],
+              child: Text(_connectionStatus == 'ConnectivityResult.none' ? 'Not Connected'
+                  :'CREATE'),
+              textColor: _connectionStatus == 'ConnectivityResult.none' ? Colors.redAccent :TodoColors.baseColors[_colorIndex],
               elevation: 8.0,
               shape: BeveledRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),
               ),
-              onPressed: () {
+              onPressed: _connectionStatus == 'ConnectivityResult.none' ? () => onTap2() :()  async {
 //                _projectTitleController.text.trim() != "" &&
 //                    _projectDescriptionController.text.trim() != ""
                 if (true) {
+                  String muid = (await _auth.currentUser()).uid;
                   Map<String, Object> project_data = <String, Object>{
                     'projectTitle': _projectTitleController.text,
                     'projectDescription': _projectDescriptionController.text,
                     'locations':selectedLocations.toList(),
                     'tags': selectedTags.toList(),
                     'devicesPerRole': devicesWithRole.toString(),
+                    'author': muid,
+                    'startDate': _fromDate,
+                    'endDate': _toDate,
                   };
 
                   Firestore.instance.runTransaction((transaction) async {
@@ -473,6 +529,7 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
 
   dispose() {
     controller.dispose();
+    _connectivitySubscription.cancel();
     super.dispose();
   }
 
@@ -483,7 +540,7 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
             return new Center(
-                child: new CircularProgressIndicator()
+                child: new BarLoadingScreen()
             );
           } else {
             final converter = _buildListItem(
@@ -505,6 +562,34 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
             );
           }
         });
+  }
+
+  // Platform messages are asynchronous, so we initialize in an async method.
+  Future<Null> initConnectivity() async {
+    String connectionStatus;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      connectionStatus = (await _connectivity.checkConnectivity()).toString();
+    } on PlatformException catch (e) {
+      print(e.toString());
+      connectionStatus = 'Failed to get connectivity.';
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _connectionStatus = connectionStatus;
+    });
+  }
+
+  void onTap2(){
+    showInSnackBar(
+        "You Need To Be Connected To Create A New Project", Colors.red);
   }
 }
 

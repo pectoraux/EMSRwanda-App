@@ -13,7 +13,8 @@ import 'edit_device.dart';
 import 'edit_role.dart';
 import 'edit_user.dart';
 import 'auth.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'loading_screen.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class ProfilePage extends StatefulWidget {
   final BaseAuth auth;
@@ -37,7 +38,7 @@ class _ProfilePageState extends State<ProfilePage> {
   /// set the current displayed page
   PageController _pageController;
   List<String> roles = [], devices = [], deviceTypes = [], tags = [];
-
+  final FirebaseStorage storage = new FirebaseStorage(storageBucket: 'gs://emsrwanda-app.appspot.com');
 
   /// Indicating the current displayed page
   int _page = 0;
@@ -149,7 +150,7 @@ class _ProfilePageState extends State<ProfilePage> {
             children: <Widget>[
               new ProfileHeader(profile),
               new QuickActions(),
-              new MainMenu(currentUserId: currentUserId,),
+              new MainMenu(currentUserId: currentUserId, storage: storage,),
             ],
           ),
         );
@@ -272,7 +273,7 @@ class _ProfilePageState extends State<ProfilePage> {
           if (!snapshot.hasData) {
 //            print("Role Document => => => ${snapshot}");
             return new Center(
-                child: new CircularProgressIndicator()
+                child: new BarLoadingScreen(),
             );
           } else{
             try {
@@ -291,7 +292,7 @@ class _ProfilePageState extends State<ProfilePage> {
               return _buildPage(context, document, profile);
             }catch(e){
               return Center(
-                child:CircularProgressIndicator(),
+                child: BarLoadingScreen(),
               );
             }
 

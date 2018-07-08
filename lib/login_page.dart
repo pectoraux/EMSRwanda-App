@@ -5,6 +5,7 @@ import 'color_override.dart';
 import 'constants.dart';
 import 'package:flutter/animation.dart';
 import 'animated_logo.dart';
+import 'loading_screen.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key, this.title, this.auth, this.onSignIn}) : super(key: key);
@@ -104,9 +105,10 @@ class _LoginPageState extends State<LoginPage>   with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
+    int _colorIndex = 0;
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: TodoColors.baseColors[0],
+      backgroundColor: TodoColors.baseColors[_colorIndex],
       body: SafeArea(
         child: ListView(
           padding: EdgeInsets.symmetric(horizontal: 24.0),
@@ -195,7 +197,8 @@ class _LoginPageState extends State<LoginPage>   with SingleTickerProviderStateM
                       RaisedButton(
                           child: active ?
                           Text('LOG IN', style: TextStyle(color: TodoColors.baseColors[0]),)
-                          : CircularProgressIndicator(),
+                          : CircularProgressIndicator(
+                            valueColor: new AlwaysStoppedAnimation<Color>(TodoColors.baseColors[_colorIndex]),),
                           elevation: 8.0,
                           key: _login,
                           shape: BeveledRectangleBorder(

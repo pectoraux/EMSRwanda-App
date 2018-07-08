@@ -4,19 +4,33 @@ import 'profile_fonts.dart';
 import 'profile_icons.dart';
 import 'models.dart';
 import 'notifications.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:math';
 
-class ProfileHeader extends StatelessWidget {
+class ProfileHeader extends StatefulWidget {
 
   final Profile profile;
-  int _colorIndex = 0;
-
-
 
   ProfileHeader(this.profile);
 
   @override
+  ProfileHeaderState createState() => ProfileHeaderState();
+}
+
+class ProfileHeaderState extends State<ProfileHeader> {
+  int _colorIndex = 0;
+  String imageUrlStr = '';
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setDefaults();
+  }
+
+  @override
   Widget build(BuildContext context) {
+
     final topPadding = MediaQuery
         .of(context)
         .padding
@@ -109,6 +123,15 @@ class ProfileHeader extends StatelessWidget {
     );
   }
 
+  void setDefaults()async {
+    FirebaseAuth _auth = FirebaseAuth.instance;
+    FirebaseUser user = await _auth.currentUser();
+    imageUrlStr = user.photoUrl;
+//    print('MMMMMMMMMMM => => => $imageUrlStr');
+  }
+
+
+
   Widget _buildTitle() {
     return new Text("Profile",
         style: new TextStyle(
@@ -137,7 +160,7 @@ class ProfileHeader extends StatelessWidget {
           width: 70.0, height: 60.0,
           decoration: new BoxDecoration(
             image: new DecorationImage(
-                image: new AssetImage("assets/images/emma-watson.jpg"),
+                image: (imageUrlStr.isNotEmpty) ? Image.network(imageUrlStr).image : AssetImage("assets/images/emma-watson.jpg"),
                 fit: BoxFit.cover),
             borderRadius: new BorderRadius.all(new Radius.circular(20.0)),
             boxShadow: <BoxShadow>[
@@ -150,8 +173,8 @@ class ProfileHeader extends StatelessWidget {
         new Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            new Text(profile.fullName, style: mainTextStyle),
-            new Text(profile.location, style: subTextStyle),
+            new Text(widget.profile.fullName, style: mainTextStyle),
+            new Text(widget.profile.location, style: subTextStyle),
           ],
         ),
       ],
@@ -163,11 +186,11 @@ class ProfileHeader extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        _buildUserStat("Age", profile.age.toString()),
+        _buildUserStat("Age", widget.profile.age.toString()),
         _buildVerticalDivider(),
-        _buildUserStat("Rating", profile.rating.toString()),
+        _buildUserStat("Rating", widget.profile.rating.toString()),
         _buildVerticalDivider(),
-        _buildUserStat("Number of Projects", profile.numberProjects.toString()),
+        _buildUserStat("Number of Projects", widget.profile.numberProjects.toString()),
       ],
     );
   }

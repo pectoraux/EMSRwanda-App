@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'main_menu.dart';
 import 'models.dart';
@@ -12,9 +13,11 @@ import 'qrcode_scanner.dart';
 
 class StaffNStatsPage extends StatefulWidget {
   final int colorIndex;
+  final String projectDocumentId;
 
   const StaffNStatsPage({
     @required this.colorIndex,
+    this.projectDocumentId,
   }) : assert(colorIndex != null);
 
   @override
@@ -50,7 +53,7 @@ class StaffNStatsPageState extends State<StaffNStatsPage> {
       body: new PageView(
           children: [
             new AnimatedPieChartPage(colorIndex: widget.colorIndex,),
-            new ViewUsersPage(colorIndex: widget.colorIndex,),
+            new ViewUsersPage(colorIndex: widget.colorIndex, projectDocumentId: widget.projectDocumentId,),
             new QRCodeScanPage(colorIndex: widget.colorIndex,),
           ],
           controller: _pageController,

@@ -1,10 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'supplemental/cut_corners_border.dart';
 import 'package:flutter/material.dart';
 import 'project_details.dart';
 import 'constants.dart';
-import 'color_override.dart';
 import 'my_employment_dialog.dart';
 
 class EmploymentHistoryPage extends StatefulWidget
@@ -201,7 +199,7 @@ class ReviewItem extends StatelessWidget
                         color: Colors.white,
                         child: InkWell
                           (
-                          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProjectDetailsPage(colorIndex: colorIndex))),
+                          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProjectDetailsPage(colorIndex: colorIndex, projectDocumentID: null,))),
                           child: Padding
                             (
                             padding: EdgeInsets.all(24.0),
@@ -332,7 +330,7 @@ class BadReviewItem extends StatelessWidget
                   [
                     InkWell
                     (
-                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProjectDetailsPage(colorIndex: colorIndex))),
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProjectDetailsPage(colorIndex: colorIndex, projectDocumentID: null,))),
                     child:
                     /// Item description inside a material
                     Container
@@ -467,7 +465,7 @@ class NewReviewItem extends StatelessWidget
               [
                 InkWell
                 (
-                onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProjectDetailsPage(colorIndex: colorIndex))),
+                onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProjectDetailsPage(colorIndex: colorIndex, projectDocumentID: null,))),
                 child:
                 /// Item description inside a material
                 Container

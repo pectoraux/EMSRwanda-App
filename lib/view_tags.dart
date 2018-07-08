@@ -4,7 +4,7 @@ import 'supplemental/cut_corners_border.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'update_tag.dart';
 import 'constants.dart';
-import 'color_override.dart';
+import 'loading_screen.dart';
 import 'my_tags_dialog.dart';
 
 class ViewTagsPage extends StatefulWidget {
@@ -73,7 +73,7 @@ class ViewTagsPageState extends State<ViewTagsPage> {
         print("SNAPSHOTn => => => ${snapshot.data.documents}");
         return new Center
         (
-        child: new CircularProgressIndicator()
+        child: new BarLoadingScreen(),
         );
         }
 

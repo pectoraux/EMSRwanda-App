@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'employment_history_page.dart';
 import 'user_rating_page.dart';
-import 'models.dart';
+import 'loading_screen.dart';
 import 'view_devices.dart';
 import 'profile_header.dart';
 import 'quick_actions.dart';
@@ -55,7 +55,7 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
           children: [
             new EmploymentHistoryPage(colorIndex: widget.colorIndex, isMadeByYou: false, noButton: true, document: document,),
             new UserRatingPage(colorIndex: widget.colorIndex, document: document,),
-            new ViewDevicesPage(colorIndex: widget.colorIndex, document: document,),
+            new ViewDevicesPage(colorIndex: widget.colorIndex, documentID: document.documentID, folder: 'userDevices',),
           ],
           controller: _pageController,
           onPageChanged: onPageChanged
@@ -119,7 +119,7 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
             return new Center(
-                child: new CircularProgressIndicator()
+                child: new BarLoadingScreen(),
             );
           } else {
             DocumentSnapshot document = snapshot.data.documents.where((doc){

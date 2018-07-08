@@ -1,7 +1,10 @@
+import 'dart:async';
+import 'layout.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:date_utils/date_utils.dart';
 import 'constants.dart';
+import 'feature_discovery.dart';
 
 class AnimatedWeeksPage extends StatefulWidget {
   final int colorIndex;
@@ -24,6 +27,9 @@ class _AnimatedWeeksPageState extends State<AnimatedWeeksPage> {
   int _nextItem, last,
       first; // The next item inserted when the user presses the '+' button.
   int curr;
+  DateTime _fromDate = new DateTime.now();
+  TimeOfDay _fromTime = const TimeOfDay(hour: 7, minute: 28);
+
 
   @override
   void initState() {
@@ -148,50 +154,94 @@ class _AnimatedWeeksPageState extends State<AnimatedWeeksPage> {
 
   @override
   Widget build(BuildContext context) {
+    final backgroundRadius = MediaQuery.of(context).size.width;
     return new MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: new Scaffold(
-        appBar: new AppBar(
-          title: new Container(
-              child: Row
-                (
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>
-                [
-                  Icon(Icons.face, color: Colors.white),
-                  SizedBox(width: 10.0),
-                  Text("Which weeks are \nyou available ?", style: TodoColors.textStyle7,),
+      home: Stack(
+        children: <Widget>[
+          new Scaffold(
+            appBar: new AppBar(
+              title: new Container(
+                  child: Row
+                    (
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>
+                    [
+                      Icon(Icons.face, color: Colors.white),
+                      SizedBox(width: 10.0),
+                      Text("Which weeks are \nyou available ?", style: TodoColors.textStyle7,),
 
-                ],
-              )
-          ),
-          backgroundColor: TodoColors.baseColors[widget.colorIndex],
-          actions: <Widget>[
-            new IconButton(
-              icon: const Icon(Icons.add_circle),
-              onPressed: _insert,
-              tooltip: 'insert a new item',
+                    ],
+                  )
+              ),
+              backgroundColor: TodoColors.baseColors[widget.colorIndex],
+              actions: <Widget>[
+                new IconButton(
+                  icon: const Icon(Icons.calendar_today),
+                  onPressed: (){
+                    mselectDate(context);
+                  },
+                  tooltip: 'Calendar',
+                ),
+                new IconButton(
+                  icon: const Icon(Icons.add_circle),
+                  onPressed: _insert,
+                  tooltip: 'insert a new item',
+                ),
+                new IconButton(
+                  icon: const Icon(Icons.remove_circle),
+                  onPressed: _remove,
+                  tooltip: 'remove the selected item',
+                ),
+              ],
             ),
-            new IconButton(
-              icon: const Icon(Icons.remove_circle),
-              onPressed: _remove,
-              tooltip: 'remove the selected item',
+            body: Stack(
+              children: <Widget>[
+                new Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: new AnimatedList(
+                    key: _listKey,
+                    initialItemCount: _list.length,
+                    itemBuilder: _buildItem,
+                  ),
+                ),
+                Positioned(
+                  top: 200.0,
+                  right: 0.0,
+                  child: new FractionalTranslation(
+                    translation: const Offset(-0.1, 3.0),
+                    child: FloatingActionButton(
+                        backgroundColor: TodoColors.baseColors[widget.colorIndex],
+                        foregroundColor: Colors.white,
+                        child: new Icon(
+                          Icons.help_outline,
+                        ),
+                        onPressed: (){
+
+                        }
+                        ),
+                )),
+              ],
             ),
-          ],
-        ),
-        body: new Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: new AnimatedList(
-            key: _listKey,
-            initialItemCount: _list.length,
-            itemBuilder: _buildItem,
           ),
-        ),
+        ],
       ),
     );
   }
+  Future<Null> mselectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: _fromDate,
+        firstDate: new DateTime(1960, 1),
+        lastDate: new DateTime(2101)
+    );
+  }
+
+
 }
+
+
 
 /// Keeps a Dart List in sync with an AnimatedList.
 ///
@@ -291,6 +341,28 @@ class CardItem extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class CenterAbout extends StatelessWidget {
+  final Offset position;
+  final Widget child;
+
+  CenterAbout({
+    this.position,
+    this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return new Positioned(
+      top: position.dy,
+      left: position.dx,
+      child: new FractionalTranslation(
+        translation: const Offset(-0.5, -0.5),
+        child: child,
       ),
     );
   }

@@ -8,9 +8,11 @@ import 'constants.dart';
 import 'quick_device_actions.dart';
 import 'color_override.dart';
 import 'star_rating.dart';
-import 'qrcode_scanner.dart';
+import 'loading_screen.dart';
 import 'package:flutter/services.dart';
 import 'animated_logo.dart';
+import 'package:flutter/services.dart';
+import 'package:connectivity/connectivity.dart';
 
 class EditDevicePage extends StatefulWidget {
   EditDevicePage({Key key, this.deviceTypes}) : super(key: key);
@@ -23,6 +25,10 @@ class EditDevicePage extends StatefulWidget {
 class EditDevicePageState extends State<EditDevicePage> with SingleTickerProviderStateMixin {
   AnimationController controller;
   Animation<double> animation;
+
+  String _connectionStatus = 'Unknown';
+  final Connectivity _connectivity = new Connectivity();
+  StreamSubscription<ConnectivityResult> _connectivitySubscription;
 
   final _deviceNameController = TextEditingController();
   final _deviceTypeController = TextEditingController();
@@ -57,6 +63,12 @@ class EditDevicePageState extends State<EditDevicePage> with SingleTickerProvide
     _createDropdownMenuItems(14, deviceConditions);
     _createDropdownMenuItems(20, deviceStatus);
     _setDefaults();
+
+    initConnectivity();
+    _connectivitySubscription =
+        _connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
+          setState(() => _connectionStatus = result.toString());
+        });
   }
 
   /// Creates fresh list of [DropdownMenuItem] widgets, given a list of [Unit]s.
@@ -184,6 +196,7 @@ class EditDevicePageState extends State<EditDevicePage> with SingleTickerProvide
 
   dispose() {
     controller.dispose();
+    _connectivitySubscription.cancel();
     super.dispose();
   }
 
@@ -288,13 +301,14 @@ class EditDevicePageState extends State<EditDevicePage> with SingleTickerProvide
               },
             ),
             RaisedButton(
-              child: Text('CREATE'),
-              textColor: TodoColors.baseColors[_colorIndex],
+              child: Text(_connectionStatus == 'ConnectivityResult.none' ? 'Not Connected'
+                  :'CREATE'),
+              textColor: _connectionStatus == 'ConnectivityResult.none' ? Colors.redAccent :TodoColors.baseColors[_colorIndex],
               elevation: 8.0,
               shape: BeveledRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),
               ),
-              onPressed: () {
+              onPressed: _connectionStatus == 'ConnectivityResult.none' ? () => onTap() :() {
 //                if (_deviceNameController.value.text.trim() != "" &&
 //                    _deviceConditionController.value.text.trim() != "" && _deviceTypeValue != "Other" && _deviceConditionValue != "Device Condition") {
                 if (true) {
@@ -362,7 +376,7 @@ class EditDevicePageState extends State<EditDevicePage> with SingleTickerProvide
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
             return new Center(
-                child: new CircularProgressIndicator()
+                child: new BarLoadingScreen()
             );
           } else {
             final converter = _buildListItem(
@@ -384,6 +398,34 @@ class EditDevicePageState extends State<EditDevicePage> with SingleTickerProvide
             );
           }
         });
+  }
+
+  // Platform messages are asynchronous, so we initialize in an async method.
+  Future<Null> initConnectivity() async {
+    String connectionStatus;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      connectionStatus = (await _connectivity.checkConnectivity()).toString();
+    } on PlatformException catch (e) {
+      print(e.toString());
+      connectionStatus = 'Failed to get connectivity.';
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _connectionStatus = connectionStatus;
+    });
+  }
+
+  void onTap(){
+    showInSnackBar(
+        "You Need To Be Connected To Create A New Device", Colors.red);
   }
 
   void showInSnackBar(String value, Color c) {

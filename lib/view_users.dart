@@ -4,14 +4,16 @@ import 'profile_icons.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'constants.dart';
 import 'user_history_page.dart';
-import 'color_override.dart';
+import 'loading_screen.dart';
 import 'my_user_dialog.dart';
 
 class ViewUsersPage extends StatefulWidget {
   final int colorIndex;
+  final String projectDocumentId;
 
   const ViewUsersPage({
     @required this.colorIndex,
+    this.projectDocumentId,
   }) : assert(colorIndex != null);
 
   @override
@@ -19,7 +21,15 @@ class ViewUsersPage extends StatefulWidget {
 }
 
 class ViewUsersPageState extends State<ViewUsersPage> {
+  String userName = '', locations = '';
+  bool read = false;
+  List project_users = [];
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
 
+  }
   @override
   Widget build(BuildContext context) {
     final _bkey = GlobalKey(debugLabel: 'Back Key');
@@ -36,6 +46,19 @@ class ViewUsersPageState extends State<ViewUsersPage> {
     List<StaggeredTile> mTiles = [];
     ScrollController controller = new ScrollController();
 
+
+    Firestore.instance.collection('projects/${widget.projectDocumentId}/users').getDocuments().then((query) {
+      List results = [];
+      setState(() {
+        for (DocumentSnapshot doc in query.documents) {
+            results.add(doc.documentID);
+        }
+        project_users = results;
+      });
+    });
+
+    print('JJJJJJJJJJJJ => => => ${project_users}');
+
     return Scaffold
       (
         appBar: AppBar
@@ -43,7 +66,8 @@ class ViewUsersPageState extends State<ViewUsersPage> {
           leading: new BackButton(key: _bkey, color: Colors.black,),
           elevation: 2.0,
           backgroundColor: Colors.white,
-          title: Text('Available Users', style: TodoColors.textStyle6),
+          title: Text((widget.projectDocumentId != null) ? 'Project Staff' : 'Available Users',
+               style: TodoColors.textStyle6),
           actions: <Widget>
           [
             Container
@@ -74,15 +98,16 @@ class ViewUsersPageState extends State<ViewUsersPage> {
         ),
         body: StreamBuilder<QuerySnapshot>(
             stream: Firestore.instance.collection('users').getDocuments().asStream(),
+
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (!snapshot.hasData) {
-                print("SNAPSHOTn => => => ${snapshot.data.documents}");
                 return new Center
                   (
-                    child: new CircularProgressIndicator()
+                    child: new BarLoadingScreen(),
                 );
               }
-//              print("SNAPSHOT => => => ${snapshot.data.documents}");
+
+
               return StaggeredGridView.count(
           crossAxisCount: 2,
           crossAxisSpacing: 12.0,
@@ -94,6 +119,25 @@ class ViewUsersPageState extends State<ViewUsersPage> {
 //                  print(user.documentID + ': ' + user['userName']);
 
                   mTiles.add(StaggeredTile.extent(2, 110.0));
+                  print('VVVVVVVVV => => =>  ${user.documentID}');
+
+                 if(widget.projectDocumentId != null ) {
+                   if (!project_users.contains('${user.documentID}')) {
+                     return Container();
+                   }
+                 }
+
+                   userName = "${user['firstName']} ${user['lastName']}";
+                   locations = user['locations']
+                       .toString()
+                       .substring(1, user['locations']
+                       .toString()
+                       .length - 1);
+
+                   if(userName.trim().isEmpty)
+                     userName = 'Missing User Name';
+                   if(locations.trim().isEmpty)
+                     locations = 'Missing Locations';
 
                   return _buildTile(
               Padding
@@ -112,10 +156,10 @@ class ViewUsersPageState extends State<ViewUsersPage> {
                         children: <Widget>
                         [
                           SizedBox(width: 180.0,
-                              child:Text(user['locations'].toString().substring(1,user['locations'].toString().length-1),
-                                style: TextStyle(color: TodoColors.baseColors[widget.colorIndex]), softWrap: true, overflow: TextOverflow.fade,) ),
+                              child:Text(locations,
+                                style: TextStyle(color: TodoColors.baseColors[widget.colorIndex]),) ),
 
-                          Expanded(child:Text('${user['firstName']} ${user['lastName']}', style: TodoColors.textStyle6), flex: 1,),
+                          Expanded(child:Text(userName, style: TodoColors.textStyle6), flex: 1,),
                         ],
                       ),
                       Material

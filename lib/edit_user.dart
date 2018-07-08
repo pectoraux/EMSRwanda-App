@@ -1,5 +1,6 @@
 import 'dart:async';
-
+import 'package:connectivity/connectivity.dart';
+import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'color_override.dart';
@@ -9,6 +10,7 @@ import 'quick_user_actions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'auth.dart';
 import 'animated_logo.dart';
+import 'loading_screen.dart';
 
 class EditUserPage extends StatefulWidget {
   EditUserPage({Key key, this.auth, this.currentUserPassword, this.roles}) : super(key: key);
@@ -25,7 +27,9 @@ class EditUserPageState extends State<EditUserPage>  with SingleTickerProviderSt
   AnimationController controller;
   Animation<double> animation;
 
-
+  String _connectionStatus = 'Unknown';
+  final Connectivity _connectivity = new Connectivity();
+  StreamSubscription<ConnectivityResult> _connectivitySubscription;
 
   final _userNameController = TextEditingController();
   final _userRoleController = TextEditingController();
@@ -74,6 +78,11 @@ FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
     _createDropdownMenuItems(2, widget.roles);
     _setDefaults();
 
+    initConnectivity();
+    _connectivitySubscription =
+        _connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
+          setState(() => _connectionStatus = result.toString());
+        });
 
   }
 
@@ -148,6 +157,9 @@ FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
           ],
         ),
 
+//    new Center(
+//    child: new Text('Connection Status: $_connectionStatus\n')),
+
         SizedBox(height: 12.0),
         PrimaryColorOverride(
           color: TodoColors.baseColors[_colorIndex],
@@ -197,58 +209,70 @@ FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
               },
             ),
             RaisedButton(
-              child: Text('CREATE'),
-              textColor: TodoColors.baseColors[_colorIndex],
+              child: Text(_connectionStatus == 'ConnectivityResult.none' ? 'Not Connected'
+              :'CREATE'),
+              textColor: _connectionStatus == 'ConnectivityResult.none' ? Colors.redAccent :TodoColors.baseColors[_colorIndex],
               elevation: 8.0,
               shape: BeveledRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),
               ),
-              onPressed: () {
+              onPressed: _connectionStatus == 'ConnectivityResult.none' ? () => onTap() : () {
 //                _userNameController.value.text.trim() != "" &&
 //                    _roleValue != "Project Staff Roles"
                 if (true) {
                 String email = _userNameController.text+'@laterite.com';
                 String mrole = _roleValue;
                 List<String> userLocations = [];
+
                 widget.auth.createUser(email, defaultPassword).then((newId) {
-                  Map<String, Object> user_data = <String, Object>{
-                    'userName': newId,
-                    'userRole': mrole,
-                    'userPassword': defaultPassword,
-                    'userStatus': 'Active',
-                    'firstName': '',
-                    'lastName': '',
-                    'email1': email,
-                    'email2': '',
-                    'sex': '',
-                    'country': '',
-                    'mainPhone': '',
-                    'phone1': '',
-                    'phone2': '',
-                    'passportNo': '',
-                    'bankAcctNo': '',
-                    'bankName': '',
-                    'insurance': '',
-                    'insuranceNo': '',
-                    'insuranceCpy': '',
-                    'tin': '',
-                    'cvStatusElec': '',
-                    'dob': '',
-                    'nationalID': '',
-                    'emergencyContactName': '',
-                    'emergencyContactPhone': '',
-                    'locations':userLocations.toString(),
-                    'editing': false,
-                  };
-                  Firestore.instance.runTransaction((transaction) async {
-                    DocumentReference reference =
-                    Firestore.instance.document('users/${newId}');
-                    await reference.setData(user_data);
-                  });
+                  if(newId != null) {
+                    Map<String, Object> user_data = <String, Object>{
+                      'userName': newId,
+                      'userRole': mrole,
+                      'userPassword': defaultPassword,
+                      'userStatus': 'Active',
+                      'firstName': '',
+                      'lastName': '',
+                      'email1': email,
+                      'email2': '',
+                      'sex': '',
+                      'country': '',
+                      'mainPhone': '',
+                      'phone1': '',
+                      'phone2': '',
+                      'passportNo': '',
+                      'bankAcctNo': '',
+                      'bankName': '',
+                      'insurance': '',
+                      'insuranceNo': '',
+                      'insuranceCpy': '',
+                      'tin': '',
+                      'cvStatusElec': '',
+                      'dob': '',
+                      'nationalID': '',
+                      'emergencyContactName': '',
+                      'emergencyContactPhone': '',
+                      'locations': userLocations.toString(),
+                      'editing': false,
+                    };
+                    Firestore.instance.runTransaction((transaction) async {
+                      DocumentReference reference =
+                      Firestore.instance.document('users/${newId}');
+                      await reference.setData(user_data);
+                    });
+                  }else{
+                    error = true;
+                  }
+
+                }).catchError((err){
+                  error = true;
+                  showInSnackBar(
+                      "Unable To Create User  $err", Colors.red);
                 });
-                    _roleValue = widget.roles[0];
+
+                _roleValue = widget.roles[0];
                     _userNameController.clear();
-                    error? '': showInSnackBar(
+                    error? '':showInSnackBar(
                         "User Created Successfully", TodoColors.baseColors[_colorIndex]);
 
 //                  widget.auth.signOut();
@@ -267,8 +291,33 @@ FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   dispose() {
     controller.dispose();
+    _connectivitySubscription.cancel();
     super.dispose();
   }
+
+  // Platform messages are asynchronous, so we initialize in an async method.
+  Future<Null> initConnectivity() async {
+    String connectionStatus;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      connectionStatus = (await _connectivity.checkConnectivity()).toString();
+    } on PlatformException catch (e) {
+      print(e.toString());
+      connectionStatus = 'Failed to get connectivity.';
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _connectionStatus = connectionStatus;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -282,7 +331,7 @@ FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
             return new Center(
-                child: new CircularProgressIndicator()
+                child: new BarLoadingScreen(),
             );
           } else {
 
@@ -316,11 +365,18 @@ setState(() {
         });
   }
 
+  void onTap(){
+    showInSnackBar(
+        "You Need To Be Connected To Create A User", Colors.red);
+  }
+
   void showInSnackBar(String value, Color c) {
     Scaffold.of(context).showSnackBar(new SnackBar(
       content: new Text(value),
       backgroundColor: c,
     ));
   }
+
+
 }
 

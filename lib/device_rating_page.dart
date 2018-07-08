@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'package:flutter/material.dart';
 import 'constants.dart';
-import 'star_rating.dart';
+import 'loading_screen.dart';
 import 'color_override.dart';
 import 'my_rating_dialog.dart';
 
@@ -715,7 +715,7 @@ class DeviceRatingPageState extends State<DeviceRatingPage> {
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
             return new Center(
-                child: new CircularProgressIndicator()
+                child: new BarLoadingScreen()
             );
           } else {
             DocumentSnapshot document = snapshot.data.documents.where((doc){

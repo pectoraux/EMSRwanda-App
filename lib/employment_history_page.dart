@@ -4,19 +4,20 @@ import 'package:flutter/material.dart';
 import 'project_details.dart';
 import 'constants.dart';
 import 'my_employment_dialog.dart';
+import 'loading_screen.dart';
 
 class EmploymentHistoryPage extends StatefulWidget
 {
   final int colorIndex;
   final bool isMadeByYou;
   final bool noButton;
-  final DocumentSnapshot document;
+  final String documentID;
 
   const EmploymentHistoryPage({
     @required this.colorIndex,
     @required this.isMadeByYou,
     @required this.noButton,
-    this.document,
+    @required this.documentID,
   }) : assert(colorIndex != null),
         assert(isMadeByYou != null),
        assert(noButton != null);
@@ -29,9 +30,7 @@ class EmploymentHistoryPage extends StatefulWidget
 
 class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
 {
-  @override
-  Widget build(BuildContext context)
-  {
+  Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
     final _bkey = GlobalKey(debugLabel: 'Back Key');
     final _projectTitleController = TextEditingController();
     final _projectTitle = GlobalKey(debugLabel: 'Project Title');
@@ -49,7 +48,7 @@ class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
           leading: new BackButton(key: _bkey, color: Colors.black,),
           elevation: 0.0,
           backgroundColor: Colors.transparent,
-          title: Text('Projects ${widget.document['firstName']} Worked On',
+          title: Text('Projects ${document['firstName']}\nWorked On',
               style: TodoColors.textStyle.apply(color: TodoColors.baseColors[widget.colorIndex])),
           actions: <Widget>
           [
@@ -153,6 +152,40 @@ class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
           ],
         )
     );
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return new StreamBuilder<QuerySnapshot>(
+        stream: Firestore.instance.collection('users').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (!snapshot.hasData) {
+            return new Center(
+                child: new BarLoadingScreen()
+            );
+          } else {
+            final converter = _buildListItem(
+                context, snapshot.data.documents.where((user){
+               return (user.documentID == widget.documentID);
+            }).first);
+
+            return OrientationBuilder(
+              builder: (BuildContext context, Orientation orientation) {
+                if (orientation == Orientation.portrait) {
+                  return converter;
+                } else {
+                  return Center(
+                    child: Container(
+                      width: 450.0,
+                      child: converter,
+                    ),
+                  );
+                }
+              },
+            );
+          }
+        });
   }
 }
 

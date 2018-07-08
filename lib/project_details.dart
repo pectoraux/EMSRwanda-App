@@ -264,6 +264,8 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
     'Last 7 days', 'Last month', 'Last year'];
   String actualDropdown = chartDropdownItems[0];
   int actualChart = 0;
+  String buttom_message = '';
+  bool isUpcoming, isOngoing = true;
 
 //  int last_index = actualChart;
 
@@ -302,13 +304,14 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
                       textDirection: TextDirection.ltr,
                       children: <Widget>
                       [
+                        !isOngoing ?
                         RaisedButton(
                           padding: EdgeInsets.all(18.0),
                           onPressed: () {},
-                          child: new Text(
-                            'Send   Work   Request',
+                          child:   Text(
+                            buttom_message,
                             style: TodoColors.textStyle4,),
-                        )
+                        ): Container()
                       ],
                     ),
                   )
@@ -331,13 +334,18 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
       return doc.documentID == widget.projectDocumentID;
     }).first;
 
-//    print('HHHHHHHHHHH => => => ${document['author']}');
-//      getAuthor(document['author']);
+
+      isUpcoming = !(project['startDate'].isBefore(DateTime.now()) || project['endDate'].isBefore(DateTime.now()));
+      isOngoing = !(project['startDate'].isAfter(DateTime.now()) || project['endDate'].isBefore(DateTime.now()));
+
+
       Firestore.instance.document('users/${project['author']}').get().then((doc){
         setState(() {
             author = '${doc['firstName']}\n${doc['lastName']}';
+            buttom_message = isUpcoming ? 'Send   Work   Request' : isOngoing ? '': 'Send   Payment   Request';
         });
       });
+
     return StaggeredGridView.count(
                 crossAxisCount: 2,
                 crossAxisSpacing: 12.0,
@@ -382,8 +390,9 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
                                       child: Padding
                                         (
                                         padding: const EdgeInsets.all(16.0),
-                                        child: Icon(
-                                            Icons.timeline, color: Colors.white,
+                                        child: Icon(isUpcoming ? Icons.group_work
+                                        :isOngoing ? Icons.work:
+                                            Icons.close, color: Colors.white,
                                             size: 30.0),
                                       )
                                   )

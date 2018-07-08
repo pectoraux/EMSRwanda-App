@@ -53,7 +53,7 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
       resizeToAvoidBottomPadding: false,
       body: new PageView(
           children: [
-            new EmploymentHistoryPage(colorIndex: widget.colorIndex, isMadeByYou: false, noButton: true, document: document,),
+            new EmploymentHistoryPage(colorIndex: widget.colorIndex, isMadeByYou: false, noButton: true, documentID: document.documentID,),
             new UserRatingPage(colorIndex: widget.colorIndex, document: document,),
             new ViewDevicesPage(colorIndex: widget.colorIndex, documentID: document.documentID, folder: 'userDevices',),
           ],

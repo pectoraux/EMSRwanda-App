@@ -114,18 +114,20 @@ class ViewUsersPageState extends State<ViewUsersPage> {
           mainAxisSpacing: 12.0,
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 controller: controller,
-                children: snapshot.data.documents.map((user) {
+                children: snapshot.data.documents.where((user){
+
+                  if(widget.projectDocumentId != null ) {
+                    if (!project_users.contains('${user.documentID}')) {
+                      return false;
+                    }
+                  }
+                  return true;
+                }).map((user) {
 
 //                  print(user.documentID + ': ' + user['userName']);
 
                   mTiles.add(StaggeredTile.extent(2, 110.0));
                   print('VVVVVVVVV => => =>  ${user.documentID}');
-
-                 if(widget.projectDocumentId != null ) {
-                   if (!project_users.contains('${user.documentID}')) {
-                     return Container();
-                   }
-                 }
 
                    userName = "${user['firstName']} ${user['lastName']}";
                    locations = user['locations']

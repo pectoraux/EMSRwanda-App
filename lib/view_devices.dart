@@ -123,23 +123,22 @@ class ViewDevicesPageState extends State<ViewDevicesPage> {
           mainAxisSpacing: 12.0,
                 controller: controller,
                 padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                children: snapshot.data.documents.map((device) {
-
-
-
-                  mTiles.add(StaggeredTile.extent(2, 110.0));
-
+                children: snapshot.data.documents.where((device){
                   if(widget.documentID != null && (widget.folder == 'projectDevices')) {
                     if (!project_devices.contains('${device.documentID}')) {
 //                      print(device.documentID + ': ' + device['deviceName']);
-                      return Container();
+                      return false;
                     }
                   }
                   if(widget.documentID != null  && (widget.folder == 'userDevices')) {
                     if (!user_devices.contains('${device.documentID}')) {
-                      return Container();
+                      return false;
                     }
                   }
+                  return true;
+                }).map((device) {
+
+                  mTiles.add(StaggeredTile.extent(2, 110.0));
 
                   String deviceName = "${device['deviceName']}";
                   String deviceStatus = device['deviceStatus'];

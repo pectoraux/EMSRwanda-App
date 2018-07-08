@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'supplemental/cut_corners_border.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,23 @@ class UserRatingPage extends StatefulWidget {
 class UserRatingPageState extends State<UserRatingPage> {
   final _replyController = TextEditingController();
   final _reply = GlobalKey(debugLabel: 'Reply');
+  String imageUrlStr = '';
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setDefaults();
+  }
+
+
+  void setDefaults()async {
+    FirebaseAuth _auth = FirebaseAuth.instance;
+    FirebaseUser user = await _auth.currentUser();
+    imageUrlStr = user.photoUrl;
+//    print('MMMMMMMMMMM => => => $imageUrlStr');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +70,7 @@ class UserRatingPageState extends State<UserRatingPage> {
                   alignment: Alignment.center,
                   children: <Widget>
                   [
-                    Image.asset("assets/images/emma-watson.jpg"),
+                    (imageUrlStr.isNotEmpty) ? Image.network(imageUrlStr) : Image.asset("assets/images/emma-watson.jpg"),
                     Container(color: Colors.black26)
                   ],
                 ),

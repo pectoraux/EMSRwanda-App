@@ -232,7 +232,7 @@ class ReviewItem extends StatelessWidget
                         color: Colors.white,
                         child: InkWell
                           (
-                          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProjectDetailsPage(colorIndex: colorIndex, projectDocumentID: null,))),
+                          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProjectDetailsPage(colorIndex: colorIndex, projectDocumentID: '-LGtLKKphde0FGD8R7U9',))),
                           child: Padding
                             (
                             padding: EdgeInsets.all(24.0),
@@ -363,7 +363,7 @@ class BadReviewItem extends StatelessWidget
                   [
                     InkWell
                     (
-                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProjectDetailsPage(colorIndex: colorIndex, projectDocumentID: null,))),
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProjectDetailsPage(colorIndex: colorIndex, projectDocumentID: '-LGtLKKphde0FGD8R7U9',))),
                     child:
                     /// Item description inside a material
                     Container
@@ -498,7 +498,7 @@ class NewReviewItem extends StatelessWidget
               [
                 InkWell
                 (
-                onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProjectDetailsPage(colorIndex: colorIndex, projectDocumentID: null,))),
+                onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProjectDetailsPage(colorIndex: colorIndex, projectDocumentID: '-LGtLKKphde0FGD8R7U9',))),
                 child:
                 /// Item description inside a material
                 Container

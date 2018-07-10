@@ -116,28 +116,6 @@ class _LoginPageState extends State<LoginPage>   with SingleTickerProviderStateM
             SizedBox(height: 80.0),
             Column(
               children: <Widget>[
-//                SizedBox(height: 100.0),
-//                Image.asset('assets/diamond.png',),
-//                new Container(
-//                  width: _iconAnimation.value,
-//                    height: _iconAnimation.value,
-//                    decoration: new BoxDecoration(
-//      color: Colors.purple,
-//      gradient: new RadialGradient(
-//        colors: [Colors.red, Colors.cyan, Colors.purple, TodoColors.baseColors[0]],
-//        center: Alignment(-0.7, -0.6),
-//        radius: 0.2,
-//        tileMode: TileMode.clamp,
-//        stops: [0.3, 0.5, 0.6, 0.7]
-//      ),
-//    ),
-//                    child:new FlutterLogo(), //Image.asset('assets/diamond.png',),
-//                    new FlutterLogo(
-//                      size: _iconAnimation.value*140.0,
-//
-//                      textColor: Colors.red,
-//                    )
-//                ),
                 SizedBox(height: 20.0),
           AnimatedLogo(animation: animation, message: 'LATERITE', factor: 2.0, colorIndex: 0, loginPage: true,),
 
@@ -179,6 +157,10 @@ class _LoginPageState extends State<LoginPage>   with SingleTickerProviderStateM
                       ),
                     ),
                   ),
+                  InkWell(
+                    child: Text('Forgot Your Password', textAlign: TextAlign.end, style: TextStyle(color: TodoColors.primary),),
+                    onTap: () {print("value of your text");},
+                  ),
                   ButtonBar(
                     children: <Widget>[
                       FlatButton(
@@ -212,7 +194,9 @@ class _LoginPageState extends State<LoginPage>   with SingleTickerProviderStateM
                           }
                       )
                     ],
-                  ),],),
+                  ),
+                ],
+              ),
             ),
             hintText(),
           ],

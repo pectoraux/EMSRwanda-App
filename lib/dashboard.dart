@@ -198,13 +198,19 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   @override
-  Widget build(BuildContext context){
-
-    widget.auth.currentUser().then((userId) async {
-      List<String> results =
-      await Firestore.instance.document('users/${userId}').get().then((doc){
-        return [doc['userRole'], doc['userPassword'], doc['firstName'], doc['lastName'], doc['locations'].toString()];
-      });
+  Widget build(BuildContext context) {
+    try {
+      widget.auth.currentUser().then((userId) async {
+        List<String> results =
+        await Firestore.instance.document('users/${userId}').get().then((doc) {
+          return [
+            doc['userRole'],
+            doc['userPassword'],
+            doc['firstName'],
+            doc['lastName'],
+            doc['locations'].toString()
+          ];
+        });
 
         setState(() {
           currentUserRole = results[0];
@@ -212,93 +218,103 @@ class _ProfilePageState extends State<ProfilePage> {
           currentUserId = userId;
           firstName = results[2];
           lastName = results[3];
-          location = results[4].substring(results[4].indexOf('[')+1, results[4].indexOf(']'));
+          location = results[4].substring(
+              results[4].indexOf('[') + 1, results[4].indexOf(']'));
         });
-    });
+      });
 
-    widget.auth.currentUser().then((userId) async {
-      List<String> mResults = ["Project Staffs Roles"];
-      await Firestore.instance.collection('roles').getDocuments().asStream().forEach((snap){
+      widget.auth.currentUser().then((userId) async {
+        List<String> mResults = ["Project Staffs Roles"];
+        await Firestore.instance.collection('roles').getDocuments()
+            .asStream()
+            .forEach((snap) {
 //        print('=< =< =< ${snap.documents.forEach((role){return role['roleName']})}');
-        for(var role in snap.documents){
+          for (var role in snap.documents) {
 //          print('Role: ${role['roleName']}');
-          mResults.add(role['roleName']);
-        }
+            mResults.add(role['roleName']);
+          }
+        });
+        setState(() {
+          roles = mResults;
+        });
       });
-      setState(() {
-        roles =  mResults;
-      });
-    });
 
-    widget.auth.currentUser().then((userId) async {
-      List<String> mResults = ["Device Type"];
+      widget.auth.currentUser().then((userId) async {
+        List<String> mResults = ["Device Type"];
 //      List<String> mResults2 = [];
-      await Firestore.instance.collection('devices').getDocuments().asStream().forEach((snap){
+        await Firestore.instance.collection('devices').getDocuments()
+            .asStream()
+            .forEach((snap) {
 //        print('=< =< =< ${snap.documents.forEach((role){return role['roleName']})}');
-        for(var device in snap.documents){
+          for (var device in snap.documents) {
 //          print('Role: ${role['roleName']}');
-          mResults.add(device['deviceType']);
+            mResults.add(device['deviceType']);
 //          mResults2.add(device['deviceName']);
-        }
+          }
+        });
+        setState(() {
+          mResults.add('Other');
+          deviceTypes = mResults.toSet().toList();
+          devices = mResults;
+          devices.removeAt(0);
+          devices.removeLast();
+        });
       });
-      setState(() {
-        mResults.add('Other');
-        deviceTypes =  mResults.toSet().toList();
-        devices = mResults;
-        devices.removeAt(0);
-        devices.removeLast();
-      });
-    });
 
-    widget.auth.currentUser().then((userId) async {
-      List<String> mResults = ["Tags"];
-      await Firestore.instance.collection('tags').getDocuments().asStream().forEach((snap){
+      widget.auth.currentUser().then((userId) async {
+        List<String> mResults = ["Tags"];
+        await Firestore.instance.collection('tags').getDocuments()
+            .asStream()
+            .forEach((snap) {
 //        print('=< =< =< ${snap.documents.forEach((role){return role['roleName']})}');
-        for(var tag in snap.documents){
+          for (var tag in snap.documents) {
 //          print('Role: ${role['roleName']}');
-          mResults.add(tag['tagName']);
-        }
+            mResults.add(tag['tagName']);
+          }
+        });
+        setState(() {
+          tags = mResults;
+        });
       });
-      setState(() {
-        tags =  mResults;
-      });
-    });
 
+    } catch(_){
+      return BarLoadingScreen();
+    }
 
-
-    return new StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('roles').snapshots(),
-        builder: (BuildContext context,
-            AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (!snapshot.hasData) {
+      return new StreamBuilder<QuerySnapshot>(
+          stream: Firestore.instance.collection('roles').snapshots(),
+          builder: (BuildContext context,
+              AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (!snapshot.hasData) {
 //            print("Role Document => => => ${snapshot}");
-            return new Center(
+              return new Center(
                 child: new BarLoadingScreen(),
-            );
-          } else{
-            try {
-              DocumentSnapshot document = snapshot.data.documents.where((doc){
-                return doc['roleName'] == currentUserRole;}).first;
+              );
+            } else {
+              try {
+                DocumentSnapshot document = snapshot.data.documents.where((
+                    doc) {
+                  return doc['roleName'] == currentUserRole;
+                }).first;
 //              print("Role Document => => => ${document.data}");
 
-              final profile = new Profile()
-                ..firstName = firstName
-                ..lastName = lastName
-                ..location = location
-                ..age = 35
-                ..rating = 4.6
-                ..numberProjects = 17;
+                final profile = new Profile()
+                  ..firstName = firstName
+                  ..lastName = lastName
+                  ..location = location
+                  ..age = 35
+                  ..rating = 4.6
+                  ..numberProjects = 17;
 
-              return _buildPage(context, document, profile);
-            }catch(e){
-              return Center(
-                child: BarLoadingScreen(),
-              );
+                return _buildPage(context, document, profile);
+              } catch (e) {
+                return Center(
+                  child: BarLoadingScreen(),
+                );
+              }
             }
-
           }
-        }
-    );
+      );
   }
 
 }

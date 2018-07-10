@@ -11,6 +11,7 @@ import 'color_override.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:path/path.dart' as p;
+import 'package:flutter_country_picker/flutter_country_picker.dart';
 
 class ViewPrimaryPage extends StatefulWidget {
   final String currentUserId;
@@ -94,6 +95,7 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
   bool showLoadingAnimation = false;
   String _imagePath = '';
   String imageUrlStr = '';
+  Country _selected;
   
   Future getImage(String src) async {
     var image = await ImagePicker.pickImage(source: src == 'Camera' ? ImageSource.camera : ImageSource.gallery);
@@ -361,7 +363,20 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
             ),
 
             SizedBox(height: 12.0),
+            document['editing'] ?
             ListTile(
+                title: Container(
+                  child: CountryPicker(
+                    onChanged: (Country country) {
+                      setState(() {
+                        _selected = country;
+                      });
+                    },
+                    selectedCountry: _selected,
+                  ),
+                )
+            )
+            : ListTile(
               title: Container(
                   child: InputDecorator(
                   key: _country,
@@ -386,7 +401,6 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
 
             SizedBox(height: 12.0),
             _buildTile(context, document, 'mainPhone', 'Main Phone', _mainPhone, _mainPhoneController, 7),
-
 
             SizedBox(height: 12.0),
             ListTile(
@@ -474,8 +488,6 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
             phone2 = changed[9] ? _phone2Controller.text : document['phone2'];
             email1 = changed[10] ? _email1Controller.text : document['email1'];
             email2 = changed[11] ? _email2Controller.text : document['email2'];
-//            bankName = changed[12] ? _bankNameController.text : document['bankName'];
-//            bankAcctNo = changed[13] ? _bankAcctNoController.text : document['bankAcctNo'];
             insurance = changed[14] ? _insuranceController.text : document['insurance'];
             insuranceNo = changed[15] ? _insuranceNoController.text : document['insuranceNo'];
             insuranceCpy = changed[16] ? _insuranceCpyController.text : document['insuranceCpy'];
@@ -498,17 +510,10 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
                 'phone1': phone1,
                 'phone2': phone2,
                 'passportNo': passportNo,
-//                'bankAcctNo': bankAcctNo,
-//                'bankName': bankName,
-//                'insurance': insurance,
-//                'insuranceNo': insuranceNo,
-//                'insuranceCpy': insuranceCpy,
                 'tin': tin,
                 'cvStatusElec': cvStatusElec,
                 'dob': dob,
                 'nationalID': nationalID,
-//                'emergencyContactName': emergencyContactName,
-//                'emergencyContactPhone': emergencyContactPhone,
                 'editing':!snapshot['editing'],
               });
             });

@@ -40,30 +40,19 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
 
 
   DateTime _fromDate;
-  TimeOfDay _fromTime;
   DateTime _toDate;
-  TimeOfDay _toTime;
 
 
   bool _sendRequestToAvailableUsers = false;
   String dropdown2Value;
   String _value = null;
   String dropdown3Value = 'Four';
-//  List devices = [
-//    "iPad",
-//    "Microphone",
-//    "Dictaphone",
-//    "Phone",
-//  ];
   List<DropdownMenuItem> _locationMenuItems, _tagMenuItems, _roleMenuItems;
   List<String> locations = ["Locations", "Gasabo", "Remera", "Kisimenti", "Gaculiro", "Kacyiru"];
-//  List<String> tags = ["Tags", "Over18", "Male", "Female", "Education", "Sensitive"];
-//  List<String> roles = ["Project Staff Roles", "Enumerator", "Project Lead", "Project Supervisor", "Administrator"];
   String _tagValue, _locationValue, _roleValue;
   int _colorIndex = 0;
   Set<String> selectedLocations = new Set(), selectedTags = new Set(), selectedDevices = new Set();
   Map<String, Object> devicesWithRole = new Map<String, Object>();
-//  static int len = widget.len;
   List devices_values;
   List<Color> _mcolors;
 
@@ -86,9 +75,7 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
         });
 
     _fromDate = new DateTime.now();
-    _fromTime = const TimeOfDay(hour: 7, minute: 28);
     _toDate = new DateTime.now();
-    _toTime = const TimeOfDay(hour: 7, minute: 28);
   }
 
   /// Creates fresh list of [DropdownMenuItem] widgets, given a list of [Unit]s.
@@ -120,8 +107,8 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
   /// updated output value if a user had previously entered an input.
   void _setDefaults() {
     setState(() {
-      devices_values = List<bool>.generate(widget.devices.length, (int index) => (false));
-      _mcolors = List<Color>.generate(widget.devices.length, (int index) => (Colors.brown[500]));
+      devices_values = List<bool>.generate(widget.devices.toSet().length, (int index) => (false));
+      _mcolors = List<Color>.generate(widget.devices.toSet().length, (int index) => (Colors.brown[500]));
       _locationValue = locations[0];
       _tagValue = widget.tags[0];
       _roleValue = widget.roles[0];
@@ -324,13 +311,13 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
         GridView.count(
           shrinkWrap: true,
           crossAxisCount: 3,
-          children: new List.generate(widget.devices.length, (i) =>
+          children: new List.generate(widget.devices.toSet().length, (i) =>
           new InkWell(
             onTap: () {
               setState(() {
                 if (_mcolors[i] == Colors.brown[500]) {
                   _mcolors[i] = TodoColors.baseColors[_colorIndex];
-                  selectedDevices.add(widget.devices[i]);
+                  selectedDevices.add(widget.devices.toSet().elementAt(i));
                 } else {
                   _mcolors[i] = Colors.brown[500];
                 }
@@ -341,7 +328,7 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
               color: _mcolors[i],
               child: new Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: new Center(child: new Text(widget.devices[i])),
+                child: new Center(child: new Text(widget.devices.toSet().elementAt(i))),
               ),
             ),
           ),
@@ -389,7 +376,7 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
 
         SizedBox(height: 12.0),
         DatePicker(
-          labelText: 'From (time)',
+          labelText: 'Start Date',
           selectedDate: _fromDate,
           selectDate: (DateTime date) {
             setState(() {
@@ -402,7 +389,7 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
         PrimaryColorOverride(
           color: TodoColors.baseColors[_colorIndex],
           child: DatePicker(
-            labelText: 'To (time)',
+            labelText: 'End Date',
             selectedDate: _toDate,
             selectDate: (DateTime date) {
               setState(() {

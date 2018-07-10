@@ -20,6 +20,7 @@ class ProfileHeader extends StatefulWidget {
 class ProfileHeaderState extends State<ProfileHeader> {
   int _colorIndex = 0;
   String imageUrlStr = '';
+  String defaultUrl = 'https://firebasestorage.googleapis.com/v0/b/emsrwanda-app.appspot.com/o/users_photos%2Flaterite.PNG?alt=media&token=c48a857c-4979-4d8b-9cc3-27676dd54295';
 
   @override
   void initState() {
@@ -126,7 +127,8 @@ class ProfileHeaderState extends State<ProfileHeader> {
   void setDefaults()async {
     FirebaseAuth _auth = FirebaseAuth.instance;
     FirebaseUser user = await _auth.currentUser();
-    imageUrlStr = user.photoUrl;
+
+    imageUrlStr = (user.photoUrl != null)? user.photoUrl : defaultUrl;
 //    print('MMMMMMMMMMM => => => $imageUrlStr');
   }
 
@@ -160,7 +162,7 @@ class ProfileHeaderState extends State<ProfileHeader> {
           width: 70.0, height: 60.0,
           decoration: new BoxDecoration(
             image: new DecorationImage(
-                image: (imageUrlStr.isNotEmpty) ? Image.network(imageUrlStr).image : AssetImage("assets/images/emma-watson.jpg"),
+                image: Image.network((imageUrlStr == null) ? defaultUrl : imageUrlStr ).image,
                 fit: BoxFit.cover),
             borderRadius: new BorderRadius.all(new Radius.circular(20.0)),
             boxShadow: <BoxShadow>[

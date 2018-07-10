@@ -49,7 +49,7 @@ class EditDevicePageState extends State<EditDevicePage> with SingleTickerProvide
   final String display_permission_denied = "Camera permission was denied";
   final String display_unknown = "Unknown Error";
   final String display_no_scan = "You pressed the back button before scanning anything";
-
+  static final formKey = new GlobalKey<FormState>();
 
   @override
   initState() {
@@ -216,6 +216,11 @@ class EditDevicePageState extends State<EditDevicePage> with SingleTickerProvide
           ],
         ),
 
+        Form(
+            key: formKey,
+            child: new Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children:<Widget>[
         SizedBox(height: 12.0),
         FlatButton(
           child: Text(deviceName, style: TodoColors.textStyle.apply(color: Theme
@@ -312,6 +317,9 @@ class EditDevicePageState extends State<EditDevicePage> with SingleTickerProvide
 //                if (_deviceNameController.value.text.trim() != "" &&
 //                    _deviceConditionController.value.text.trim() != "" && _deviceTypeValue != "Other" && _deviceConditionValue != "Device Condition") {
                 if (true) {
+                  if(_deviceTypeValue == 'Other'){
+                    _deviceTypeValue = _deviceTypeController.text;
+                  }
                   Map<String, Object> device_data = <String, Object>{
                     'deviceName': deviceName,
                     'deviceType': _deviceTypeValue,
@@ -365,6 +373,7 @@ class EditDevicePageState extends State<EditDevicePage> with SingleTickerProvide
             ),
           ],
         ),
+            ]))
       ],
     );
   }

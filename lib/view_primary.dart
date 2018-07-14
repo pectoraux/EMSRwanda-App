@@ -91,12 +91,14 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
   static final formKey = new GlobalKey<FormState>();
   List<String> locations = ["Locations", "Gasabo", "Remera", "Kisimenti", "Gaculiro", "Kacyiru"];
   String profile_photo = "Change Your Profile Photo";
-  String path_stem = '/storage/emulated/0/Android/data/com.example.flutterqrscan/files/Pictures/';
   bool showLoadingAnimation = false;
-  String _imagePath = '';
   String imageUrlStr = '';
   Country _selected;
-  
+  DateTime picked;
+  List<String> sex_options = ['Sex', 'Male', 'Female'];
+  List<DropdownMenuItem> _sexMenuItems;
+  String _sexValue;
+
   Future getImage(String src) async {
     var image = await ImagePicker.pickImage(source: src == 'Camera' ? ImageSource.camera : ImageSource.gallery);
     
@@ -162,12 +164,97 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
         duration: const Duration(milliseconds: 2000), vsync: this);
     animation = new Tween(begin: 0.0, end: 300.0).animate(controller);
     controller.forward();
+
+    _createDropdownMenuItems(6, sex_options);
+
     setDefaults();
   }
   void setDefaults()async {
       FirebaseAuth _auth = FirebaseAuth.instance;
       FirebaseUser user = await _auth.currentUser();
       imageUrlStr = user.photoUrl;
+
+      _setSexDefaults();
+  }
+
+  /// Creates fresh list of [DropdownMenuItem] widgets, given a list of [Unit]s.
+  void _createDropdownMenuItems(int idx, List<String> list) {
+    var newItems = <DropdownMenuItem>[];
+    for (var unit in list) {
+      newItems.add(DropdownMenuItem(
+        value: unit,
+        child: Container(
+          child: Text(
+            unit,
+            softWrap: true,
+          ),
+        ),
+      ));
+    }
+    setState(() {
+     if (idx == 6){
+        _sexMenuItems = newItems;
+      }
+    });
+  }
+
+  void _setSexDefaults() {
+    setState(() {
+      _sexValue = sex_options[0];
+    });
+  }
+
+  Widget _createDropdown(int idx, String currentValue, ValueChanged<dynamic>
+
+  onChanged)
+
+  {
+    return Container(
+      decoration: BoxDecoration(
+        // This sets the color of the [DropdownButton] itself
+        color: TodoColors.baseColors[_colorIndex],
+        border: Border.all(
+          color: TodoColors.baseColors[_colorIndex],
+          width: 1.0,
+        ),
+      ),
+      padding: EdgeInsets.symmetric(vertical: 8.0),
+      child: Theme(
+        // This sets the color of the [DropdownMenuItem]
+        data: Theme.of(context).copyWith(
+          canvasColor: Colors.grey[50],
+        ),
+        child: DropdownButtonHideUnderline(
+          child: new SingleChildScrollView(
+            child: new ConstrainedBox(
+              constraints: new BoxConstraints(
+                minHeight: 8.0,
+              ),
+              child: DropdownButtonHideUnderline(
+                  child: new Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      DropdownButton(
+                        value: currentValue,
+                        items: _sexMenuItems,
+                        onChanged: onChanged,
+                        style: TodoColors.textStyle2,
+                      ),
+                    ],)
+              ),
+            ),
+          ),),),
+    );
+  }
+
+  void _updateSexValue(dynamic name) {
+    setState(() {
+      _sexValue = name;
+      if(name != 'Sex') {
+        changed[6] = true;
+      }
+    });
   }
 
 //  dispose() {
@@ -345,13 +432,23 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
             _buildTile(context, document, 'lastName', 'Last Name', _lastName, _lastNameController, 1),
 
             SizedBox(height: 12.0),
-            ListTile(
+                  document['editing'] ?
+    new IconButton(
+    icon: const Icon(Icons.calendar_today),
+    onPressed: () {
+    mselectDate(context);
+    changed[2] = true;
+    },
+    tooltip: 'Calendar',
+    )
+            :ListTile(
               title: Container(
                 child: InputDecorator(
                   key: _dob,
                   child: Text(
-                    "14th June 1983",
-                    style: TodoColors.textStyle2,
+                    document['dob'],
+                    style: TodoColors.textStyle3.apply(
+                        color: TodoColors.baseColors[_colorIndex]),
                   ),
                   decoration: InputDecoration(
                     labelText: 'Date Of Birth',
@@ -370,6 +467,7 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
                     onChanged: (Country country) {
                       setState(() {
                         _selected = country;
+                        changed[3] = true;
                       });
                     },
                     selectedCountry: _selected,
@@ -381,8 +479,10 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
                   child: InputDecorator(
                   key: _country,
                   child: Text(
-                    "Rwanda",
-                    style: TodoColors.textStyle2,
+                    document['country'],
+                    style: TodoColors.textStyle3.apply(
+                        color: TodoColors.baseColors[_colorIndex]),
+
                   ),
                   decoration: InputDecoration(
                     labelText: 'Country',
@@ -403,13 +503,16 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
             _buildTile(context, document, 'mainPhone', 'Main Phone', _mainPhone, _mainPhoneController, 7),
 
             SizedBox(height: 12.0),
-            ListTile(
+            document['editing'] ?
+            _createDropdown(6, _sexValue, _updateSexValue)
+            :ListTile(
               title: Container(child:
               InputDecorator(
                 key: _sex,
                 child: Text(
-                  "Female",
-                  style: TodoColors.textStyle2,
+                document['sex'],
+                  style: TodoColors.textStyle3.apply(
+                      color: TodoColors.baseColors[_colorIndex]),
                 ),
                 decoration: InputDecoration(
                   labelText: 'Sex',
@@ -478,11 +581,11 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
 
             firstName = changed[0] ? _firstNameController.text : document['firstName'];
             lastName = changed[1] ? _lastNameController.text : document['lastName'];
-            dob = changed[2] ? _dobController.text : document['dob'];
-            country = changed[3] ? _countryController.text : document['country'];
+            dob = changed[2] ? picked.toIso8601String().split('T')[0] : document['dob'];
+            country = changed[3] ? _selected.name : document['country'];
             nationalID = changed[4] ? _nationalIDController.text : document['nationalID'];
             passportNo = changed[5] ? _passportNoController.text : document['passportNo'];
-            sex = changed[6] ? _sexController.text : document['sex'];
+            sex = changed[6] ? _sexValue : document['sex'];
             mainPhone = changed[7] ? _mainPhoneController.text : document['mainPhone'];
             phone1 = changed[8] ? _phone1Controller.text : document['phone1'];
             phone2 = changed[9] ? _phone2Controller.text : document['phone2'];
@@ -537,6 +640,15 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
     ],
     ),],),),
     ],
+    );
+  }
+
+  Future<Null> mselectDate(BuildContext context) async {
+    picked = await showDatePicker(
+        context: context,
+        initialDate: new DateTime.now(),
+        firstDate: new DateTime(1910, 1),
+        lastDate: new DateTime(2101)
     );
   }
 

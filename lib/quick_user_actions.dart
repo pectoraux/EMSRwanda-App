@@ -140,7 +140,7 @@ class QuickUserActionsState extends State<QuickUserActions>  {
 
     if (title == "View\nUsers") {
       Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => ViewUsersPage(colorIndex: _colorIndex,)));
+          MaterialPageRoute(builder: (_) => ViewUsersPage(colorIndex: _colorIndex, canRateUser: false,)));
     } else if (title == "Update\nUser") {
       new Container(
         width: 450.0,

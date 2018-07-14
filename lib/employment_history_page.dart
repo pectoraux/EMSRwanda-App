@@ -21,7 +21,6 @@ class EmploymentHistoryPage extends StatefulWidget
   }) : assert(colorIndex != null),
         assert(isMadeByYou != null),
        assert(noButton != null);
-//  assert(document != null);
 
 
   @override

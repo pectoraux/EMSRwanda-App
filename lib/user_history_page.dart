@@ -14,12 +14,15 @@ import 'edit_user.dart';
 class UserHistoryPage extends StatefulWidget {
   final int colorIndex;
   final String userDocumentID;
+  final bool canRateUser;
 
   const UserHistoryPage({
     @required this.colorIndex,
-    @required this.userDocumentID
+    @required this.userDocumentID,
+    @required this.canRateUser,
   }) : assert(colorIndex != null),
-        assert(userDocumentID != null);
+        assert(userDocumentID != null),
+        assert(canRateUser != null);
 
   @override
   _UserHistoryPageState createState() => _UserHistoryPageState();
@@ -34,41 +37,13 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
   /// Indicating the current displayed page
   int _page = 0;
 
-  Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
-    final navigationItems = <BottomNavigationBarItem>[
-      new BottomNavigationBarItem(
-          icon: new Icon(Icons.work, color: getColor(0),),
-          title: new Text("Employment\nHistory",)),
-      new BottomNavigationBarItem(
-          icon: new Icon(Icons.stars, color: getColor(1)),
-          title: new Text("Rate\nUser",)),
-      new BottomNavigationBarItem(
-          icon: new Icon(Icons.devices, color: getColor(2),),
-          title: new Text("User\nDevices",)
-      ),
-    ];
-
-
-    return new Scaffold(
-      resizeToAvoidBottomPadding: false,
-      body: new PageView(
-          children: [
-            new EmploymentHistoryPage(colorIndex: widget.colorIndex, isMadeByYou: false, noButton: true, documentID: document.documentID,),
-            new UserRatingPage(colorIndex: widget.colorIndex, document: document,),
-            new ViewDevicesPage(colorIndex: widget.colorIndex, documentID: document.documentID, folder: 'userDevices',),
-          ],
-          controller: _pageController,
-          onPageChanged: onPageChanged
-      ),
-      bottomNavigationBar: new BottomNavigationBar(
-        currentIndex: _page,
-        items: navigationItems,
-        onTap: navigationTapped,
-        fixedColor: TodoColors.primaryLight,
-        iconSize: 25.0,
-        type: BottomNavigationBarType.fixed,
-      ),
-    );
+  Color getColor(int idx) {
+    final iconColor = Color(0xEFCCCCCD);
+    if (_page == idx) {
+      return TodoColors.baseColors[0];
+    } else {
+      return iconColor;
+    }
   }
 
   void onPageChanged(int page) {
@@ -90,6 +65,51 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
     );
   }
 
+
+  Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
+    final navigationItems = <BottomNavigationBarItem>[];
+    final items = <Widget>[];
+      navigationItems.add(
+        new BottomNavigationBarItem(
+          icon: new Icon(Icons.work, color: getColor(0),),
+          title: new Text("Employment\nHistory",)),
+      );
+      items.add(new EmploymentHistoryPage(colorIndex: widget.colorIndex, isMadeByYou: false, noButton: true, documentID: document.documentID,));
+      if(widget.canRateUser) {
+        navigationItems.add(new BottomNavigationBarItem(
+            icon: new Icon(Icons.stars, color: getColor(1)),
+            title: new Text("Rate\nUser",)),
+        );
+        items.add(new UserRatingPage(colorIndex: widget.colorIndex, document: document,));
+      }
+      navigationItems.add(
+      new BottomNavigationBarItem(
+          icon: new Icon(Icons.devices, color: getColor(widget.canRateUser?2:1),),
+          title: new Text("User\nDevices",)
+      ),
+      );
+      items.add(new ViewDevicesPage(colorIndex: widget.colorIndex, documentID: document.documentID, folder: 'userDevices',));
+
+
+
+    return new Scaffold(
+      resizeToAvoidBottomPadding: false,
+      body: new PageView(
+          children: items,
+          controller: _pageController,
+          onPageChanged: onPageChanged
+      ),
+      bottomNavigationBar: new BottomNavigationBar(
+        currentIndex: _page,
+        items: navigationItems,
+        onTap: navigationTapped,
+        fixedColor: TodoColors.primaryLight,
+        iconSize: 25.0,
+        type: BottomNavigationBarType.fixed,
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -100,15 +120,6 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
   void dispose() {
     super.dispose();
     _pageController.dispose();
-  }
-
-  Color getColor(int idx) {
-    final iconColor = Color(0xEFCCCCCD);
-    if (_page == idx) {
-      return TodoColors.baseColors[0];
-    } else {
-      return iconColor;
-    }
   }
 
   @override

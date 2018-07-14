@@ -4,13 +4,10 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'loading_screen.dart';
 import 'projects_page.dart';
-import 'upcoming_projects.dart';
 import 'view_users.dart';
 import 'view_devices.dart';
 import 'package:flutter/material.dart';
-import 'search_projects.dart';
 import 'api.dart';
 import 'backdrop.dart';
 import 'category.dart';
@@ -54,7 +51,6 @@ String _currentCategoryName;
   static const _baseColors = TodoColors.baseColors;
 
   static const _icons = TodoColors.icons;
-
 
   @override
   Future
@@ -157,6 +153,7 @@ String _currentCategoryName;
   {
 
 
+
   if(c.name == "Dashboard"){
   return MaterialApp
   (
@@ -191,7 +188,7 @@ String _currentCategoryName;
   title: 'Explore Users',
   debugShowCheckedModeBanner: false,
   theme: ThemeData(primarySwatch: Colors.blue),
-  home: ViewUsersPage(colorIndex: 3,),
+  home: ViewUsersPage(colorIndex: 3, canRateUser: false,),
   );
   }else
   if (c.name == "Explore Devices"){
@@ -212,6 +209,7 @@ String _currentCategoryName;
   );
   }
   }
+
 
   Category getCat(Category c)
 

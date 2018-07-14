@@ -1,15 +1,16 @@
 import 'dart:async';
-import 'layout.dart';
+import 'loading_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:date_utils/date_utils.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'constants.dart';
-import 'feature_discovery.dart';
 
 class AnimatedWeeksPage extends StatefulWidget {
   final int colorIndex;
 
-  const AnimatedWeeksPage({
+  AnimatedWeeksPage({
     @required this.colorIndex,
   }) : assert(colorIndex != null);
 
@@ -28,24 +29,47 @@ class _AnimatedWeeksPageState extends State<AnimatedWeeksPage> {
       first; // The next item inserted when the user presses the '+' button.
   int curr;
   DateTime _fromDate = new DateTime.now();
-  TimeOfDay _fromTime = const TimeOfDay(hour: 7, minute: 28);
-
+  String userId = '';
+  var items = <int>[];
+  var items2 = <int>[];
+  var _userName,_userStatus,_firstName,_lastName,_email1,_email2,_sex,_country,_mainPhone,_phone1,_phone2,_passportNo,_tin,_cvStatusElec,_nationalID,_role,_dob,
+  _bankAcctNo, _bankName,_editing, _emergencyContactname, _emergencyContactPhone, _insurance, _insuranceNo, _insuranceCpy, _locations, _userPassword;
+bool loaded = false;
 
   @override
-  void initState() {
+  Future initState() {
     super.initState();
+    setDefaults();
+  }
+
+  Future setDefaults() async {
+    FirebaseAuth _auth = FirebaseAuth.instance;
+    FirebaseUser user = await _auth.currentUser();
+
+    setState(() {
+      userId = user.uid;
+
+    });
+
     _list = new ListModel<int>(
       listKey: _listKey,
       initialItems: <int>[],
+      userId: userId,
       removedItemBuilder: _buildRemovedItem,
     );
     _list2 = new ListModel<int>(
       listKey: _listKey2,
-      initialItems: <int>[],
+      initialItems:<int>[],
+      userId: userId,
       removedItemBuilder: _buildRemovedItem,
     );
+
+
+
     _nextItem = 0;
+
   }
+
 
   String getNextWeek(int i) {
     List<String> months = <String>[
@@ -152,10 +176,8 @@ class _AnimatedWeeksPageState extends State<AnimatedWeeksPage> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final backgroundRadius = MediaQuery.of(context).size.width;
-    return new MaterialApp(
+  Widget _buildListItem(BuildContext context){
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Stack(
         children: <Widget>[
@@ -170,30 +192,40 @@ class _AnimatedWeeksPageState extends State<AnimatedWeeksPage> {
                     [
                       Icon(Icons.face, color: Colors.white),
                       SizedBox(width: 10.0),
-                      Text("Which weeks are \nyou available ?", style: TodoColors.textStyle7,),
+                      Text("Which weeks are \nyou available ?",
+                        style: TodoColors.textStyle7,),
 
                     ],
                   )
               ),
               backgroundColor: TodoColors.baseColors[widget.colorIndex],
+
               actions: <Widget>[
                 new IconButton(
                   icon: const Icon(Icons.calendar_today),
-                  onPressed: (){
+                  onPressed: () {
                     mselectDate(context);
                   },
                   tooltip: 'Calendar',
                 ),
+
                 new IconButton(
                   icon: const Icon(Icons.add_circle),
-                  onPressed: _insert,
+                  onPressed: (){
+                    _insert();
+                  },
                   tooltip: 'insert a new item',
                 ),
+
                 new IconButton(
                   icon: const Icon(Icons.remove_circle),
-                  onPressed: _remove,
+                  onPressed: ()
+                  {
+                    _remove();
+                  },
                   tooltip: 'remove the selected item',
                 ),
+
               ],
             ),
             body: Stack(
@@ -206,22 +238,6 @@ class _AnimatedWeeksPageState extends State<AnimatedWeeksPage> {
                     itemBuilder: _buildItem,
                   ),
                 ),
-                Positioned(
-                  top: 200.0,
-                  right: 0.0,
-                  child: new FractionalTranslation(
-                    translation: const Offset(-0.1, 3.0),
-                    child: FloatingActionButton(
-                        backgroundColor: TodoColors.baseColors[widget.colorIndex],
-                        foregroundColor: Colors.white,
-                        child: new Icon(
-                          Icons.help_outline,
-                        ),
-                        onPressed: (){
-
-                        }
-                        ),
-                )),
               ],
             ),
           ),
@@ -229,6 +245,54 @@ class _AnimatedWeeksPageState extends State<AnimatedWeeksPage> {
       ),
     );
   }
+
+  @override
+  Widget build(BuildContext context) {
+    final backgroundRadius = MediaQuery.of(context).size.width;
+
+
+    return new StreamBuilder<QuerySnapshot>(
+        stream: Firestore.instance.collection('users').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (!snapshot.hasData) {
+            return new Center(
+                child: new BarLoadingScreen()
+            );
+          } else {
+            DocumentSnapshot mdocument = snapshot.data.documents.where((user){
+              return user.documentID == userId;
+            }).first;
+if(!loaded) {
+  items = _toIntArr(mdocument['_list']);
+  items2 = _toIntArr(mdocument['_list2']);
+  _list.setItems(items);
+  _list2.setItems(items2);
+  loaded = true;
+}
+            final converter = _buildListItem(context);
+
+            return converter;
+          }
+        });
+  }
+
+  List<int> _toIntArr(List mlist){
+    var result = <int>[];
+    for(var s in mlist){
+      result.add(s);
+    }
+    return result;
+  }
+
+  List<String> _toStringArr(List mlist){
+    var result = <String>[];
+    for(var s in mlist){
+      result.add(s.toString());
+    }
+    return result;
+  }
+
+
   Future<Null> mselectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
         context: context,
@@ -238,10 +302,30 @@ class _AnimatedWeeksPageState extends State<AnimatedWeeksPage> {
     );
   }
 
+  @override
+  void deactivate() {
+    super.deactivate();
+    Map<String, Object> data = <String, Object>{
+      '_list': _list.getItems(),
+      '_list2': _list2.getItems(),
+    };
+    Firestore.instance.runTransaction((transaction) async {
+      DocumentReference reference =
+      Firestore.instance.document('users/${userId}');
+      await transaction.update(reference, data);
+    });
+  }
+
+
+  void showInSnackBar(String value, Color c) {
+    Scaffold.of(context).showSnackBar(new SnackBar(
+      content: new Text(value),
+      backgroundColor: c,
+    ));
+  }
+
 
 }
-
-
 
 /// Keeps a Dart List in sync with an AnimatedList.
 ///
@@ -256,6 +340,7 @@ class ListModel<E> {
   ListModel({
     @required this.listKey,
     @required this.removedItemBuilder,
+    @required this.userId,
     Iterable<E> initialItems,
   })
       : assert(listKey != null),
@@ -264,13 +349,22 @@ class ListModel<E> {
 
   final GlobalKey<AnimatedListState> listKey;
   final dynamic removedItemBuilder;
-  final List<E> _items;
+  List<E> _items;
+  String userId;
 
   AnimatedListState get _animatedList => listKey.currentState;
 
   void insert(int index, E item) {
     _items.insert(index, item);
     _animatedList.insertItem(index);
+  }
+
+  void setItems(List<E> mItems){
+    _items = mItems;
+  }
+
+  List<E> getItems(){
+    return _items;
   }
 
   E removeAt(int index) {
@@ -321,6 +415,7 @@ class CardItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TextStyle textStyle = TodoColors.textStyle6;
+
     if (selected)
       textStyle = textStyle.copyWith(color: Colors.lightGreenAccent[400]);
     return new Padding(
@@ -345,26 +440,3 @@ class CardItem extends StatelessWidget {
     );
   }
 }
-
-class CenterAbout extends StatelessWidget {
-  final Offset position;
-  final Widget child;
-
-  CenterAbout({
-    this.position,
-    this.child,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return new Positioned(
-      top: position.dy,
-      left: position.dx,
-      child: new FractionalTranslation(
-        translation: const Offset(-0.5, -0.5),
-        child: child,
-      ),
-    );
-  }
-}
-

@@ -10,11 +10,14 @@ import 'my_user_dialog.dart';
 class ViewUsersPage extends StatefulWidget {
   final int colorIndex;
   final String projectDocumentId;
+  final bool canRateUser;
 
   const ViewUsersPage({
     @required this.colorIndex,
     this.projectDocumentId,
-  }) : assert(colorIndex != null);
+    @required this.canRateUser,
+  }) : assert(colorIndex != null),
+  assert(canRateUser != null);
 
   @override
   ViewUsersPageState createState() => ViewUsersPageState();
@@ -207,7 +210,7 @@ class ViewUsersPageState extends State<ViewUsersPage> {
           // Do onTap() if it isn't null, otherwise do print()
             onTap: () =>
                 Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => UserHistoryPage(colorIndex:widget.colorIndex, userDocumentID: userID,))),
+                    MaterialPageRoute(builder: (_) => UserHistoryPage(colorIndex:widget.colorIndex, userDocumentID: userID, canRateUser: widget.canRateUser,))),
             child: child
         )
     );

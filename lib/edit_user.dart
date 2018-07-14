@@ -222,10 +222,11 @@ FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
                 if (true) {
                 String email = _userNameController.text+'@laterite.com';
                 String mrole = _roleValue;
-                List<String> userLocations = [];
+                List<String> userLocations = [], items = ['0'];
 
                 widget.auth.createUser(email, defaultPassword).then((newId) {
                   if(newId != null) {
+
                     Map<String, Object> user_data = <String, Object>{
                       'userName': newId,
                       'userRole': mrole,
@@ -253,6 +254,8 @@ FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
                       'emergencyContactName': '',
                       'emergencyContactPhone': '',
                       'locations': userLocations.toString(),
+                      '_list': items,
+                      '_list2': items,
                       'editing': false,
                     };
                     Firestore.instance.runTransaction((transaction) async {

@@ -53,7 +53,7 @@ class StaffNStatsPageState extends State<StaffNStatsPage> {
       body: new PageView(
           children: [
             new AnimatedPieChartPage(colorIndex: widget.colorIndex,),
-            new ViewUsersPage(colorIndex: widget.colorIndex, projectDocumentId: widget.projectDocumentId,),
+            new ViewUsersPage(colorIndex: widget.colorIndex, projectDocumentId: widget.projectDocumentId, canRateUser: true,),
             new QRCodeScanPage(colorIndex: widget.colorIndex,),
           ],
           controller: _pageController,

@@ -172,7 +172,7 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
                 });
                 onSave(result);
                 setState(() {
-//                  result = "";
+                  result = "";
 //                  _scannedIn = false;
 //                  _scannedOut = false;
                 });
@@ -336,90 +336,9 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
 //        }
 //      });
 
-    showDialog(context: context, child: new MyQRDialog(colorIndex: widget.colorIndex, textAvailable: textAvailable,
-    textInUse: textInUse, user: result.split('\n')[0],));
-//      showDialog<Null>(
-//        context: context,
-//        barrierDismissible: false, // user must tap button!
-//        builder: (BuildContext context) {
-//          return new AlertDialog(
-//            content: new SingleChildScrollView(
-//              child: new ListBody(
-//                children: <Widget>[
-//                  new Card(
-//                    child: new Column(
-//                      mainAxisSize: MainAxisSize.min,
-//                      children: <Widget>[
-//                        ListTile(
-//                          title: Text("Available Devices", style: TextStyle(color: TodoColors.baseColors[widget.colorIndex]),),
-//                          subtitle: Text(textAvailable,
-//                            style: TodoColors.textStyle.apply(color: TodoColors.baseColors[widget.colorIndex]),),
-//                        ),
-//                        new ButtonTheme.bar( // make buttons use the appropriate styles for cards
-//                          child: new ButtonBar(
-//                            children: <Widget>[
-//                              BackButton(),
-//                              new RaisedButton(
-//                                child: Text(
-//                                    _scannedOut? "" : "SCAN OUT"
-//                                ),
-//                                textColor: TodoColors.baseColors[widget.colorIndex],
-//                                onPressed: () {
-//                                  scanOutDevices(result.split('\n')[0], textAvailable);
-////                                  showInSnackBar("Scan Out Successful !!!", TodoColors.baseColors[widget.colorIndex]);
-//                                  if(_scannedIn) {
-//                                    Navigator.of(context).pop();
-//                                  }else{
-//                                    setState(() {
-//                                      _scannedOut = true;
-//                                    });
-//                                  }
-//                                },
-//                              ),
-//                            ],
-//                          ),
-//                        ),
-//                        ListTile(
-//                          title: Text("Devices In Use", style: TextStyle(color: Colors.redAccent),),
-//                          subtitle: Text(textInUse,
-//                            style: TodoColors.textStyle.apply(color: Colors.redAccent),),
-//                        ),
-//                        new ButtonTheme.bar( // make buttons use the appropriate styles for cards
-//                          child: new ButtonBar(
-//                            children: <Widget>[
-//                              BackButton(),
-//                              new RaisedButton(
-//                                child: Text(
-////                                    _scannedIn? "" : "SCAN IN"
-//                                  "SCAN IN"
-//                                ),
-//                                textColor: TodoColors.baseColors[widget.colorIndex],
-//                                onPressed: () {
-////                                  showInSnackBar("Scan In Successful !!!", TodoColors.baseColors[widget.colorIndex]);
-////                                  if(_scannedOut) {
-////                                    Navigator.of(context).pop();
-////                                  }else{
-////                                    setState(() {
-////                                      _scannedIn = true;
-////                                    });
-////                                  }
-//                                },
-//                              ),
-//                            ],
-//                          ),
-//                        ),
-//                      ],
-//                    ),
-//                  )
-//                ],
-//              ),
-//            ),
-//          );
-//        },
-//      );
 
 
-//    showInSnackBar("Scanner has been reset", TodoColors.baseColors[widget.colorIndex]);
+    showInSnackBar("Scanner has been reset", TodoColors.baseColors[widget.colorIndex]);
   }
 
   void scanOutDevices(String user, String mdevices)  {

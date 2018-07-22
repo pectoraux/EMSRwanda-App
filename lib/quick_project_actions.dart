@@ -4,7 +4,7 @@ import 'dart:math';
 import 'constants.dart';
 import 'profile_fonts.dart';
 import 'view_projects.dart';
-import 'color_override.dart';
+import 'projects_page.dart';
 import 'my_project_dialog.dart';
 
 /// QuickActions represents the horizontal list of rectangular buttons below the header
@@ -143,7 +143,7 @@ class QuickProjectActions extends StatelessWidget {
 
     if (title == "View\nProjects") {
       Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => ViewProjectsPage(colorIndex: _colorIndex,)));
+          MaterialPageRoute(builder: (_) => ProjectsPage(colorIndex: _colorIndex, canRecruit: true,),));
     } else if (title == "Delete\nProject") {
       new Container(
         width: 450.0,

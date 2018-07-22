@@ -4,25 +4,26 @@ import 'employment_history_page.dart';
 import 'user_rating_page.dart';
 import 'loading_screen.dart';
 import 'view_devices.dart';
-import 'profile_header.dart';
-import 'quick_actions.dart';
+import 'animated_weeks_page.dart';
 import 'constants.dart';
-import 'edit_device.dart';
-import 'edit_role.dart';
-import 'edit_user.dart';
 
 class UserHistoryPage extends StatefulWidget {
   final int colorIndex;
   final String userDocumentID;
   final bool canRateUser;
+  final bool canRecruit;
+  final String projectDocumentID;
 
   const UserHistoryPage({
     @required this.colorIndex,
     @required this.userDocumentID,
     @required this.canRateUser,
+    @required this.canRecruit,
+    this.projectDocumentID,
   }) : assert(colorIndex != null),
         assert(userDocumentID != null),
-        assert(canRateUser != null);
+        assert(canRateUser != null),
+  assert(canRecruit != null);
 
   @override
   _UserHistoryPageState createState() => _UserHistoryPageState();
@@ -72,20 +73,30 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
       navigationItems.add(
         new BottomNavigationBarItem(
           icon: new Icon(Icons.work, color: getColor(0),),
-          title: new Text("Employment\nHistory",)),
+          title: new Text("Employment\nHistory", textAlign: TextAlign.center,)),
       );
-      items.add(new EmploymentHistoryPage(colorIndex: widget.colorIndex, isMadeByYou: false, noButton: true, documentID: document.documentID,));
+      items.add(new EmploymentHistoryPage(colorIndex: widget.colorIndex,
+        isMadeByYou: false, noButton: false, documentID: document.documentID,
+        canRecruit: widget.canRecruit, projectDocumentID: widget.projectDocumentID,));
       if(widget.canRateUser) {
         navigationItems.add(new BottomNavigationBarItem(
             icon: new Icon(Icons.stars, color: getColor(1)),
-            title: new Text("Rate\nUser",)),
+            title: new Text("Rate\nUser", textAlign: TextAlign.center,),),
         );
         items.add(new UserRatingPage(colorIndex: widget.colorIndex, document: document,));
       }
-      navigationItems.add(
+    navigationItems.add(
       new BottomNavigationBarItem(
-          icon: new Icon(Icons.devices, color: getColor(widget.canRateUser?2:1),),
-          title: new Text("User\nDevices",)
+          icon: new Icon(Icons.calendar_view_day, color: getColor(widget.canRateUser?2:1),),
+          title: new Text("User\nAvailability", textAlign: TextAlign.center,)
+      ),
+    );
+    items.add(new AnimatedWeeksPage(colorIndex: widget.colorIndex, userDocumentId: widget.userDocumentID),);
+
+    navigationItems.add(
+      new BottomNavigationBarItem(
+          icon: new Icon(Icons.devices, color: getColor(widget.canRateUser?3:2),),
+          title: new Text("User\nDevices", textAlign: TextAlign.center,)
       ),
       );
       items.add(new ViewDevicesPage(colorIndex: widget.colorIndex, documentID: document.documentID, folder: 'userDevices',));

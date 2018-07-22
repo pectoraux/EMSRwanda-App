@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sparkline/flutter_sparkline.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -16,11 +17,13 @@ import 'loading_screen.dart';
 class ProjectDetailsPage extends StatefulWidget {
   final int colorIndex;
   final String projectDocumentID;
+  final bool canRecruit;
 
   const ProjectDetailsPage({
     @required this.colorIndex,
     @required this.projectDocumentID,
-  }) : assert(colorIndex != null), assert(projectDocumentID != null);
+    @required this.canRecruit,
+  }) : assert(colorIndex != null), assert(projectDocumentID != null), assert(canRecruit != null);
 
   @override
   ProjectDetailsPageState createState() => ProjectDetailsPageState();
@@ -28,29 +31,14 @@ class ProjectDetailsPage extends StatefulWidget {
 
 class ProjectDetailsPageState extends State<ProjectDetailsPage> {
 
-
-  String project_description = "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
-      "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
-      "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
-      "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
-      "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
-      "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
-      "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
-      "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
-      "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
-      "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
-      "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
-      "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
-      "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
-      "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
-      "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld"
-      ;
-  String locations = 'Kigali, Gisenyi';
-  String title = 'FSI';
+  String locations;
+  String title = '';
   int people_surveyed = 100;
   final _projectDescriptionController = TextEditingController();
   final _projectDescription = GlobalKey(debugLabel: 'Project Description');
   String author = '';//'Anirudh\nRajashekar';
+  String authorId = '';
+  bool isDisabled = false;
 
   final List<List<double>> charts =
   [
@@ -264,11 +252,32 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
     'Last 7 days', 'Last month', 'Last year'];
   String actualDropdown = chartDropdownItems[0];
   int actualChart = 0;
-  String buttom_message = '';
+  String button_message = '';
   bool isUpcoming, isOngoing = true;
+  final _raisedButton = GlobalKey(debugLabel: 'Raised Button');
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  FirebaseUser user;
 
-//  int last_index = actualChart;
+  @override
+  void initState() {
+    super.initState();
+    setDefaults();
+  } //  int last_index = actualChart;
 
+  Future setDefaults()async {
+    user = await _auth.currentUser();
+    Firestore.instance.runTransaction((transaction) async {
+      Firestore.instance.collection('users/${user.uid}/pending_requests')
+          .getDocuments()
+          .then((query) {
+        query.documents.forEach((doc) {
+          if (doc['projectId'] == widget.projectDocumentID) {
+            isDisabled = true;
+          }
+        });
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -305,13 +314,47 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
                       children: <Widget>
                       [
                         !isOngoing ?
+                  !isDisabled ?
                         RaisedButton(
+                          key: _raisedButton,
                           padding: EdgeInsets.all(18.0),
-                          onPressed: () {},
+                          onPressed: isDisabled ? () => showInSnackBar('You Already Sent A Work Request', Colors.redAccent) : () async {
+                            setState(() {
+                              isDisabled = true;
+                            });
+
+                            Map<String, Object> made_by_you_data = <String, Object>{
+                             'projectTitle': title,
+                              'projectId': widget.projectDocumentID,
+                              'to': authorId,
+                              'type': 'Made By You',
+                            };
+                            String myId;
+                            Firestore.instance.runTransaction((transaction) async {
+                              DocumentReference ref = Firestore.instance.collection('users/${user.uid}/pending_requests').document();
+                              myId = ref.documentID;
+                              DocumentReference reference =
+                              Firestore.instance.document('users/${user.uid}/pending_requests/${myId}');
+                              await reference.setData(made_by_you_data);
+                            });
+                            Map<String, Object> made_to_data = <String, Object>{
+                              'projectTitle': title,
+                              'projectId': widget.projectDocumentID,
+                              'from': user.uid,
+                              'type': 'Made To You'
+                            };
+                            Firestore.instance.runTransaction((transaction) async {
+                              DocumentReference reference =
+                              Firestore.instance.document('users/${authorId}/pending_requests/${myId}');
+                              await reference.setData(made_to_data);
+                            });
+                          },
                           child:   Text(
-                            buttom_message,
+                            button_message,
                             style: TodoColors.textStyle4,),
-                        ): Container()
+                        )
+    : Center(child:Text('Work\nRequest Pending', style: TodoColors.textStyle4,) )
+        : Container()
                       ],
                     ),
                   )
@@ -342,10 +385,12 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
       Firestore.instance.document('users/${project['author']}').get().then((doc){
         setState(() {
             author = '${doc['firstName']}\n${doc['lastName']}';
-            buttom_message = isUpcoming ? 'Send   Work   Request' : isOngoing ? '': 'Send   Payment   Request';
+            button_message = isUpcoming ? 'Send   Work   Request' : isOngoing ? '': 'Send   Payment   Request';
         });
       });
 
+      title = project['projectTitle'];
+      authorId = project['author'];
     return StaggeredGridView.count(
                 crossAxisCount: 2,
                 crossAxisSpacing: 12.0,
@@ -436,10 +481,15 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
                           ]
                       ),
                     ),
-                    onTap: () =>
-                        Navigator.of(context).push(
-                            MaterialPageRoute(builder: (_) => StaffNStatsPage(
-                              colorIndex: widget.colorIndex, projectDocumentId: widget.projectDocumentID,))),
+                    onTap: () {
+
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) =>
+                              StaffNStatsPage(
+                                colorIndex: widget.colorIndex,
+                                projectDocumentId: widget.projectDocumentID,
+                                canRecruit: widget.canRecruit,)));
+                    }
                   ),
                   _buildTile(
                     Padding
@@ -623,6 +673,51 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
     );
   }
 
+  void _sendWorkRequest() async {
+    if(!isDisabled) {
+
+      setState(() {
+        isDisabled = true;
+      });
+
+      Firestore.instance.document('projects/${widget.projectDocumentID}')
+          .get()
+          .then((doc) {
+        Map<String, Object> made_by_you_data = <String, Object>{
+          'projectTitle': doc['projectTitle'],
+          'projectId': widget.projectDocumentID,
+          'to': authorId,
+          'type': 'Made By You',
+          'page': 'project_details',
+        };
+
+        String myId;
+        Firestore.instance.runTransaction((transaction) async {
+          DocumentReference ref = Firestore.instance.collection(
+              'users/${user.uid}/pending_requests').document();
+          myId = ref.documentID;
+          DocumentReference reference =
+          Firestore.instance.document('users/${user.uid}/pending_requests/${myId}');
+          await reference.setData(made_by_you_data);
+        }).whenComplete(() {
+          Map<String, Object> made_to_data = <String, Object>{
+            'projectTitle': doc['projectTitle'],
+            'projectId': widget.projectDocumentID,
+            'from': user.uid,
+            'type': 'Made To You',
+            'page': 'project_details',
+          };
+          Firestore.instance.runTransaction((transaction) async {
+            DocumentReference reference =
+            Firestore.instance.document(
+                'users/${authorId}/pending_requests/${myId}');
+            await reference.setData(made_to_data);
+          });
+        });
+      });
+    }
+  }
+
   Widget _buildTile2(Widget child, String locations, String title, String description) {
     return Material(
         elevation: 14.0,
@@ -639,40 +734,11 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
         )
     );
   }
-  void showTile(String locations, String title, String description){
-    String Status;
-    title = title.toUpperCase();
-    setState(() {
-      _projectDescriptionController.text = project_description;
-    });
 
-    showDialog<Null>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return new AlertDialog(
-          content: new SingleChildScrollView(
-            child: new ListBody(
-              children: <Widget>[
-                new Card(
-                  child: new Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      ListTile(
-                        title: Text("Project Title: $title\nProject Location: $locations",
-                          style: TextStyle(color: TodoColors.baseColors[widget.colorIndex]),),
-                        subtitle: Text(description)
-                      ),
-                      BackButton(color: TodoColors.baseColors[widget.colorIndex],),
-
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-        );
-      },
-    );
+  void showInSnackBar(String value, Color c) {
+    Scaffold.of(context).showSnackBar(new SnackBar(
+      content: new Text(value),
+      backgroundColor: c,
+    ));
   }
 }

@@ -1,11 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'main_menu.dart';
-import 'models.dart';
-import 'edit_tag.dart';
-import 'edit_project.dart';
-import 'profile_header.dart';
-import 'quick_actions.dart';
+import 'pending_requests.dart';
 import 'constants.dart';
 import 'animated_pie_chart.dart';
 import 'view_users.dart';
@@ -14,11 +8,13 @@ import 'qrcode_scanner.dart';
 class StaffNStatsPage extends StatefulWidget {
   final int colorIndex;
   final String projectDocumentId;
+  final canRecruit;
 
   const StaffNStatsPage({
     @required this.colorIndex,
     this.projectDocumentId,
-  }) : assert(colorIndex != null);
+    @required this.canRecruit,
+  }) : assert(colorIndex != null), assert(canRecruit != null);
 
   @override
   StaffNStatsPageState createState() => StaffNStatsPageState();
@@ -35,27 +31,55 @@ class StaffNStatsPageState extends State<StaffNStatsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final navigationItems = <BottomNavigationBarItem>[
+    final navigationItems = <BottomNavigationBarItem>[];
+    List items = <Widget>[];
+    navigationItems.add(
       new BottomNavigationBarItem(
           icon: new Icon(Icons.assessment, color: getColor(0)),
-          title: new Text("Project\nStats")),
+          title: new Text("Project\nStats")));
+    items.add(
+        new AnimatedPieChartPage(colorIndex: widget.colorIndex,)
+    );
+    navigationItems.add(
       new BottomNavigationBarItem(
           icon: new Icon(Icons.people, color: getColor(1),),
-          title: new Text("Staff")),
-      new BottomNavigationBarItem(
-          icon: new Icon(Icons.border_outer, color: getColor(2),),
-          title: new Text("Scan QR Code")),
-    ];
+          title: new Text("Staff")));
+    items.add(
+        new ViewUsersPage(colorIndex: widget.colorIndex, projectDocumentId: widget.projectDocumentId, canRateUser: true, canRecruit: widget.canRecruit,)
+    );
+
+    if(widget.canRecruit) {
+      navigationItems.add(
+        new BottomNavigationBarItem(
+            icon: new Icon(Icons.access_alarms, color: getColor(2),),
+            title: new Text("Pending\nRequests"))
+      );
+      items.add(
+        PendingRequestsPage(colorIndex: widget.colorIndex, canRecruit: true, projectDocumentID: widget.projectDocumentId),
+      );
+      navigationItems.add(
+          new BottomNavigationBarItem(
+              icon: new Icon(Icons.people_outline, color: getColor(3),),
+              title: new Text("Find\nUsers"))
+      );
+      items.add(
+        new ViewUsersPage(colorIndex: widget.colorIndex, canRateUser: true, canRecruit: widget.canRecruit, projectDocumentId: widget.projectDocumentId,),
+      );
+      navigationItems.add(
+          new BottomNavigationBarItem(
+              icon: new Icon(Icons.border_outer, color: getColor(4),),
+              title: new Text("Scan\nQR Code")));
+      items.add(
+          new QRCodeScanPage(colorIndex: widget.colorIndex,)
+      );
+    }
+
 
 
     return new Scaffold(
       resizeToAvoidBottomPadding: false,
       body: new PageView(
-          children: [
-            new AnimatedPieChartPage(colorIndex: widget.colorIndex,),
-            new ViewUsersPage(colorIndex: widget.colorIndex, projectDocumentId: widget.projectDocumentId, canRateUser: true,),
-            new QRCodeScanPage(colorIndex: widget.colorIndex,),
-          ],
+          children: items,
           controller: _pageController,
           onPageChanged: onPageChanged
       ),

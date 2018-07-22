@@ -13,10 +13,12 @@ import 'closed_projects.dart';
 
 class ProjectsPage extends StatefulWidget {
   final int colorIndex;
+final bool canRecruit;
 
   const ProjectsPage({
     @required this.colorIndex,
-  }) : assert(colorIndex != null);
+    @required this.canRecruit,
+  }) : assert(colorIndex != null), assert(canRecruit != null);
 
   @override
   ProjectsPageState createState() => ProjectsPageState();
@@ -54,10 +56,10 @@ class ProjectsPageState extends State<ProjectsPage> {
       resizeToAvoidBottomPadding: false,
       body: new PageView(
           children: [
-            new SearchProjectsPage(colorIndex: widget.colorIndex),
-            new OngoingProjectsPage(colorIndex: widget.colorIndex),
-            new UpcomingProjectsPage(colorIndex: widget.colorIndex),
-            new ClosedProjectsPage(colorIndex: widget.colorIndex),
+            new SearchProjectsPage(colorIndex: widget.colorIndex, canRecruit: widget.canRecruit,),
+            new OngoingProjectsPage(colorIndex: widget.colorIndex, canRecruit: widget.canRecruit,),
+            new UpcomingProjectsPage(colorIndex: widget.colorIndex, canRecruit: widget.canRecruit,),
+            new ClosedProjectsPage(colorIndex: widget.colorIndex, canRecruit: widget.canRecruit,),
           ],
           controller: _pageController,
           onPageChanged: onPageChanged

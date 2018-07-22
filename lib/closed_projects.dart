@@ -8,10 +8,12 @@ import 'my_project_dialog.dart';
 
 class ClosedProjectsPage extends StatefulWidget {
   final int colorIndex;
+  final bool canRecruit;
 
   const ClosedProjectsPage({
     @required this.colorIndex,
-  }) : assert(colorIndex != null);
+    @required this.canRecruit,
+  }) : assert(colorIndex != null), assert(canRecruit != null);
 
   @override
   ClosedProjectsPageState createState() => ClosedProjectsPageState();
@@ -189,7 +191,7 @@ class ClosedProjectsPageState extends State<ClosedProjectsPage> {
           // Do onTap() if it isn't null, otherwise do print()
             onTap: () =>
                 Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => ProjectDetailsPage(colorIndex:widget.colorIndex, projectDocumentID: projectID,))),
+                    MaterialPageRoute(builder: (_) => ProjectDetailsPage(colorIndex:widget.colorIndex, projectDocumentID: projectID, canRecruit: widget.canRecruit,))),
             child: child
         )
     );

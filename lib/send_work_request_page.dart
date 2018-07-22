@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -10,34 +9,24 @@ import 'constants.dart';
 import 'my_employment_dialog.dart';
 import 'loading_screen.dart';
 
-class EmploymentHistoryPage extends StatefulWidget
+class SendWorkRequestPage extends StatefulWidget
 {
   final int colorIndex;
-  final bool isMadeByYou;
-  final bool noButton;
-  final String documentID;
-  final bool canRecruit;
+  final String userDocumentID;
   final String projectDocumentID;
-  final String requestId;
 
-  const EmploymentHistoryPage({
+  const SendWorkRequestPage({
     @required this.colorIndex,
-    @required this.isMadeByYou,
-    @required this.noButton,
-    @required this.documentID,
-    @required this.canRecruit,
-    this.requestId,
+    @required this.userDocumentID,
     this.projectDocumentID,
-  }) : assert(colorIndex != null),
-        assert(isMadeByYou != null),
-       assert(noButton != null), assert(canRecruit != null);
+  }) : assert(colorIndex != null), assert(projectDocumentID != null), assert(userDocumentID != null);
 
 
   @override
-  _EmploymentHistoryPageState createState() => _EmploymentHistoryPageState();
+  _SendWorkRequestPageState createState() => _SendWorkRequestPageState();
 }
 
-class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
+class _SendWorkRequestPageState extends State<SendWorkRequestPage>
 {
   bool isDisabled = false;
   FirebaseAuth _auth = FirebaseAuth.instance;
@@ -123,38 +112,6 @@ class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
           padding: EdgeInsets.symmetric(horizontal: 16.0),
           children: <Widget>
           [
-        Container
-              (
-                margin: EdgeInsets.symmetric(vertical: 16.0, horizontal: 54.0),
-                child: Material
-                  (
-                  elevation: 8.0,
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(32.0),
-                  child: widget.noButton ? new Container() :
-                  InkWell
-                    (
-                    onTap: widget.isMadeByYou ? (){_cancelRequest();} : (){_acceptRequest();} ,
-                    child: Padding
-                      (
-                      padding: EdgeInsets.all(12.0),
-                      child: Column
-                        (
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>
-                        [
-                          Padding(padding: EdgeInsets.only(right: 16.0)),
-                          Text(widget.isMadeByYou ? 'CANCEL REQUEST' : 'ACCEPT REQUEST',
-                              style: TextStyle(color: Colors.white)),
-                        ],
-                      ),
-                    ),
-                  ),
-                )
-            ),
-
             Container
               (
                 margin: EdgeInsets.symmetric(vertical: 16.0, horizontal: 54.0),
@@ -163,10 +120,10 @@ class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
                   elevation: 8.0,
                   color: Colors.black,
                   borderRadius: BorderRadius.circular(32.0),
-                  child: (widget.isMadeByYou || widget.noButton) ? new Container() :
+                  child:
                   InkWell
                     (
-                    onTap: () {_rejectRequest();},
+                    onTap: isDisabled ? (){} : (){_sendWorkRequest();} ,
                     child: Padding
                       (
                       padding: EdgeInsets.all(12.0),
@@ -178,12 +135,12 @@ class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
                         children: <Widget>
                         [
                           Padding(padding: EdgeInsets.only(right: 16.0)),
-                          Text('REJECT REQUEST',
-                              style: TextStyle(color: Colors.white)),
+                           isDisabled ? Text('Work Request Pending', style: TextStyle(color: Colors.redAccent)) :
+                           Text('SEND WORK REQUEST', style: TextStyle(color: Colors.white))
                         ],
                       ),
                     ),
-                  ),
+                  )
                 )
             ),
             ReviewItem(colorIndex: widget.colorIndex),
@@ -194,95 +151,56 @@ class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
     );
   }
 
-
-
-  void _cancelRequest(){
-    Firestore.instance.runTransaction((transaction) async {
-      String mId;
-      Firestore.instance.document('users/${user.uid}/pending_requests/${widget.requestId}').get().then((d){
-        mId =  d['from'];
-      }).whenComplete((){
-        Firestore.instance.document('users/${user.uid}/pending_requests/${widget.requestId}').delete();
-        Firestore.instance.document('users/${mId}/pending_requests/${widget.requestId}').delete();
-      });
-    });
-
-      showInSnackBar('Work Request Successfully Cancelled', Colors.redAccent);
-      Navigator.of(context).pop();
-  }
-
-  void _acceptRequest(){
-//    print('MMMMMMMMM => => => ${user.uid}  <= <= <= ${widget.projectDocumentID}');
-    Firestore.instance.runTransaction((transaction) async {
-      String mId;
-      Firestore.instance.document(
-          'users/${user.uid}/pending_requests/${widget.requestId}').get().then((
-          d) {
-        if (d['page'] == 'project_details') {
-          mId = d['from'];
-        } else {
-          mId = user.uid;
-        }
-      }).whenComplete(() async {
-        DocumentReference reference =
-        Firestore.instance.document(
-            'users/${mId}/projects/${widget.projectDocumentID}');
-        await reference.setData({});
-      });
-    });
-
-    Firestore.instance.runTransaction((transaction) async {
-      String mId;
-      Firestore.instance.document('users/${user.uid}/pending_requests/${widget.requestId}').get().then((d){
-        if(d['page'] == 'project_details'){
-          mId = d['from'];
-        }else {
-          mId = user.uid;
-        }
-      }).whenComplete(() async {
-        DocumentReference reference =
-        Firestore.instance.document(
-            'projects/${widget.projectDocumentID}/users/${mId}');
-        await reference.setData({});
-      });
-    });
-
-    Firestore.instance.runTransaction((transaction) async {
-      String mId;
-      Firestore.instance.document('users/${user.uid}/pending_requests/${widget.requestId}').get().then((d){
-        mId =  d['from'];
-      }).whenComplete((){
-        Firestore.instance.document('users/${user.uid}/pending_requests/${widget.requestId}').delete();
-        Firestore.instance.document('users/${mId}/pending_requests/${widget.requestId}').delete();
-      });
-    });
-
-  showInSnackBar('Work Request Successfully Accepted', TodoColors.baseColors[widget.colorIndex]);
-  Navigator.of(context).pop();
-  }
-
-
-  void _rejectRequest(){
-    Firestore.instance.runTransaction((transaction) async {
-    String mId;
-     Firestore.instance.document('users/${user.uid}/pending_requests/${widget.requestId}').get().then((d){
-          mId =  d['from'];
-      }).whenComplete((){
-       Firestore.instance.document('users/${user.uid}/pending_requests/${widget.requestId}').delete();
-       Firestore.instance.document('users/${mId}/pending_requests/${widget.requestId}').delete();
-     });
-    });
-
-    showInSnackBar('Work Request Successfully Rejected', Colors.redAccent);
-    Navigator.of(context).pop();
-
-  }
-
   void showInSnackBar(String value, Color c) {
     Scaffold.of(context).showSnackBar(new SnackBar(
       content: new Text(value),
       backgroundColor: c,
     ));
+  }
+
+  void _sendWorkRequest() async {
+    if(!isDisabled) {
+
+      setState(() {
+        isDisabled = true;
+      });
+
+      Firestore.instance.document('projects/${widget.projectDocumentID}')
+          .get()
+          .then((doc) {
+        Map<String, Object> made_by_you_data = <String, Object>{
+          'projectTitle': doc['projectTitle'],
+          'projectId': widget.projectDocumentID,
+          'to': widget.userDocumentID,
+          'type': 'Made By You',
+          'page': 'project_details',
+        };
+
+        String myId;
+        Firestore.instance.runTransaction((transaction) async {
+          DocumentReference ref = Firestore.instance.collection(
+              'users/${user.uid}/pending_requests').document();
+          myId = ref.documentID;
+          DocumentReference reference =
+          Firestore.instance.document('users/${user.uid}/pending_requests/${myId}');
+          await reference.setData(made_by_you_data);
+        });
+        Map<String, Object> made_to_data = <String, Object>{
+          'projectTitle': doc['projectTitle'],
+          'projectId': widget.projectDocumentID,
+          'from': user.uid,
+          'type': 'Made To You',
+          'page': 'project_details',
+        };
+        Firestore.instance.runTransaction((transaction) async {
+
+          DocumentReference reference =
+          Firestore.instance.document(
+              'users/${widget.userDocumentID}/pending_requests/${myId}');
+          await reference.setData(made_to_data);
+        });
+      });
+    }
   }
 
   @override
@@ -297,7 +215,7 @@ class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
           } else {
             final converter = _buildListItem(
                 context, snapshot.data.documents.where((user){
-               return (user.documentID == widget.documentID);
+               return (user.documentID == widget.userDocumentID);
             }).first);
 
             return OrientationBuilder(
@@ -318,4 +236,3 @@ class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
         });
   }
 }
-

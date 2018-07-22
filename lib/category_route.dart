@@ -18,6 +18,7 @@ import 'animated_weeks_page.dart';
 import 'dashboard.dart';
 import 'constants.dart';
 import 'auth.dart';
+
 //import 'package:url_launcher/url_launcher.dart';
 
 /// Loads in unit conversion data, and displays the data.
@@ -52,17 +53,9 @@ String _currentCategoryName;
 
   static const _icons = TodoColors.icons;
 
+
   @override
-  Future
-  <
-
-  void
-
-  >
-
-  didChangeDependencies
-
-  () async {
+  Future<void> didChangeDependencies() async {
   super.didChangeDependencies();
   // We have static unit conversions located in our
   // assets/data/regular_units.json
@@ -148,6 +141,8 @@ String _currentCategoryName;
   }
   }
 
+
+
   Widget condition(Category c)
 
   {
@@ -170,7 +165,7 @@ String _currentCategoryName;
   title: 'Projects',
   debugShowCheckedModeBanner: false,
   theme: ThemeData(primarySwatch: Colors.blue),
-  home: ProjectsPage(colorIndex: 1,),
+  home: ProjectsPage(colorIndex: 1, canRecruit: false,),
   );
   }else
   if (c.name == "Pending Requests"){
@@ -179,7 +174,7 @@ String _currentCategoryName;
   title: 'Pending Requests',
   debugShowCheckedModeBanner: false,
   theme: ThemeData(primarySwatch: Colors.blue),
-  home: PendingRequestsPage(colorIndex: 2,),
+  home: PendingRequestsPage(colorIndex: 2, canRecruit: false,),
   );
   }else
   if (c.name == "Explore Users"){
@@ -188,7 +183,7 @@ String _currentCategoryName;
   title: 'Explore Users',
   debugShowCheckedModeBanner: false,
   theme: ThemeData(primarySwatch: Colors.blue),
-  home: ViewUsersPage(colorIndex: 3, canRateUser: false,),
+  home: ViewUsersPage(colorIndex: 3, canRateUser: false, canRecruit: false,),
   );
   }else
   if (c.name == "Explore Devices"){
@@ -276,7 +271,6 @@ String _currentCategoryName;
 //  Text("Welcome To Laterite", style: TodoColors.textStyle5,),
   Expanded(child:FlatButton(
   onPressed: () {
-
 //  launch('https://www.laterite.com');
   },
   child: Text("Welcome To Laterite", style: TodoColors.textStyle5, textDirection:  TextDirection.rtl, textAlign: TextAlign.justify,),

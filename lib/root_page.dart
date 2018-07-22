@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'constants.dart';
 import 'package:flutter/material.dart';
 import 'auth.dart';
 import 'login_page.dart';
@@ -36,6 +38,30 @@ class _RootPageState extends State<RootPage> {
     });
   }
 
+  Future<bool> _onBackPressed(){
+      return showDialog(
+          context: context,
+          builder: (context) =>
+              AlertDialog(
+                title: Text('Are You Sure You Want To Leave',
+                    style: TextStyle(color: TodoColors.baseColors[0])),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text(
+                      'No', style: TextStyle(color: TodoColors.baseColors[0]),),
+                    onPressed: () => Navigator.pop(context, false),
+                  ),
+                  FlatButton(
+                      child: Text('Yes',
+                        style: TextStyle(color: TodoColors.baseColors[0]),),
+                      onPressed: ()  => Navigator.pop(context, true),
+                  )
+                ],
+              )
+      );
+
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget result;
@@ -54,7 +80,10 @@ class _RootPageState extends State<RootPage> {
         );
         break;
     }
-    return result;
+      return WillPopScope(
+          onWillPop: _onBackPressed,
+          child: result
+      );
   }
 
 

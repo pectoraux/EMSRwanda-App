@@ -9,10 +9,14 @@ import 'loading_screen.dart';
 
 class PendingRequestsPage extends StatefulWidget {
   final int colorIndex;
+  final bool canRecruit;
+  final String projectDocumentID;
 
   const PendingRequestsPage({
     @required this.colorIndex,
-  }) : assert(colorIndex != null);
+    @required this.canRecruit,
+    this.projectDocumentID,
+  }) : assert(colorIndex != null), assert(canRecruit != null);
 
   @override
   PendingRequestsPageState createState() => PendingRequestsPageState();
@@ -97,7 +101,13 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
           crossAxisSpacing: 12.0,
           mainAxisSpacing: 12.0,
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          children: snapshot.data.documents.map((requests) {
+          children: snapshot.data.documents.where((docSnap){
+            if (widget.canRecruit){
+              return docSnap['projectId'] == widget.projectDocumentID;
+//            print('DOCSNAP => => => ${docSnap['projectTitle']}');
+            }
+            return true;
+          }).map((requests) {
 //                print(role.documentID + ': ' + role['roleName']);
 
     mTiles.add(StaggeredTile.extent(2, 110.0));
@@ -145,7 +155,10 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
               ),
         requests['type'],
               requests['projectTitle'],
-        (requests['type'] == 'Made By You') ? requests['to'] : requests['from']
+        (requests['type'] == 'Made By You') ? requests['to'] : requests['from'],
+      requests['projectId'],
+      requests.documentID
+
     );
           }).toList(),
 
@@ -155,7 +168,7 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
   );
 }
 
-  Widget _buildTile(BuildContext context, Widget child, String type, String title, String userDocumentId) {
+  Widget _buildTile(BuildContext context, Widget child, String type, String title, String userDocumentId, String projectId, String requestId) {
     bool _madeByYou = (type=="Made By You") ? true : false;
     return Material(
         elevation: 14.0,
@@ -166,7 +179,9 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
             child: child,
           // Do onTap() if it isn't null, otherwise do print()
             onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) =>
-            new EmploymentHistoryPage(colorIndex: widget.colorIndex, isMadeByYou: _madeByYou, noButton: false, documentID: userDocumentId,),),),
+            new EmploymentHistoryPage(colorIndex: widget.colorIndex, isMadeByYou: _madeByYou,
+              noButton: false, documentID: userDocumentId, canRecruit: widget.canRecruit,
+            projectDocumentID: projectId, requestId: requestId,),),),
         )
     );
   }

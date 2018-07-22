@@ -11,13 +11,15 @@ class ViewUsersPage extends StatefulWidget {
   final int colorIndex;
   final String projectDocumentId;
   final bool canRateUser;
+  final bool canRecruit;
 
   const ViewUsersPage({
     @required this.colorIndex,
     this.projectDocumentId,
     @required this.canRateUser,
+    @required this.canRecruit,
   }) : assert(colorIndex != null),
-  assert(canRateUser != null);
+  assert(canRateUser != null), assert(canRecruit != null);
 
   @override
   ViewUsersPageState createState() => ViewUsersPageState();
@@ -27,12 +29,7 @@ class ViewUsersPageState extends State<ViewUsersPage> {
   String userName = '', locations = '';
   bool read = false;
   List project_users = [];
-  @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
 
-  }
   @override
   Widget build(BuildContext context) {
     final _bkey = GlobalKey(debugLabel: 'Back Key');
@@ -60,7 +57,7 @@ class ViewUsersPageState extends State<ViewUsersPage> {
       });
     });
 
-    print('JJJJJJJJJJJJ => => => ${project_users}');
+//    print('JJJJJJJJJJJJ => => => ${project_users}');
 
     return Scaffold
       (
@@ -88,6 +85,7 @@ class ViewUsersPageState extends State<ViewUsersPage> {
                     child: new Icon(Icons.search),
                     backgroundColor: TodoColors.baseColors[widget.colorIndex],
                     onPressed: () {
+                      print("MMMMMMMMCCCCC => => => ${widget.colorIndex}");
                       new Container(
                         width: 450.0,
                       );
@@ -119,7 +117,7 @@ class ViewUsersPageState extends State<ViewUsersPage> {
                 controller: controller,
                 children: snapshot.data.documents.where((user){
 
-                  if(widget.projectDocumentId != null ) {
+                  if(widget.projectDocumentId != null && !widget.canRecruit) {
                     if (!project_users.contains('${user.documentID}')) {
                       return false;
                     }
@@ -130,7 +128,7 @@ class ViewUsersPageState extends State<ViewUsersPage> {
 //                  print(user.documentID + ': ' + user['userName']);
 
                   mTiles.add(StaggeredTile.extent(2, 110.0));
-                  print('VVVVVVVVV => => =>  ${user.documentID}');
+//                  print('VVVVVVVVV => => =>  ${user.documentID}');
 
                    userName = "${user['firstName']} ${user['lastName']}";
                    locations = user['locations']
@@ -208,9 +206,17 @@ class ViewUsersPageState extends State<ViewUsersPage> {
         child: InkWell
           (
           // Do onTap() if it isn't null, otherwise do print()
-            onTap: () =>
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => UserHistoryPage(colorIndex:widget.colorIndex, userDocumentID: userID, canRateUser: widget.canRateUser,))),
+            onTap: () {
+              print('TTTVVVVVVVVV => => =>  ${widget.projectDocumentId}');
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) =>
+                      UserHistoryPage(colorIndex: widget.colorIndex,
+                          userDocumentID: userID,
+                          canRateUser: widget.canRateUser,
+                          canRecruit: widget.canRecruit,
+                          projectDocumentID: widget.projectDocumentId)));
+
+              },
             child: child
         )
     );

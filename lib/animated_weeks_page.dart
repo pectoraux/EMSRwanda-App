@@ -9,9 +9,11 @@ import 'constants.dart';
 
 class AnimatedWeeksPage extends StatefulWidget {
   final int colorIndex;
+  final String userDocumentId;
 
   AnimatedWeeksPage({
     @required this.colorIndex,
+    this.userDocumentId,
   }) : assert(colorIndex != null);
 
   @override
@@ -44,11 +46,15 @@ bool loaded = false;
 
   Future setDefaults() async {
     FirebaseAuth _auth = FirebaseAuth.instance;
-    FirebaseUser user = await _auth.currentUser();
+    FirebaseUser user =  await _auth.currentUser();
 
     setState(() {
-      userId = user.uid;
-
+      if(widget.userDocumentId == null) {
+        userId = user.uid;
+      }else{
+        userId = widget.userDocumentId;
+//        print('XXXXXXXXXX => => => ${widget.userDocumentId}');
+      }
     });
 
     _list = new ListModel<int>(
@@ -63,11 +69,7 @@ bool loaded = false;
       userId: userId,
       removedItemBuilder: _buildRemovedItem,
     );
-
-
-
     _nextItem = 0;
-
   }
 
 
@@ -176,7 +178,7 @@ bool loaded = false;
     }
   }
 
-  Widget _buildListItem(BuildContext context){
+  Widget _buildListItem(BuildContext context, DocumentSnapshot document){
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Stack(
@@ -190,9 +192,12 @@ bool loaded = false;
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>
                     [
-                      Icon(Icons.face, color: Colors.white),
+                      (widget.userDocumentId == null)?
+                      Icon(Icons.face, color: Colors.white):
+                      new BackButton(key: GlobalKey(debugLabel: 'Back Key'), color: Colors.black,),
                       SizedBox(width: 10.0),
-                      Text("Which weeks are \nyou available ?",
+                      Text((widget.userDocumentId == null)?
+                      "Which weeks are \nyou available ?" : "${document['firstName']}'s\nWeeks Availability",
                         style: TodoColors.textStyle7,),
 
                     ],
@@ -208,15 +213,16 @@ bool loaded = false;
                   },
                   tooltip: 'Calendar',
                 ),
-
+                (widget.userDocumentId == null)?
                 new IconButton(
                   icon: const Icon(Icons.add_circle),
                   onPressed: (){
                     _insert();
                   },
                   tooltip: 'insert a new item',
-                ),
+                ):Container(),
 
+                (widget.userDocumentId == null)?
                 new IconButton(
                   icon: const Icon(Icons.remove_circle),
                   onPressed: ()
@@ -224,7 +230,7 @@ bool loaded = false;
                     _remove();
                   },
                   tooltip: 'remove the selected item',
-                ),
+                ):Container(),
 
               ],
             ),
@@ -250,30 +256,33 @@ bool loaded = false;
   Widget build(BuildContext context) {
     final backgroundRadius = MediaQuery.of(context).size.width;
 
-
-    return new StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('users').snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (!snapshot.hasData) {
-            return new Center(
-                child: new BarLoadingScreen()
-            );
-          } else {
-            DocumentSnapshot mdocument = snapshot.data.documents.where((user){
-              return user.documentID == userId;
-            }).first;
-if(!loaded) {
-  items = _toIntArr(mdocument['_list']);
-  items2 = _toIntArr(mdocument['_list2']);
-  _list.setItems(items);
-  _list2.setItems(items2);
-  loaded = true;
-}
-            final converter = _buildListItem(context);
-
-            return converter;
+try {
+  return new StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection('users').snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (!snapshot.hasData) {
+          return new Center(
+              child: new BarLoadingScreen()
+          );
+        } else {
+          DocumentSnapshot mdocument = snapshot.data.documents.where((user) {
+            return user.documentID == userId;
+          }).first;
+          if (!loaded) {
+            items = _toIntArr(mdocument['_list']);
+            items2 = _toIntArr(mdocument['_list2']);
+            _list.setItems(items);
+            _list2.setItems(items2);
+            loaded = true;
           }
-        });
+          final converter = _buildListItem(context, mdocument);
+
+          return converter;
+        }
+      });
+} catch(_){
+  return new BarLoadingScreen();
+}
   }
 
   List<int> _toIntArr(List mlist){

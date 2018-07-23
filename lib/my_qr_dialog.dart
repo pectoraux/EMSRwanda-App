@@ -9,13 +9,15 @@ class MyQRDialog extends StatefulWidget {
   final String textAvailable;
   final String textInUse;
   final String user;
+  final String projectDocumentId;
 
   const MyQRDialog({
     @required this.colorIndex,
     @required this.textAvailable,
     @required this.textInUse,
     @required this.user,
-  }) : assert(colorIndex != null), assert(textInUse != null), assert(textAvailable != null), assert(user != null);
+    @required this.projectDocumentId,
+  }) : assert(colorIndex != null), assert(textInUse != null), assert(textAvailable != null), assert(user != null), assert(projectDocumentId != null);
 
   @override
   State createState() => new MyQRDialogState();
@@ -52,6 +54,10 @@ class MyQRDialogState extends State<MyQRDialog> {
             Firestore.instance.runTransaction((transaction) async {
               DocumentReference reference = Firestore.instance.document('devices/$currentDeviceId');
             await transaction.update(reference, {'deviceStatus': 'In Use'});
+
+              DocumentReference projRef = Firestore.instance.document(
+                  'projects/${widget.projectDocumentId}/devices/$currentDeviceId');
+              await projRef.setData({});
             });
           });
         }});
@@ -80,6 +86,10 @@ class MyQRDialogState extends State<MyQRDialog> {
               DocumentReference reference = Firestore.instance.document('devices/$currentDeviceId');
             await transaction.update(reference, {'deviceStatus': 'Available'});
             });
+
+            DocumentReference projRef = Firestore.instance.document(
+                'projects/${widget.projectDocumentId}/devices/$currentDeviceId');
+            await projRef.delete();
           });
         }});
     });

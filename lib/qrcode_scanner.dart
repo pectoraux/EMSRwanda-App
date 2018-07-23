@@ -9,10 +9,12 @@ import 'my_qr_dialog.dart';
 
 class QRCodeScanPage extends StatefulWidget {
   final int colorIndex;
+  final String projectDocumentId;
 
   const QRCodeScanPage({
     @required this.colorIndex,
-  }) : assert(colorIndex != null);
+    @required this.projectDocumentId,
+  }) : assert(colorIndex != null), assert(projectDocumentId != null);
 
   @override
   QRCodeScanPageState createState() {
@@ -176,7 +178,8 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
 //                  _scannedIn = false;
 //                  _scannedOut = false;
                 });
-              } else {
+              } else if (result != display_welcome && result != display_permission_denied &&
+                  result != display_no_scan && !result.startsWith(display_unknown) && result.isNotEmpty){
                 setState(() {
 //                print('SSSSSSSSSSSS => => => ${result} <= <= <= ${deviceScan} = = = ${deviceExists} + = + ${tresult}');
                   buffer = result;
@@ -336,7 +339,9 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
 //        }
 //      });
 
-
+    showDialog(context: context, child: new MyQRDialog(colorIndex: widget.colorIndex, textInUse: textInUse,
+                                                        textAvailable: textAvailable, user: result.split('\n')[0],
+                                                        projectDocumentId: widget.projectDocumentId,));
 
     showInSnackBar("Scanner has been reset", TodoColors.baseColors[widget.colorIndex]);
   }

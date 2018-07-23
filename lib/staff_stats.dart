@@ -70,7 +70,7 @@ class StaffNStatsPageState extends State<StaffNStatsPage> {
               icon: new Icon(Icons.border_outer, color: getColor(4),),
               title: new Text("Scan\nQR Code")));
       items.add(
-          new QRCodeScanPage(colorIndex: widget.colorIndex,)
+          new QRCodeScanPage(colorIndex: widget.colorIndex, projectDocumentId: widget.projectDocumentId,)
       );
     }
 

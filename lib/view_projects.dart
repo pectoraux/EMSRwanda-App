@@ -1,23 +1,31 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'supplemental/cut_corners_border.dart';
+import 'project_details.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'constants.dart';
 import 'loading_screen.dart';
 import 'my_project_dialog.dart';
+import 'update_project.dart';
 
 class ViewProjectsPage extends StatefulWidget {
   final int colorIndex;
-
+  final List<String> roles;
+  final List<String> tags;
+  final List<String> devices;
   const ViewProjectsPage({
     @required this.colorIndex,
-  }) : assert(colorIndex != null);
+  @required this.roles,
+  @required this.tags,
+  @required this.devices,
+  }) : assert(colorIndex != null), assert(roles != null), assert(tags != null), assert(devices != null);
 
   @override
   ViewProjectsPageState createState() => ViewProjectsPageState();
 }
 
 class ViewProjectsPageState extends State<ViewProjectsPage> {
+  String projectDocumentID, title;
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -29,11 +37,14 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
     final _projectLocations = GlobalKey(debugLabel: 'Project Locations');
     final _projectTags = GlobalKey(debugLabel: 'Project Tags');
 
+
     List<StaggeredTile> mTiles = [];
     ScrollController controller = new ScrollController();
 
+
     return Scaffold
       (
+      key: _scaffoldKey,
         appBar: AppBar
           (
           leading: new BackButton(key: _bkey, color: Colors.black,),
@@ -127,6 +138,7 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
                     ]
                 ),
               ),
+              project['projectTitle'],
               project.documentID
               );
           }).toList(),
@@ -139,54 +151,107 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
     );
   }
 
-  void onTap() {
+  void onTap(String projectTitle, String projectID) {
     new Container(
       width: 450.0,
     );
+    setState(() {
+      projectDocumentID = projectID;
+      title = projectTitle;
+    });
 
-    showDialog<Null>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return new AlertDialog(
-          title: new Text('DELETE  PROJECT', style: TodoColors.textStyle3.apply(color: TodoColors.baseColors[widget.colorIndex]),
-          ),
-          content: new SingleChildScrollView(
-            child: new ListBody(
-              children: <Widget>[
-                new Text('Are You Sure You Want To'),
-                new Text('Delete Project FSI ?'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            RaisedButton(
-              child: Text('CANCEL'),
-              textColor: TodoColors.baseColors[widget.colorIndex],
-              elevation: 8.0,
-              shape: BeveledRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(7.0)),
+    _scaffoldKey.currentState
+        .showBottomSheet<Null>((BuildContext context) {
+      return new Container(
+          child: new Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              new ListTile(
+                leading: new Icon(Icons.work, color: TodoColors.baseColors[widget.colorIndex],),
+                title: new Text('View ${projectTitle} Project Details'),
+                onTap: gotoProjectDetails,
               ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-
-            FlatButton(
-              child: Text('YES'),
-              textColor: TodoColors.baseColors[widget.colorIndex],
-              shape: BeveledRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(7.0)),
+              new ListTile(
+                leading: new Icon(Icons.update, color: TodoColors.baseColors[widget.colorIndex],),
+                title: new Text('Update ${projectTitle} Project Information'),
+                onTap: updateProject,
               ),
-              onPressed: () {},
-            ),
+              new ListTile(
+                  leading: new Icon(Icons.delete, color: Colors.red,),
+                  title: new Text('Delete ${projectTitle} Project'),
+                  onTap: showDeleteDialog
+              ),
+            ],
+          ));
+    });
+  }
 
-          ],
-        );
-      },
+  void updateProject(){
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => UpdateProjectPage(projectDocumentID: projectDocumentID,
+          tags: widget.tags, devices: widget.devices, roles: widget.roles,),)
     );
   }
 
+  void gotoProjectDetails(){
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => ProjectDetailsPage(colorIndex: widget.colorIndex,
+          projectDocumentID: projectDocumentID, canRecruit: true,),)
+    );
+  }
+
+void showDeleteDialog(){
+
+
+  showDialog<Null>(
+    context: context,
+    barrierDismissible: false, // user must tap button!
+    builder: (BuildContext context) {
+      return new AlertDialog(
+        title: new Text('DELETE  PROJECT', style: TodoColors.textStyle3.apply(color: Colors.red),
+        ),
+        content: new SingleChildScrollView(
+          child: new ListBody(
+            children: <Widget>[
+              new Text('Are You Sure You Want To'),
+              new Text('Delete ${title} Project ?'),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          RaisedButton(
+            child: Text('CANCEL'),
+            textColor: TodoColors.baseColors[widget.colorIndex],
+            elevation: 8.0,
+            shape: BeveledRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(7.0)),
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+
+          FlatButton(
+            child: Text('YES'),
+            textColor: Colors.red,
+            shape: BeveledRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(7.0)),
+            ),
+            onPressed: deleteProject,
+          ),
+
+        ],
+      );
+    },
+  );
+
+}
+
+void deleteProject() async {
+  DocumentReference projRef = Firestore.instance.document('projects/${projectDocumentID}');
+  await projRef.delete();
+  Navigator.of(context).pop();
+}
 
   Widget _buildTile2(Widget child, {Function() onTap}) {
     return Material(
@@ -205,7 +270,7 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
   }
 
 
-  Widget _buildTile(Widget child, String roleID) {
+  Widget _buildTile(Widget child, String projectTitle, String projectID) {
     return Material(
         elevation: 14.0,
         borderRadius: BorderRadius.circular(12.0),
@@ -213,7 +278,7 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
         child: InkWell
           (
           // Do onTap() if it isn't null, otherwise do print()
-            onTap: onTap != null ? () => onTap() : () {
+            onTap: onTap != null ? () => onTap(projectTitle, projectID) : () {
               print('Not set yet');
             },
             child: child

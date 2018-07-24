@@ -10,6 +10,11 @@ import 'my_project_dialog.dart';
 /// QuickActions represents the horizontal list of rectangular buttons below the header
 class QuickProjectActions extends StatelessWidget {
   int _colorIndex = 0;
+  final List<String> roles;
+  final List<String> tags;
+  final List<String> devices;
+
+  QuickProjectActions({Key key, this.roles, this.tags, this.devices}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -143,7 +148,7 @@ class QuickProjectActions extends StatelessWidget {
 
     if (title == "View\nProjects") {
       Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => ProjectsPage(colorIndex: _colorIndex, canRecruit: true,),));
+          MaterialPageRoute(builder: (_) => ViewProjectsPage(colorIndex: _colorIndex, roles: roles, tags: tags, devices: devices,),));
     } else if (title == "Delete\nProject") {
       new Container(
         width: 450.0,

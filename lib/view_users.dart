@@ -115,15 +115,7 @@ class ViewUsersPageState extends State<ViewUsersPage> {
           mainAxisSpacing: 12.0,
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 controller: controller,
-                children: snapshot.data.documents.where((user){
-
-                  if(widget.projectDocumentId != null && !widget.canRecruit) {
-                    if (!project_users.contains('${user.documentID}')) {
-                      return false;
-                    }
-                  }
-                  return true;
-                }).map((user) {
+                children: snapshot.data.documents.map((user) {
 
 //                  print(user.documentID + ': ' + user['userName']);
 

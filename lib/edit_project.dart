@@ -189,7 +189,7 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
     final converter = ListView(
       padding: EdgeInsets.symmetric(horizontal: 10.0),
       children: <Widget>[
-        new QuickProjectActions(),
+        new QuickProjectActions(roles: widget.roles, tags: widget.tags, devices: widget.devices,),
 
         SizedBox(height: 20.0),
         Column(
@@ -458,10 +458,19 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
                   };
 
                   Firestore.instance.runTransaction((transaction) async {
-                    CollectionReference reference =
-                    Firestore.instance.collection('projects').reference();
-                    await reference.add(project_data);
+                    DocumentReference reference =
+                    Firestore.instance.collection('projects').document();
+                    await transaction.set(reference, project_data);
+
+                    DocumentReference userRef = Firestore.instance.document(
+                        'projects/${reference.documentID}/users/${muid}');
+                    await userRef.setData({});
+
+//                    print('YYYYYYYYYYYY => => => ${reference.documentID}');
                   });
+
+
+
                   _projectTitleController.clear();
                   _projectDescriptionController.clear();
                   selectedLocations = new Set();

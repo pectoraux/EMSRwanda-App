@@ -6,6 +6,7 @@ import 'loading_screen.dart';
 import 'view_devices.dart';
 import 'animated_weeks_page.dart';
 import 'constants.dart';
+import 'send_work_request_page.dart';
 
 class UserHistoryPage extends StatefulWidget {
   final int colorIndex;
@@ -70,14 +71,26 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
     final navigationItems = <BottomNavigationBarItem>[];
     final items = <Widget>[];
-      navigationItems.add(
-        new BottomNavigationBarItem(
+
+    navigationItems.add(
+      new BottomNavigationBarItem(
           icon: new Icon(Icons.work, color: getColor(0),),
-          title: new Text("Employment\nHistory", textAlign: TextAlign.center,)),
-      );
+          title: new Text(
+            "Employment\nHistory", textAlign: TextAlign.center,)),
+    );
+    if(widget.canRecruit){
+      items.add(new SendWorkRequestPage(colorIndex: widget.colorIndex,
+        userDocumentID: document.documentID,
+        projectDocumentID: widget.projectDocumentID,));
+
+    }else {
       items.add(new EmploymentHistoryPage(colorIndex: widget.colorIndex,
-        isMadeByYou: false, noButton: false, documentID: document.documentID,
-        canRecruit: widget.canRecruit, projectDocumentID: widget.projectDocumentID,));
+        isMadeByYou: false,
+        noButton: false,
+        documentID: document.documentID,
+        canRecruit: widget.canRecruit,
+        projectDocumentID: widget.projectDocumentID,));
+    }
       if(widget.canRateUser) {
         navigationItems.add(new BottomNavigationBarItem(
             icon: new Icon(Icons.stars, color: getColor(1)),

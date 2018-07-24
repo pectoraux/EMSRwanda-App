@@ -80,10 +80,11 @@ class _RootPageState extends State<RootPage> {
         );
         break;
     }
-      return WillPopScope(
-          onWillPop: _onBackPressed,
-          child: result
-      );
+//      return WillPopScope(
+//          onWillPop: _onBackPressed,
+//          child: result
+//      );
+  return result;
   }
 
 

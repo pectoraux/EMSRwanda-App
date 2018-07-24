@@ -16,7 +16,6 @@ import 'category_route.dart';
 
 /// The function that is called when main.dart is run.
 void main() {
-
   runApp(UnitConverterApp());
 }
 

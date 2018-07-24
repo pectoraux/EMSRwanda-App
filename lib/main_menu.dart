@@ -84,10 +84,7 @@ MainMenu({Key key, this.currentUserId, this.storage}): super(key: key);
     } else if (command == "Insurance Details") {
       Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => ViewInsurancePage(currentUserId: currentUserId,)));
-    } else if (command == "Project Details") {
-      Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => ViewProjectsPage(colorIndex: 0,)));
-    } else if (command == "Emergency Details") {
+    }  else if (command == "Emergency Details") {
       Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => ViewEmergencyPage(currentUserId: currentUserId,)));
     }

@@ -28,10 +28,11 @@ class SendWorkRequestPage extends StatefulWidget
 
 class _SendWorkRequestPageState extends State<SendWorkRequestPage>
 {
-  bool isDisabled = false;
+  bool isDisabled = false, isStaff = false;
   FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseUser user;
   String authorId;
+  String button_text = '';
 
   @override
   void initState() {
@@ -46,18 +47,36 @@ class _SendWorkRequestPageState extends State<SendWorkRequestPage>
           .getDocuments()
           .then((query) {
         query.documents.forEach((doc) {
-            if (doc['projectId'] == widget.projectDocumentID &&
-                doc['type'] == 'Made By You') {
-              setState(() {
-                isDisabled = true;
-              });
-              print('RRRRRRRRR => => => ${doc['projectId']} == ${widget
-                  .projectDocumentID}');
+            if (doc['projectId'] == widget.projectDocumentID ){
+               if(doc['type'] == 'Made By You' && widget.userDocumentID == doc['to']){
+                 setState(() {
+                   isDisabled = true;
+                   button_text = 'Work Request Pending';
+                 });
+               } else if (doc['type'] == 'Made To You' && widget.userDocumentID == doc['from']){
+                 setState(() {
+                   isDisabled = true;
+                   button_text = 'User Awaits Your Response';
+                 });
+               }
             }
         });
+      }).whenComplete((){
+        Firestore.instance.collection('projects/${widget.projectDocumentID}/users')
+            .getDocuments()
+            .then((query) {
+          query.documents.forEach((doc) {
+            if (doc.documentID == widget.userDocumentID ){
+              setState(() {
+                isDisabled = true;
+                button_text = 'STAFF MEMBER';
+              });
+            }
+          });
       });
     });
-  }
+  });
+        }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
     final _bkey = GlobalKey(debugLabel: 'Back Key');
@@ -135,7 +154,7 @@ class _SendWorkRequestPageState extends State<SendWorkRequestPage>
                         children: <Widget>
                         [
                           Padding(padding: EdgeInsets.only(right: 16.0)),
-                           isDisabled ? Text('Work Request Pending', style: TextStyle(color: Colors.redAccent)) :
+                           isDisabled ? Text(button_text, style: TextStyle(color: Colors.redAccent)) :
                            Text('SEND WORK REQUEST', style: TextStyle(color: Colors.white))
                         ],
                       ),

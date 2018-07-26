@@ -34,8 +34,8 @@ class _AnimatedWeeksPageState extends State<AnimatedWeeksPage> {
   String userId = '';
   var items = <int>[];
   var items2 = <int>[];
-  var _userName,_userStatus,_firstName,_lastName,_email1,_email2,_sex,_country,_mainPhone,_phone1,_phone2,_passportNo,_tin,_cvStatusElec,_nationalID,_role,_dob,
-  _bankAcctNo, _bankName,_editing, _emergencyContactname, _emergencyContactPhone, _insurance, _insuranceNo, _insuranceCpy, _locations, _userPassword;
+//  var _userName,_userStatus,_firstName,_lastName,_email1,_email2,_sex,_country,_mainPhone,_phone1,_phone2,_passportNo,_tin,_cvStatusElec,_nationalID,_role,_dob,
+//  _bankAcctNo, _bankName,_editing, _emergencyContactname, _emergencyContactPhone, _insurance, _insuranceNo, _insuranceCpy, _locations, _userPassword;
 bool loaded = false;
 
   @override
@@ -53,7 +53,6 @@ bool loaded = false;
         userId = user.uid;
       }else{
         userId = widget.userDocumentId;
-//        print('XXXXXXXXXX => => => ${widget.userDocumentId}');
       }
     });
 

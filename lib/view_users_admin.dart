@@ -8,30 +8,22 @@ import 'loading_screen.dart';
 import 'my_user_dialog.dart';
 import 'update_user.dart';
 
-class ViewUsersPage extends StatefulWidget {
+class ViewUsersAdminPage extends StatefulWidget {
   final int colorIndex;
-  final String projectDocumentId;
-  final bool canRateUser;
-  final bool canRecruit;
-  final bool noButton;
 
-  const ViewUsersPage({
+  const ViewUsersAdminPage({
     @required this.colorIndex,
-    this.projectDocumentId,
-    @required this.canRateUser,
-    @required this.canRecruit,
-    this.noButton,
-  }) : assert(colorIndex != null),
-  assert(canRateUser != null), assert(canRecruit != null);
+  }) : assert(colorIndex != null);
 
   @override
-  ViewUsersPageState createState() => ViewUsersPageState();
+  ViewUsersAdminPageState createState() => ViewUsersAdminPageState();
 }
 
-class ViewUsersPageState extends State<ViewUsersPage> {
-  String userName = '', locations = '', userDocumentID = '';
+class ViewUsersAdminPageState extends State<ViewUsersAdminPage> {
+  String userName = '', locations = '', userDocumentID = '', name = '';
   bool read = false;
   List project_users = [];
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -50,26 +42,15 @@ class ViewUsersPageState extends State<ViewUsersPage> {
     ScrollController controller = new ScrollController();
 
 
-    Firestore.instance.collection('projects/${widget.projectDocumentId}/users').getDocuments().then((query) {
-      List results = [];
-      setState(() {
-        for (DocumentSnapshot doc in query.documents) {
-            results.add(doc.documentID);
-        }
-        project_users = results;
-      });
-    });
-
-//    print('JJJJJJJJJJJJ => => => ${project_users}');
-
     return Scaffold
       (
+      key: _scaffoldKey,
         appBar: AppBar
           (
           leading: new BackButton(key: _bkey, color: Colors.black,),
           elevation: 2.0,
           backgroundColor: Colors.white,
-          title: Text((widget.projectDocumentId != null) ? 'Project Staff' : 'Available Users',
+          title: Text('Available Users',
                style: TodoColors.textStyle6),
           actions: <Widget>
           [
@@ -131,7 +112,6 @@ class ViewUsersPageState extends State<ViewUsersPage> {
                        .substring(1, user['locations']
                        .toString()
                        .length - 1);
-                  userDocumentID = user.documentID;
 
                    if(userName.trim().isEmpty)
                      userName = 'Missing User Name';
@@ -179,6 +159,7 @@ class ViewUsersPageState extends State<ViewUsersPage> {
                     ]
                 ),
               ),
+    userName,
     user.documentID
     );
   }).toList(),
@@ -193,9 +174,106 @@ class ViewUsersPageState extends State<ViewUsersPage> {
 );
 }
 
+  void updateUser(){
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => UpdateUserPage(userDocumentID: userDocumentID, colorIndex: widget.colorIndex,),)
+    );
+  }
+
+  void gotoUserHistory(){
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) =>
+            UserHistoryPage(colorIndex: widget.colorIndex,
+              userDocumentID: userDocumentID,
+              canRateUser: false,
+              canRecruit: false,
+              noButton: true,)));
+  }
+
+  void showDeleteDialog(){
 
 
-  Widget _buildTile(Widget child, String userID) {
+    showDialog<Null>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return new AlertDialog(
+          title: new Text('DELETE  USER', style: TodoColors.textStyle3.apply(color: Colors.red),
+          ),
+          content: new SingleChildScrollView(
+            child: new ListBody(
+              children: <Widget>[
+                new Text('Are You Sure You Want To'),
+                new Text('Delete User ${name} ?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            RaisedButton(
+              child: Text('CANCEL'),
+              textColor: TodoColors.baseColors[widget.colorIndex],
+              elevation: 8.0,
+              shape: BeveledRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(7.0)),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+
+            FlatButton(
+              child: Text('YES'),
+              textColor: Colors.red,
+              shape: BeveledRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(7.0)),
+              ),
+              onPressed: deleteUser,
+            ),
+
+          ],
+        );
+      },
+    );
+
+  }
+
+  void onTap(String fullName, String userID) {
+    new Container(
+      width: 450.0,
+    );
+
+    setState(() {
+      userDocumentID = userID;
+      name = fullName;
+    });
+
+    _scaffoldKey.currentState
+        .showBottomSheet<Null>((BuildContext context) {
+      return new Container(
+          child: new Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              new ListTile(
+                leading: new Icon(Icons.work, color: TodoColors.baseColors[widget.colorIndex],),
+                title: new Text('View ${name} History'),
+                onTap: gotoUserHistory,
+              ),
+              new ListTile(
+                leading: new Icon(Icons.update, color: TodoColors.baseColors[widget.colorIndex],),
+                title: new Text('Update ${name} Information'),
+                onTap: updateUser,
+              ),
+              new ListTile(
+                  leading: new Icon(Icons.delete, color: Colors.red,),
+                  title: new Text('Delete User ${name}'),
+                  onTap: showDeleteDialog
+              ),
+            ],
+          ));
+    });
+  }
+
+  Widget _buildTile(Widget child, String mName, String userID) {
     return Material(
         elevation: 14.0,
         borderRadius: BorderRadius.circular(12.0),
@@ -203,22 +281,20 @@ class ViewUsersPageState extends State<ViewUsersPage> {
         child: InkWell
           (
           // Do onTap() if it isn't null, otherwise do print()
-            onTap: () {
-              print('TTTVVVVVVVVV => => =>  ${widget.projectDocumentId}');
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) =>
-                      UserHistoryPage(colorIndex: widget.colorIndex,
-                          userDocumentID: userID,
-                          canRateUser: widget.canRateUser,
-                          canRecruit: widget.canRecruit,
-                          noButton: widget.noButton,
-                          projectDocumentID: widget.projectDocumentId)));
-
-              },
+            onTap: onTap != null ? () => onTap(mName, userID) : () {
+              print('Not set yet');
+            },
             child: child
         )
     );
   }
+
+  void deleteUser() async {
+    DocumentReference projRef = Firestore.instance.document('users/${userDocumentID}');
+//    await projRef.delete();
+    Navigator.of(context).pop();
+  }
+
 }
 
 

@@ -1,7 +1,7 @@
 import 'supplemental/cut_corners_border.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
-import 'view_users.dart';
+import 'view_users_admin.dart';
 import 'profile_fonts.dart';
 import 'constants.dart';
 import 'my_user_dialog.dart';
@@ -140,7 +140,7 @@ class QuickUserActionsState extends State<QuickUserActions>  {
 
     if (title == "View\nUsers") {
       Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => ViewUsersPage(colorIndex: _colorIndex, canRateUser: false, canRecruit: true,)));
+          MaterialPageRoute(builder: (_) => ViewUsersAdminPage(colorIndex: _colorIndex,)));
     } else if (title == "Update\nUser") {
       new Container(
         width: 450.0,

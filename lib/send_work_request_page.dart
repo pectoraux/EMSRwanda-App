@@ -58,6 +58,8 @@ class _SendWorkRequestPageState extends State<SendWorkRequestPage>
                    isDisabled = true;
                    button_text = 'User Awaits Your Response';
                  });
+               } else {
+                 button_text = 'SEND WORK REQUEST';
                }
             }
         });
@@ -155,7 +157,7 @@ class _SendWorkRequestPageState extends State<SendWorkRequestPage>
                         [
                           Padding(padding: EdgeInsets.only(right: 16.0)),
                            isDisabled ? Text(button_text, style: TextStyle(color: Colors.redAccent)) :
-                           Text('SEND WORK REQUEST', style: TextStyle(color: Colors.white))
+                           Text(button_text, style: TextStyle(color: Colors.white))
                         ],
                       ),
                     ),

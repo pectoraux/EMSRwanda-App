@@ -1,21 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'supplemental/cut_corners_border.dart';
 import 'package:flutter/material.dart';
 import 'constants.dart';
-import 'star_rating.dart';
+import 'loading_screen.dart';
 import 'color_override.dart';
 import 'my_rating_dialog.dart';
 
 class UserRatingPage extends StatefulWidget {
   final int colorIndex;
-  final DocumentSnapshot document;
+  final String userDocumentID;
+  final String projectDocumentID;
 
   const UserRatingPage({
     @required this.colorIndex,
-    this.document,
-  }) : assert(colorIndex != null);
+    @required this.projectDocumentID,
+    @required this.userDocumentID,
+  }) : assert(colorIndex != null), assert(projectDocumentID != null), assert(userDocumentID != null);
 
   @override
   UserRatingPageState createState() => UserRatingPageState();
@@ -24,7 +25,7 @@ class UserRatingPage extends StatefulWidget {
 class UserRatingPageState extends State<UserRatingPage> {
   final _replyController = TextEditingController();
   final _reply = GlobalKey(debugLabel: 'Reply');
-  String imageUrlStr = '';
+  String imageUrlStr = '', firstName = '', lastName = '';
 
 
   @override
@@ -40,11 +41,60 @@ class UserRatingPageState extends State<UserRatingPage> {
     FirebaseUser user = await _auth.currentUser();
     imageUrlStr = user.photoUrl;
 //    print('MMMMMMMMMMM => => => $imageUrlStr');
+  
+    DocumentSnapshot doc = await Firestore.instance.document('users/${user.uid}').get();
+    firstName = doc['firstName'];
+    lastName = doc['lastName'];
+  }
+  List<Widget> _buildOverallRatings(int rating) {
+    List ratingItems = <Widget>[];
+    for (int i = 0; i < 5; i++) {
+      if (i < rating) {
+        ratingItems.add(Icon(Icons.star, color: Colors.amber, size: 48.0));
+      } else {
+        ratingItems.add(Icon(Icons.star, color: Colors.black12, size: 48.0));
+      }
+    }
+    return ratingItems;
+  }
+  List<Widget> _buildRatings(int rating) {
+    List ratingItems = <Widget>[];
+    for (int i = 0; i < 5; i++) {
+      if (i < rating) {
+        ratingItems.add(Icon(Icons.star, color: Colors.black54, size: 16.0));
+      } else if (rating < 0){
+        ratingItems.add(Icon(Icons.star_border, color: Colors.black12, size: 16.0));
+      } else {
+        ratingItems.add(Icon(Icons.star, color: Colors.black12, size: 16.0));
+      }
+    }
+    return ratingItems;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    double rating = 3.5;
+  Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
+    List overallRatingItems = <Widget>[], punctualityRatingItems = <Widget>[], initiativeTakingItems = <Widget>[], communicationItems = <Widget>[], reportingItems = <Widget>[];
+    int numItemsPunctuality, numItemsReporting, numItemsCommunication, numItemsInitiativeTaking, numItemsOverallRating;
+          numItemsReporting = (document['reportingRating']).toInt();
+          reportingItems = _buildRatings(numItemsReporting);
+          numItemsInitiativeTaking = (document['initiativeTakingRating']).toInt();
+          initiativeTakingItems = _buildRatings(numItemsInitiativeTaking);
+          numItemsPunctuality = (document['punctualityRating']).toInt();
+          punctualityRatingItems = _buildRatings(numItemsPunctuality);
+          numItemsCommunication = (document['communicationRating']).toInt();
+          communicationItems = _buildRatings(numItemsCommunication);
+          numItemsOverallRating = (document['overAllRating']).toInt();
+          overallRatingItems = _buildRatings(numItemsOverallRating);
+
+    List myColors = [Colors.black12, Colors.black12, Colors.red, Colors.orange, Colors.yellow, Colors.lightGreen, Colors.green];
+
+    List reviewWidgets = <Widget>[];
+    for (String cmt in document['comments']){
+      String author = cmt.substring(0, cmt.lastIndexOf('★')+1);
+      String comment = cmt.substring(cmt.lastIndexOf('★')+1);
+        reviewWidgets.add(_buildReview(context, author, comment));
+        reviewWidgets.add(Divider());
+    }
+
     return Scaffold
       (
       body: CustomScrollView
@@ -60,7 +110,7 @@ class UserRatingPageState extends State<UserRatingPage> {
               title: Row (
 
               children: <Widget>[
-                Text('${widget.document['firstName']} ${widget.document['lastName']}'),
+                Text('${firstName} ${lastName}'),
               ],
               ),
               background: SizedBox.expand
@@ -130,8 +180,7 @@ class UserRatingPageState extends State<UserRatingPage> {
                       (
                       margin: EdgeInsets.only(top: 16.0),
                       child: Text
-                        (
-                          '4.6',
+                        ("${document['overAllRating']}",
                           style: TextStyle(color: Colors.black,
                               fontWeight: FontWeight.w700,
                               fontSize: 64.0)
@@ -146,14 +195,7 @@ class UserRatingPageState extends State<UserRatingPage> {
                     child: Row
                       (
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>
-                      [
-                        Icon(Icons.star, color: Colors.amber, size: 48.0),
-                        Icon(Icons.star, color: Colors.amber, size: 48.0),
-                        Icon(Icons.star, color: Colors.amber, size: 48.0),
-                        Icon(Icons.star, color: Colors.amber, size: 48.0),
-                        Icon(Icons.star, color: Colors.black12, size: 48.0),
-                      ],
+                      children: _buildOverallRatings(numItemsOverallRating),
                     ),
                   ),
 
@@ -168,8 +210,6 @@ class UserRatingPageState extends State<UserRatingPage> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>
                       [
-
-                        /// 5 stars and progress bar
                         Padding
                           (
                           padding: EdgeInsets.symmetric(vertical: 4.0),
@@ -179,33 +219,23 @@ class UserRatingPageState extends State<UserRatingPage> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>
                             [
+                              Text('Reporting'),
+                              Padding(padding: EdgeInsets.only(right: 43.0)),
                               Row
                                 (
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>
-                                [
-                                  Icon(Icons.star, color: Colors.black54,
-                                      size: 16.0),
-                                  Icon(Icons.star, color: Colors.black54,
-                                      size: 16.0),
-                                  Icon(Icons.star, color: Colors.black54,
-                                      size: 16.0),
-                                  Icon(Icons.star, color: Colors.black54,
-                                      size: 16.0),
-                                  Icon(Icons.star, color: Colors.black54,
-                                      size: 16.0),
-                                ],
+                                children: reportingItems,
                               ),
-                              Padding(padding: EdgeInsets.only(right: 24.0)),
+                              Padding(padding: EdgeInsets.only(right: 17.0)),
                               Expanded
                                 (
                                 child: Theme
                                   (
-                                  data: ThemeData(accentColor: Colors.green),
+                                  data: ThemeData(accentColor: myColors[numItemsReporting + 1]),
                                   child: LinearProgressIndicator
                                     (
-                                    value: 0.9,
+                                    value: (numItemsReporting)/5.0,
                                     backgroundColor: Colors.black12,
                                   ),
                                 ),
@@ -222,34 +252,57 @@ class UserRatingPageState extends State<UserRatingPage> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>
                             [
+                              Text('Punctuality'),
+                              Padding(padding: EdgeInsets.only(right: 34.0)),
                               Row
                                 (
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>
-                                [
-                                  Icon(Icons.star, color: Colors.black54,
-                                      size: 16.0),
-                                  Icon(Icons.star, color: Colors.black54,
-                                      size: 16.0),
-                                  Icon(Icons.star, color: Colors.black54,
-                                      size: 16.0),
-                                  Icon(Icons.star, color: Colors.black54,
-                                      size: 16.0),
-                                  Icon(Icons.star, color: Colors.black12,
-                                      size: 16.0),
-                                ],
+                                children: punctualityRatingItems,
                               ),
-                              Padding(padding: EdgeInsets.only(right: 24.0)),
+                              Padding(padding: EdgeInsets.only(right: 17.0)),
+                              Expanded
+                                (
+                                child: Theme
+                                  (
+                                  data: ThemeData(accentColor: myColors[numItemsPunctuality + 1]),
+                                  child: LinearProgressIndicator
+                                    (
+                                    value: (numItemsPunctuality)/5.0,
+                                    backgroundColor: Colors.black12,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding
+                          (
+                          padding: EdgeInsets.symmetric(vertical: 4.0),
+                          child: Row
+                            (
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>
+                            [
+                              Text('Initiative Taking'),
+                              Padding(padding: EdgeInsets.only(right: 5.0)),
+                              Row
+                                (
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: initiativeTakingItems,
+                              ),
+                              Padding(padding: EdgeInsets.only(right: 17.0)),
                               Expanded
                                 (
                                 child: Theme
                                   (
                                   data: ThemeData(
-                                      accentColor: Colors.lightGreen),
+                                      accentColor: myColors[numItemsInitiativeTaking + 1]),
                                   child: LinearProgressIndicator
                                     (
-                                    value: 0.7,
+                                    value: (numItemsInitiativeTaking)/5.0,
                                     backgroundColor: Colors.black12,
                                   ),
                                 ),
@@ -266,119 +319,24 @@ class UserRatingPageState extends State<UserRatingPage> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>
                             [
+                              Text('Communication'),
+                              Padding(padding: EdgeInsets.only(right: 5.0)),
                               Row
                                 (
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>
-                                [
-                                  Icon(Icons.star, color: Colors.black54,
-                                      size: 16.0),
-                                  Icon(Icons.star, color: Colors.black54,
-                                      size: 16.0),
-                                  Icon(Icons.star, color: Colors.black54,
-                                      size: 16.0),
-                                  Icon(Icons.star, color: Colors.black12,
-                                      size: 16.0),
-                                  Icon(Icons.star, color: Colors.black12,
-                                      size: 16.0),
-                                ],
+                                children: communicationItems,
                               ),
-                              Padding(padding: EdgeInsets.only(right: 24.0)),
+                              Padding(padding: EdgeInsets.only(right: 16.0)),
                               Expanded
                                 (
                                 child: Theme
                                   (
-                                  data: ThemeData(accentColor: Colors.yellow),
-                                  child: LinearProgressIndicator
+                                  data: ThemeData(
+                                      accentColor: myColors[numItemsCommunication + 1]),
+                                  child: (numItemsCommunication < 0) ? Container() : LinearProgressIndicator
                                     (
-                                    value: 0.25,
-                                    backgroundColor: Colors.black12,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding
-                          (
-                          padding: EdgeInsets.symmetric(vertical: 4.0),
-                          child: Row
-                            (
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>
-                            [
-                              Row
-                                (
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>
-                                [
-                                  Icon(Icons.star, color: Colors.black54,
-                                      size: 16.0),
-                                  Icon(Icons.star, color: Colors.black54,
-                                      size: 16.0),
-                                  Icon(Icons.star, color: Colors.black12,
-                                      size: 16.0),
-                                  Icon(Icons.star, color: Colors.black12,
-                                      size: 16.0),
-                                  Icon(Icons.star, color: Colors.black12,
-                                      size: 16.0),
-                                ],
-                              ),
-                              Padding(padding: EdgeInsets.only(right: 24.0)),
-                              Expanded
-                                (
-                                child: Theme
-                                  (
-                                  data: ThemeData(accentColor: Colors.orange),
-                                  child: LinearProgressIndicator
-                                    (
-                                    value: 0.07,
-                                    backgroundColor: Colors.black12,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding
-                          (
-                          padding: EdgeInsets.symmetric(vertical: 4.0),
-                          child: Row
-                            (
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>
-                            [
-                              Row
-                                (
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>
-                                [
-                                  Icon(Icons.star, color: Colors.black54,
-                                      size: 16.0),
-                                  Icon(Icons.star, color: Colors.black12,
-                                      size: 16.0),
-                                  Icon(Icons.star, color: Colors.black12,
-                                      size: 16.0),
-                                  Icon(Icons.star, color: Colors.black12,
-                                      size: 16.0),
-                                  Icon(Icons.star, color: Colors.black12,
-                                      size: 16.0),
-                                ],
-                              ),
-                              Padding(padding: EdgeInsets.only(right: 24.0)),
-                              Expanded
-                                (
-                                child: Theme
-                                  (
-                                  data: ThemeData(accentColor: TodoColors.baseColors[widget.colorIndex]),
-                                  child: LinearProgressIndicator
-                                    (
-                                    value: 0.12,
+                                    value: (numItemsCommunication)/5.0,
                                     backgroundColor: Colors.black12,
                                   ),
                                 ),
@@ -390,339 +348,88 @@ class UserRatingPageState extends State<UserRatingPage> {
                     ),
                   ),
                   Divider(),
-
                   /// Review
-                  Padding
-                    (
-                    padding: EdgeInsets.only(
-                        left: 16.0, right: 16.0, bottom: 16.0),
-                    child: Material
-                      (
-                      elevation: 12.0,
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only
-                        (
-                        topRight: Radius.circular(20.0),
-                        bottomLeft: Radius.circular(20.0),
-                        bottomRight: Radius.circular(20.0),
-                      ),
-                      child: Container
-                        (
-                        margin: EdgeInsets.symmetric(
-                            vertical: 10.0, horizontal: 0.0),
-                        child: Container
-                          (
-                          child: ListTile
-                            (
-                            leading: CircleAvatar
-                              (
-                              backgroundColor: TodoColors.baseColors[widget.colorIndex],
-                              child: Text('AI'),
-                            ),
-                            title: Text(
-                                'Ivascu Adrian ★★★★★', style: TextStyle()),
-                            subtitle: Text(
-                                'The shoes were shipped one day before the shipping date, but this wasn\'t at all a problem :). The shoes are very comfortable and good looking.',
-                                style: TextStyle()),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  /// Review reply
-                  Padding
-                    (
-                    padding: EdgeInsets.only(
-                        left: 16.0, right: 16.0, bottom: 16.0),
-                    child: Row
-                      (
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        Material
-                          (
-                          elevation: 12.0,
-                          color: Colors.tealAccent,
-                          borderRadius: BorderRadius.only
-                            (
-                            topLeft: Radius.circular(20.0),
-                            bottomLeft: Radius.circular(20.0),
-                            bottomRight: Radius.circular(20.0),
-                          ),
-                          child: Container
-                            (
-                            margin: EdgeInsets.symmetric(
-                                vertical: 10.0, horizontal: 16.0),
-                            child: Text('Happy to hear that!', style: Theme
-                                .of(context)
-                                .textTheme
-                                .subhead),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Divider(),
-
-                  /// Review
-                  Padding
-                    (
-                    padding: EdgeInsets.only(
-                        left: 16.0, right: 16.0, bottom: 16.0),
-                    child: Material
-                      (
-                      elevation: 12.0,
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only
-                        (
-                        topRight: Radius.circular(20.0),
-                        bottomLeft: Radius.circular(20.0),
-                        bottomRight: Radius.circular(20.0),
-                      ),
-                      child: Container
-                        (
-                        margin: EdgeInsets.symmetric(
-                            vertical: 10.0, horizontal: 0.0),
-                        child: Column
-                          (
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: <Widget>
-                          [
-                            Container
-                              (
-                              child: ListTile
-                                (
-                                leading: CircleAvatar
-                                  (
-                                  backgroundColor: TodoColors.baseColors[widget.colorIndex],
-                                  child: Text('AI'),
-                                ),
-                                title: Text(
-                                    'Ivascu Adrian ★★★★★', style: TextStyle()),
-                                subtitle: Text(
-                                    'The shoes were shipped one day before the shipping date, but this wasn\'t at all a problem :). The shoes are very comfortable and good looking',
-                                    style: TextStyle()),
-                              ),
-                            ),
-                            Padding
-                              (
-                              padding: EdgeInsets.only(top: 4.0, right: 10.0),
-                              child: FlatButton.icon
-                                (
-                                  onPressed: () {
-                                    new Container(
-                                      width: 450.0,
-                                    );
-                                    showDialog<Null>(
-                                      context: context,
-                                      barrierDismissible: false, // user must tap button!
-                                      builder: (BuildContext context) {
-                                        return new AlertDialog(
-                                          title: new Text(
-                                            'Search  Projects', style: TodoColors.textStyle.apply(color: TodoColors.baseColors[widget.colorIndex]),),
-                                          content: new SingleChildScrollView(
-                                            child: new ListBody(
-                                              children: <Widget>[
-                                                SizedBox(height: 12.0),
-                                                PrimaryColorOverride(
-                                                  color: TodoColors.baseColors[widget.colorIndex],
-                                                  child: TextField(
-                                                    key: _reply,
-                                                    maxLines: null,
-                                                    controller: _replyController,
-                                                    decoration: InputDecoration(
-                                                      labelText: 'Your Response',
-                                                      labelStyle: TodoColors.textStyle2,
-                                                      border: CutCornersBorder(),
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(height: 12.0),
-                                              ],
-                                            ),
-
-                                          ),
-
-                                          actions: <Widget>[
-                                            FlatButton(
-                                              child: Text('CANCEL'),
-                                              textColor: TodoColors.baseColors[widget.colorIndex],
-                                              shape: BeveledRectangleBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(7.0)),
-                                              ),
-                                              onPressed: () {
-                                                _replyController.clear();
-                                                Navigator.of(context).pop();
-                                              },
-                                            ),
-
-                                            RaisedButton(
-                                              child: Text('SEND'),
-                                              textColor: TodoColors.baseColors[widget.colorIndex],
-                                              elevation: 8.0,
-                                              shape: BeveledRectangleBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(7.0)),
-                                              ),
-                                              onPressed: () {
-                                                _replyController.clear();
-                                              },
-                                            ),
-
-                                          ],
-                                        );
-                                      },
-                                    );
-                                  },
-                                  icon: Icon(
-                                      Icons.reply, color: TodoColors.baseColors[widget.colorIndex]),
-                                  label: Text('Reply', style: TextStyle(
-                                      color: TodoColors.baseColors[widget.colorIndex],
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 16.0))
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  Divider(),
-
-                  /// Review
-                  Padding
-                    (
-                    padding: EdgeInsets.only(
-                        left: 16.0, right: 16.0, bottom: 16.0),
-                    child: Material
-                      (
-                      elevation: 12.0,
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only
-                        (
-                        topRight: Radius.circular(20.0),
-                        bottomLeft: Radius.circular(20.0),
-                        bottomRight: Radius.circular(20.0),
-                      ),
-                      child: Container
-                        (
-                        margin: EdgeInsets.symmetric(
-                            vertical: 10.0, horizontal: 0.0),
-                        child: Column
-                          (
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: <Widget>
-                          [
-                            Container
-                              (
-                              child: ListTile
-                                (
-                                leading: CircleAvatar
-                                  (
-                                  backgroundColor: TodoColors.baseColors[widget.colorIndex],
-                                  child: Text('IA'),
-                                ),
-                                title: Text(
-                                    'Ivascu Adrian ★★★★★', style: TextStyle()),
-                                subtitle: Text(
-                                    'The shoes were shipped one day before the shipping date, but this wasn\'t at all a problem :). The shoes are very comfortable and good looking',
-                                    style: TextStyle()),
-                              ),
-                            ),
-                            Padding
-                              (
-                              padding: EdgeInsets.only(top: 4.0, right: 10.0),
-                              child: FlatButton.icon
-                                (
-                                  onPressed: () {
-                                    new Container(
-                                      width: 450.0,
-                                    );
-
-                                    showDialog<Null>(
-                                      context: context,
-                                      barrierDismissible: false, // user must tap button!
-                                      builder: (BuildContext context) {
-                                        return new AlertDialog(
-                                          title: new Text(
-                                            'Reply', style: TodoColors.textStyle.apply(color: TodoColors.baseColors[widget.colorIndex]),),
-                                          content: new SingleChildScrollView(
-                                            child: new ListBody(
-                                              children: <Widget>[
-                                                SizedBox(height: 12.0),
-                                                PrimaryColorOverride(
-                                                  color: TodoColors.baseColors[widget.colorIndex],
-                                                  child: TextField(
-                                                    key: _reply,
-                                                    maxLines: null,
-                                                    controller: _replyController,
-                                                    decoration: InputDecoration(
-                                                      labelText: 'Your Response',
-                                                      labelStyle: TodoColors.textStyle2,
-                                                      border: CutCornersBorder(),
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(height: 12.0),
-                                              ],
-                                            ),
-
-                                          ),
-
-                                          actions: <Widget>[
-                                            FlatButton(
-                                              child: Text('CANCEL'),
-                                              textColor: TodoColors.baseColors[widget.colorIndex],
-                                              shape: BeveledRectangleBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(7.0)),
-                                              ),
-                                              onPressed: () {
-                                                _replyController.clear();
-                                                Navigator.of(context).pop();
-                                              },
-                                            ),
-
-                                            RaisedButton(
-                                              child: Text('SEND'),
-                                              textColor: TodoColors.baseColors[widget.colorIndex],
-                                              elevation: 8.0,
-                                              shape: BeveledRectangleBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(7.0)),
-                                              ),
-                                              onPressed: () {
-                                                _replyController.clear();
-                                              },
-                                            ),
-
-                                          ],
-                                        );
-                                      },
-                                    );
-                                  },
-                                  icon: Icon(
-                                      Icons.reply, color: TodoColors.baseColors[widget.colorIndex]),
-                                  label: Text('Reply', style: TextStyle(
-                                      color: TodoColors.baseColors[widget.colorIndex],
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 16.0))
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ]
+//                  _buildReview(context, document),
+                ]..addAll(reviewWidgets.getRange(0, reviewWidgets.length))
             ),
           ),
         ],
       ),
     );
+  }
+
+  Widget _buildReview(BuildContext context, String author, String comment){
+
+    return Padding
+      (
+      padding: EdgeInsets.only(
+          left: 16.0, right: 16.0, bottom: 16.0),
+      child: Material
+        (
+        elevation: 12.0,
+        color: Colors.white,
+        borderRadius: BorderRadius.only
+          (
+          topRight: Radius.circular(20.0),
+          bottomLeft: Radius.circular(20.0),
+          bottomRight: Radius.circular(20.0),
+        ),
+        child: Container
+          (
+          margin: EdgeInsets.symmetric(
+              vertical: 10.0, horizontal: 0.0),
+          child: Container
+            (
+            child: ListTile
+              (
+              leading: CircleAvatar
+                (
+                backgroundColor: TodoColors.baseColors[widget.colorIndex],
+                child: Text('AI'),
+              ),
+              title: Text(author, style: TextStyle()),
+              subtitle: Text(comment,
+                  style: TextStyle()),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    return new StreamBuilder<QuerySnapshot>(
+        stream: Firestore.instance.collection('projects/${widget.projectDocumentID}/users').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (!snapshot.hasData) {
+            return new Center(
+              child: new BarLoadingScreen(),
+            );
+          } else {
+            DocumentSnapshot document = snapshot.data.documents.where((doc){
+              return doc.documentID == widget.userDocumentID;}).first;
+
+
+            final converter = _buildListItem(
+                context, document);
+
+            return OrientationBuilder(
+              builder: (BuildContext context, Orientation orientation) {
+                if (orientation == Orientation.portrait) {
+                  return converter;
+                } else {
+                  return Center(
+                    child: Container(
+                      width: 450.0,
+                      child: converter,
+                    ),
+                  );
+                }
+              },
+            );
+          }
+        });
   }
 }

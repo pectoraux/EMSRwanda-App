@@ -256,6 +256,11 @@ FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
                       'locations': userLocations.toString(),
                       '_list': items,
                       '_list2': items,
+                      'initiativeTakingRating': -1.0,
+                      'communicationRating': -1.0,
+                      'punctualityRating': -1.0,
+                      'reportingRating': -1.0,
+                      'overAllRating': -1.0,
                       'editing': false,
                     };
                     Firestore.instance.runTransaction((transaction) async {
@@ -272,12 +277,10 @@ FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
                   showInSnackBar(
                       "Unable To Create User  $err", Colors.red);
                 });
-
-                _roleValue = widget.roles[0];
+                    _roleValue = widget.roles[0];
                     _userNameController.clear();
                     error? '':showInSnackBar(
                         "User Created Successfully", TodoColors.baseColors[_colorIndex]);
-
 //                  widget.auth.signOut();
                   widget.auth.signIn(oldEmail, widget.currentUserPassword);
                 } else {
@@ -340,12 +343,9 @@ FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
           print("=> => => => ${_firebaseAuth.currentUser().then((user) async {
 
-
-setState(() {
-  oldEmail = user.email;
-
-//  print('OLDEMAIL:  => => $oldEmail');
-});
+            setState(() {
+              oldEmail = user.email;
+            });
           })}");
             final converter = _buildListItem(
                 context, snapshot.data.documents.first);

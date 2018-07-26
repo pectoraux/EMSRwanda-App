@@ -119,13 +119,10 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
 
         if(lastImageName.isNotEmpty) {
 //          print('MMMMMMMMMMM => => => $lastImageName');
-          FirebaseStorage.instance.ref().child(
-              "users_photos/$lastImageName").delete();
+          FirebaseStorage.instance.ref().child("users_photos/$lastImageName").delete();
         }
 
-
-    final StorageReference ref = FirebaseStorage.instance.ref().child(
-        "users_photos/$fileName");
+    final StorageReference ref = FirebaseStorage.instance.ref().child("users_photos/$fileName");
 
     final StorageUploadTask uploadTask = ref.putFile(image, StorageMetadata(contentLanguage: "en"));
     print('STEP 1 Done - ${new DateTime.now()} ');

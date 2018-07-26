@@ -14,6 +14,7 @@ class UserHistoryPage extends StatefulWidget {
   final bool canRateUser;
   final bool canRecruit;
   final String projectDocumentID;
+  final bool noButton;
 
   const UserHistoryPage({
     @required this.colorIndex,
@@ -21,6 +22,7 @@ class UserHistoryPage extends StatefulWidget {
     @required this.canRateUser,
     @required this.canRecruit,
     this.projectDocumentID,
+    @required this.noButton,
   }) : assert(colorIndex != null),
         assert(userDocumentID != null),
         assert(canRateUser != null),
@@ -86,7 +88,7 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
     }else {
       items.add(new EmploymentHistoryPage(colorIndex: widget.colorIndex,
         isMadeByYou: false,
-        noButton: false,
+        noButton: widget.noButton,
         documentID: document.documentID,
         canRecruit: widget.canRecruit,
         projectDocumentID: widget.projectDocumentID,));
@@ -96,7 +98,7 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
             icon: new Icon(Icons.stars, color: getColor(1)),
             title: new Text("Rate\nUser", textAlign: TextAlign.center,),),
         );
-        items.add(new UserRatingPage(colorIndex: widget.colorIndex, document: document,));
+        items.add(new UserRatingPage(colorIndex: widget.colorIndex, userDocumentID: document.documentID, projectDocumentID: widget.projectDocumentID,));
       }
     navigationItems.add(
       new BottomNavigationBarItem(

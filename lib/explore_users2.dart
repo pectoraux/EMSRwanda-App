@@ -596,7 +596,7 @@ class ExploreUsersPageState extends State<ExploreUsersPage2> {
           // Do onTap() if it isn't null, otherwise do print()
             onTap: () =>
                 Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => UserHistoryPage(colorIndex: _colorIndex, userDocumentID: '', canRateUser: true, canRecruit: false,))),
+                    MaterialPageRoute(builder: (_) => UserHistoryPage(colorIndex: _colorIndex, userDocumentID: '', noButton: true, canRateUser: true, canRecruit: false,))),
             child: child
         )
     );

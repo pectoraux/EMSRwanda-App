@@ -212,6 +212,7 @@ class ProjectStaffPageState extends State<ProjectStaffPage> {
                           userDocumentID: userID,
                           canRateUser: true,
                           canRecruit: true,
+                          noButton: false,
                           projectDocumentID: widget.projectDocumentId)));
 
             },

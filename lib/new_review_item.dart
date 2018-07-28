@@ -1,20 +1,75 @@
 import 'project_details.dart';
-import 'constants.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'loading_screen.dart';
 
-class NewReviewItem extends StatelessWidget
+class NewReviewItem extends StatefulWidget
 {
   final int colorIndex;
-  final String project_description = "This project is hkkjdkja ljdslad ladjlja alsdjla aljdsla adljld";
+  final String userDocumentId;
 
   const NewReviewItem({
     @required this.colorIndex,
-  }) : assert(colorIndex != null);
+    @required this.userDocumentId,
+  }) : assert(colorIndex != null),  assert(userDocumentId != null);
+
+  @override
+  NewReviewItemState createState() => NewReviewItemState();
+}
+class NewReviewItemState extends State<NewReviewItem> {
+  List user_projects = [], project_titles = [], project_descriptions = [];
+  Map<String, bool> comments = Map();
 
   @override
   Widget build(BuildContext context)
   {
+
+    Firestore.instance.collection('users/${widget.userDocumentId}/projects')
+        .getDocuments()
+        .then((query) {
+      List results = [];
+      setState(() {
+        for (DocumentSnapshot doc in query.documents) {
+          results.add(doc.documentID);
+        }
+        user_projects = results;
+      });
+    }).whenComplete(() {
+      for (String project in user_projects) {
+        Firestore.instance.document(
+            'projects/${project}/users/${widget.userDocumentId}').get().then((
+            doc) {
+          comments[project] = (doc['comments'].length > 0);
+        });
+      }
+    });
+    return StreamBuilder<QuerySnapshot>(
+        stream: Firestore.instance.collection('projects')
+            .getDocuments()
+            .asStream(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (!snapshot.hasData) {
+            return new Center
+              (
+              child: new BarLoadingScreen(),
+            );
+          }
+          return Column(
+            children: snapshot.data.documents.where((project){
+
+              return user_projects.contains(project.documentID) && comments[project.documentID];
+            }).map((project)
+            {
+              return _buildReviewElt(context, project.documentID, project['projectTitle'], project['projectDescription']);
+            }).toList(),
+          );
+        });
+
+
+  }
+
+  Widget _buildReviewElt(BuildContext context, String project_id, String project_title, String project_description) {
     return Padding
       (
       padding: EdgeInsets.only(bottom: 16.0),
@@ -31,8 +86,14 @@ class NewReviewItem extends StatelessWidget
               [
                 InkWell
                   (
-                  onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProjectDetailsPage(colorIndex: colorIndex, projectDocumentID: '-LGtLKKphde0FGD8R7U9', canRecruit: false,))),
+                  onTap: () =>
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (_) =>
+                              ProjectDetailsPage(colorIndex: widget.colorIndex,
+                                projectDocumentID: project_id,
+                                canRecruit: false,))),
                   child:
+
                   /// Item description inside a material
                   Container
                     (
@@ -52,6 +113,7 @@ class NewReviewItem extends StatelessWidget
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>
                           [
+
                             /// Title and rating
                             Column
                               (
@@ -59,16 +121,21 @@ class NewReviewItem extends StatelessWidget
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>
                               [
-                                Text('[New] MISM', style: TextStyle(color: Colors.blueAccent)),
+                                Text('[New] ${project_title}',
+                                    style: TextStyle(color: Colors.blueAccent)),
                                 Row
                                   (
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: <Widget>
                                   [
-                                    Text('No reviews', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700, fontSize: 34.0)),
+                                    Text('No reviews', style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 34.0)),
                                   ],
                                 ),
+
                                 /// Infos
                                 Row
                                   (
@@ -76,7 +143,8 @@ class NewReviewItem extends StatelessWidget
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: <Widget>
                                   [
-                                    Expanded(child:Text(project_description,), flex: 1),
+                                    Expanded(child: Text(project_description,),
+                                        flex: 1),
                                   ],
                                 ),
                               ],

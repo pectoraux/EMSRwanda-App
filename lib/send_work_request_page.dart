@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'review_item.dart';
+import 'good_review_item.dart';
 import 'bad_review_item.dart';
 import 'new_review_item.dart';
 import 'constants.dart';
@@ -164,9 +164,9 @@ class _SendWorkRequestPageState extends State<SendWorkRequestPage>
                   )
                 )
             ),
-            ReviewItem(colorIndex: widget.colorIndex),
-            BadReviewItem(colorIndex: widget.colorIndex),
-            NewReviewItem(colorIndex: widget.colorIndex)
+            GoodReviewItem(colorIndex: widget.colorIndex, userDocumentId: widget.userDocumentID,),
+            BadReviewItem(colorIndex: widget.colorIndex, userDocumentId: widget.userDocumentID,),
+//            NewReviewItem(colorIndex: widget.colorIndex, userDocumentId: widget.userDocumentID,),
           ],
         )
     );

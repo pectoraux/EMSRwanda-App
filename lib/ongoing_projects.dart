@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'project_details.dart';
@@ -19,8 +21,24 @@ class OngoingProjectsPage extends StatefulWidget {
 }
 
 class OngoingProjectsPageState extends State<OngoingProjectsPage> {
+  String currentUserId;
+  List user_projects = [];
 
   @override
+  void initState() {
+    super.initState();
+    setDefaults();
+  }
+
+  Future setDefaults() async {
+    FirebaseAuth _auth = FirebaseAuth.instance;
+    FirebaseUser user = await _auth.currentUser();
+    setState(() {
+      currentUserId = user.uid;
+    });
+  }
+
+    @override
   Widget build(BuildContext context) {
     final _bkey = GlobalKey(debugLabel: 'Back Key');
     final _projectTitleController = TextEditingController();
@@ -32,6 +50,16 @@ class OngoingProjectsPageState extends State<OngoingProjectsPage> {
 
     List<StaggeredTile> mTiles = [];
     ScrollController controller = new ScrollController();
+
+    Firestore.instance.collection('users/$currentUserId/projects').getDocuments().then((query) {
+      List results = [];
+      setState(() {
+        for (DocumentSnapshot doc in query.documents) {
+          results.add(doc.documentID);
+        }
+        user_projects = results;
+      });
+    });
 
     return Scaffold
       (
@@ -78,6 +106,7 @@ class OngoingProjectsPageState extends State<OngoingProjectsPage> {
               );
             }
             try {
+
               return StaggeredGridView.count(
                 crossAxisCount: 2,
                 crossAxisSpacing: 12.0,
@@ -86,7 +115,9 @@ class OngoingProjectsPageState extends State<OngoingProjectsPage> {
                 controller: controller,
                 children: snapshot.data.documents.where((project){
                   bool isOngoing = !(project['startDate'].isAfter(DateTime.now()) || project['endDate'].isBefore(DateTime.now()));
-                  return isOngoing;
+                  bool isStaff = user_projects.contains(project.documentID);
+//                  print('=> => => ${user_projects} <= <= <= ${project.documentID}');
+                  return isOngoing && isStaff;
                 }).map((project) {
 //                print(role.documentID + ': ' + role['roleName']);
 

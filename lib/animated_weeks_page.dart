@@ -39,7 +39,7 @@ class _AnimatedWeeksPageState extends State<AnimatedWeeksPage> {
 bool loaded = false;
 
   @override
-  Future initState() {
+  void initState() {
     super.initState();
     setDefaults();
   }

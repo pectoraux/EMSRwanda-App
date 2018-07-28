@@ -3,11 +3,12 @@
 // found in the LICENSE file.
 
 import 'dart:math' as math;
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
-
+import 'constants.dart';
 import 'category.dart';
+import 'auth.dart';
 
 const double _kFlingVelocity = 2.0;
 
@@ -83,10 +84,7 @@ class _BackdropTitle extends AnimatedWidget {
   Widget build(BuildContext context) {
     final Animation<double> animation = this.listenable;
     return DefaultTextStyle(
-      style: Theme
-          .of(context)
-          .primaryTextTheme
-          .title,
+      style: Theme.of(context).primaryTextTheme.title,
       softWrap: false,
       overflow: TextOverflow.ellipsis,
       // Here, we do a custom cross fade between backTitle and frontTitle.
@@ -125,6 +123,8 @@ class Backdrop extends StatefulWidget {
   final Widget backPanel;
   final Widget frontTitle;
   final Widget backTitle;
+  final BaseAuth auth;
+  final VoidCallback onSignOut;
 
   const Backdrop({
     @required this.currentCategory,
@@ -132,6 +132,8 @@ class Backdrop extends StatefulWidget {
     @required this.backPanel,
     @required this.frontTitle,
     @required this.backTitle,
+    this.auth,
+    this.onSignOut,
   })
       : assert(currentCategory != null),
         assert(frontPanel != null),
@@ -226,7 +228,7 @@ class _BackdropState extends State<Backdrop>
   }
 
   Widget _buildStack(BuildContext context, BoxConstraints constraints) {
-    const double panelTitleHeight = 48.0;
+    const double panelTitleHeight = 50.0;
     final Size panelSize = constraints.biggest;
     final double panelTop = panelSize.height - panelTitleHeight;
 
@@ -257,6 +259,17 @@ class _BackdropState extends State<Backdrop>
     );
   }
 
+  void _signOut() async {
+    try {
+
+      await widget.auth.signOut();
+      widget.onSignOut();
+
+    } catch (e) {
+      print(e);
+    }
+
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -266,15 +279,33 @@ class _BackdropState extends State<Backdrop>
         leading: IconButton(
           onPressed: _toggleBackdropPanelVisibility,
           icon: AnimatedIcon(
-            icon: AnimatedIcons.close_menu,
+            icon: AnimatedIcons.home_menu,
+            color: Colors.black54,
             progress: _controller.view,
           ),
         ),
-        title: _BackdropTitle(
-          listenable: _controller.view,
-          frontTitle: widget.frontTitle,
-          backTitle: widget.backTitle,
-        ),
+      title: Text("Welcome to Laterite", style: TodoColors.textStyle5.apply(color: Colors.black87), textDirection:  TextDirection.ltr, textAlign: TextAlign.start,),
+
+        actions: <Widget>
+        [
+          Container
+            (
+            child: Row
+              (
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>
+              [
+                new FloatingActionButton(
+                  elevation: 200.0,
+                  child: new Icon(Icons.exit_to_app, textDirection: TextDirection.ltr, color: Colors.black54,),
+                  backgroundColor: widget.currentCategory.color,
+                  onPressed: _signOut,
+                ),
+              ],
+            ),
+          )
+        ],
       ),
       body: LayoutBuilder(
         builder: _buildStack,

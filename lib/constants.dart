@@ -95,21 +95,11 @@ class TodoColors {
       'splash': Color(0xFFA9CAE8),
     }),
     //Pending Requests
-    ColorSwatch(0xFF779A9A, {
-      'highlight': Color(0xFF3366FF),
-      'splash': Color(0xFF3366FF),
-      'error': Color(0xFF3366FF),
-    }),
-    //Explore Users
     ColorSwatch(0xFF81A56F, {
       'highlight': Color(0xFF81A56F),
       'splash': Color(0xFF7CC159),
     }),
-    //Explore Devices
-    ColorSwatch(0xFFD7C0E2, {
-      'highlight': Color(0xFFD7C0E2),
-      'splash': Color(0xFFCA90E5),
-    }),
+
     //Weeks Availability
     ColorSwatch(0xFFFFC7DE, {
       'highlight': Color(0xFFFFB7DE),

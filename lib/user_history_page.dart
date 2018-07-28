@@ -7,6 +7,7 @@ import 'view_devices.dart';
 import 'animated_weeks_page.dart';
 import 'constants.dart';
 import 'send_work_request_page.dart';
+import 'view_user_primary.dart';
 
 class UserHistoryPage extends StatefulWidget {
   final int colorIndex;
@@ -73,13 +74,22 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
     final navigationItems = <BottomNavigationBarItem>[];
     final items = <Widget>[];
+      navigationItems.add(
+        new BottomNavigationBarItem(
+            icon: new Icon(Icons.details, color: getColor(0),),
+            title: new Text("User\nDetails", textAlign: TextAlign.center,)
+        ),
+      );
+      items.add(new ViewUserPrimaryPage(colorIndex: widget.colorIndex,
+          currentUserId: widget.userDocumentID),);
 
     navigationItems.add(
       new BottomNavigationBarItem(
-          icon: new Icon(Icons.work, color: getColor(0),),
+          icon: new Icon(Icons.work, color: getColor(1),),
           title: new Text(
-            "Employment\nHistory", textAlign: TextAlign.center,)),
+            "Project\nHistory", textAlign: TextAlign.center,)),
     );
+
     if(widget.canRecruit){
       items.add(new SendWorkRequestPage(colorIndex: widget.colorIndex,
         userDocumentID: document.documentID,
@@ -95,14 +105,14 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
     }
       if(widget.canRateUser) {
         navigationItems.add(new BottomNavigationBarItem(
-            icon: new Icon(Icons.stars, color: getColor(1)),
+            icon: new Icon(Icons.stars, color: getColor(2)),
             title: new Text("Rate\nUser", textAlign: TextAlign.center,),),
         );
         items.add(new UserRatingPage(colorIndex: widget.colorIndex, userDocumentID: document.documentID, projectDocumentID: widget.projectDocumentID,));
       }
     navigationItems.add(
       new BottomNavigationBarItem(
-          icon: new Icon(Icons.calendar_view_day, color: getColor(widget.canRateUser?2:1),),
+          icon: new Icon(Icons.calendar_view_day, color: getColor(widget.canRateUser?3:2),),
           title: new Text("User\nAvailability", textAlign: TextAlign.center,)
       ),
     );
@@ -110,7 +120,7 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
 
     navigationItems.add(
       new BottomNavigationBarItem(
-          icon: new Icon(Icons.devices, color: getColor(widget.canRateUser?3:2),),
+          icon: new Icon(Icons.devices, color: getColor(widget.canRateUser?4:3),),
           title: new Text("User\nDevices", textAlign: TextAlign.center,)
       ),
       );

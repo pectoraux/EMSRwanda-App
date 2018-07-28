@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'project_details.dart';
@@ -5,6 +7,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'constants.dart';
 import 'loading_screen.dart';
 import 'my_project_dialog.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ClosedProjectsPage extends StatefulWidget {
   final int colorIndex;
@@ -20,6 +23,22 @@ class ClosedProjectsPage extends StatefulWidget {
 }
 
 class ClosedProjectsPageState extends State<ClosedProjectsPage> {
+  String currentUserId;
+  List user_projects = [];
+
+  @override
+  void initState() {
+    super.initState();
+    setDefaults();
+  }
+
+  Future setDefaults() async {
+    FirebaseAuth _auth = FirebaseAuth.instance;
+    FirebaseUser user = await _auth.currentUser();
+    setState(() {
+      currentUserId = user.uid;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +53,16 @@ class ClosedProjectsPageState extends State<ClosedProjectsPage> {
     List<StaggeredTile> mTiles = [];
     ScrollController controller = new ScrollController();
     List<Widget> mWidgets = [];
+
+    Firestore.instance.collection('users/$currentUserId/projects').getDocuments().then((query) {
+      List results = [];
+      setState(() {
+        for (DocumentSnapshot doc in query.documents) {
+          results.add(doc.documentID);
+        }
+        user_projects = results;
+      });
+    });
 
     return Scaffold
       (
@@ -89,7 +118,9 @@ class ClosedProjectsPageState extends State<ClosedProjectsPage> {
                 children: snapshot.data.documents.where((project){
                   bool isClosed = !(project['startDate'].isAfter(DateTime.now()) || project['endDate'].isAfter(DateTime.now())
                       || project['startDate'].isAtSameMomentAs(DateTime.now()) || project['endDate'].isAtSameMomentAs(DateTime.now()));
-                  return isClosed;
+                  bool isStaff = user_projects.contains(project.documentID);
+                  print('=> => => ${user_projects} <= <= <= ${project.documentID}');
+                  return isClosed && isStaff;
                 }).map((project) {
 
                   mTiles.add(StaggeredTile.extent(2, 110.0));

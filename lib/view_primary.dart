@@ -87,7 +87,9 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
   static String nationalID = "";
   static String emergencyContactName = "";
   static String emergencyContactPhone = "";
+  String photoUrl = "";
   List<bool> changed = [false, false, false, false, false, false, false, false,false,false,false,false,false,false,false,false,false,false,false,false,false];
+ bool photoChanged = false;
   static final formKey = new GlobalKey<FormState>();
   List<String> locations = ["Locations", "Gasabo", "Remera", "Kisimenti", "Gaculiro", "Kacyiru"];
   String profile_photo = "Change Your Profile Photo";
@@ -98,6 +100,8 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
   List<String> sex_options = ['Sex', 'Male', 'Female'];
   List<DropdownMenuItem> _sexMenuItems;
   String _sexValue;
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  FirebaseUser user;
 
   Future getImage(String src) async {
     var image = await ImagePicker.pickImage(source: src == 'Camera' ? ImageSource.camera : ImageSource.gallery);
@@ -109,25 +113,25 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
 
   // Method for uploading image
   Future _uploadImage(File image) async {
-
-    FirebaseAuth _auth = FirebaseAuth.instance;
-    FirebaseUser user = await _auth.currentUser();
     // fetch file name
     String fileName = p.basename(image.path);
     print('image base file name: ${fileName}');
     String lastImageName = getLastToken(user.photoUrl);
 
         if(lastImageName.isNotEmpty) {
-//          print('MMMMMMMMMMM => => => $lastImageName');
-          FirebaseStorage.instance.ref().child("users_photos/$lastImageName").delete();
+//          Delete  Previous Profile Image
+          FirebaseStorage.instance.ref().child(
+              "users_photos/$lastImageName").delete();
         }
 
-    final StorageReference ref = FirebaseStorage.instance.ref().child("users_photos/$fileName");
+
+    final StorageReference ref = FirebaseStorage.instance.ref().child(
+        "users_photos/$fileName");
 
     final StorageUploadTask uploadTask = ref.putFile(image, StorageMetadata(contentLanguage: "en"));
     print('STEP 1 Done - ${new DateTime.now()} ');
 
-    print("=> => => ${user.providerData.first.photoUrl}");
+    print("=> => => FIRST ${user.providerData.first.photoUrl}");
 
     final Uri downloadUrl = (await uploadTask.future).downloadUrl;
     print('STEP 2 Done - ${new DateTime.now()} ');
@@ -138,6 +142,8 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
     userInfo.displayName='';
     _auth.updateProfile(userInfo);
     setState(() {
+
+      photoUrl = '$downloadUrl';
       this.showLoadingAnimation = false;
       print("Loading animation ended");
     });
@@ -169,8 +175,9 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
   void setDefaults()async {
       FirebaseAuth _auth = FirebaseAuth.instance;
       FirebaseUser user = await _auth.currentUser();
-      imageUrlStr = user.photoUrl;
-
+      await Firestore.instance.document('users/${user.uid}').get().then((doc) {
+        imageUrlStr = doc['photoUrl'];
+      });
       _setSexDefaults();
   }
 
@@ -342,7 +349,7 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
                                   borderRadius: BorderRadius.all(
                                       Radius.circular(7.0)),
                                 ),
-                                onPressed: () {getImage('Camera'); Navigator.of(context).pop();},
+                                onPressed: () {getImage('Camera'); Navigator.of(context).pop(); photoChanged = true;},
                               ),
                               SizedBox(height: 12.0),
                               RaisedButton(
@@ -353,7 +360,7 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
                                   borderRadius: BorderRadius.all(
                                       Radius.circular(7.0)),
                                 ),
-                                onPressed: () {getImage('Gallery'); Navigator.of(context).pop();},
+                                onPressed: () {getImage('Gallery'); Navigator.of(context).pop(); photoChanged = true;},
                               ),
                               SizedBox(height: 12.0),
                             ],
@@ -569,9 +576,7 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
     borderRadius: BorderRadius.all(Radius.circular(7.0)),
     ),
     onPressed: ()  {
-
-        setState(() {
-          if(editText == 'SAVE') {
+    if(editText == 'SAVE') {
             showInSnackBar("Saving Changes ...", TodoColors.baseColors[_colorIndex]);
 
         bool valid = validateAndSave();
@@ -593,12 +598,17 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
             insuranceCpy = changed[16] ? _insuranceCpyController.text : document['insuranceCpy'];
             tin = changed[17] ? _tinController.text : document['tin'];
             cvStatusElec = changed[18] ? _cvStatusElecController.text : document['cvStatusElec'];
-
-
+//            photoUrl = photoChanged ?
+        _uploadImage(_image);
             Firestore.instance.runTransaction((transaction) async {
               DocumentSnapshot snapshot =
               await transaction.get(document.reference);
-
+////              if(photoChanged) {
+////                print('UPLOADING');
+////
+////                print("DONE UPLOADING");
+////              }
+//print('IMGSTRURL => => => ${imageUrlStr} <= <= <= ${photoUrl}');
               await transaction.update(snapshot.reference, {
                 'firstName': firstName,
                 'lastName': lastName,
@@ -614,10 +624,10 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
                 'cvStatusElec': cvStatusElec,
                 'dob': dob,
                 'nationalID': nationalID,
+                'photoUrl': imageUrlStr,
                 'editing':!snapshot['editing'],
               });
             });
-            _uploadImage(_image);
     }else {
     Firestore.instance.runTransaction((transaction) async {
     DocumentSnapshot snapshot = await transaction. get (
@@ -629,7 +639,6 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
     });
     showInSnackBar("Entering Edit Mode ...", Colors.redAccent);
     }
-    });
     }
 
 

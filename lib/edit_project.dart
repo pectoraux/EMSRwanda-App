@@ -464,7 +464,14 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
 
                     DocumentReference userRef = Firestore.instance.document(
                         'projects/${reference.documentID}/users/${muid}');
-                    await userRef.setData({});
+                    await userRef.setData({
+                      'comments': [],
+                      'communicationRating': -1.0,
+                      'initiativeTakingRating': -1.0,
+                      'overAllRating': -1.0,
+                      'punctualityRating': -1.0,
+                      'reportingRating': -1.0,
+                    });
 
 //                    print('YYYYYYYYYYYY => => => ${reference.documentID}');
                   });

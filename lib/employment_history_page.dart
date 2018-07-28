@@ -236,14 +236,23 @@ class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
       Firestore.instance.document('users/${user.uid}/pending_requests/${widget.requestId}').get().then((d){
         if(d['page'] == 'project_details'){
           mId = d['from'];
+          print('=> => => ${mId} <= <= <=');
         }else {
           mId = user.uid;
+          print('acc => => => ${mId} <= <= <=');
         }
       }).whenComplete(() async {
         DocumentReference reference =
         Firestore.instance.document(
             'projects/${widget.projectDocumentID}/users/${mId}');
-        await reference.setData({});
+        await reference.setData({
+          'comments': [],
+          'communicationRating': -1.0,
+          'initiativeTakingRating': -1.0,
+          'overAllRating': -1.0,
+          'punctualityRating': -1.0,
+          'reportingRating': -1.0,
+        });
       });
     });
 

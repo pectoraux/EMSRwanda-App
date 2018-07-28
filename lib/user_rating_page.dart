@@ -41,11 +41,9 @@ class UserRatingPageState extends State<UserRatingPage> {
     FirebaseUser user = await _auth.currentUser();
     imageUrlStr = user.photoUrl;
 //    print('MMMMMMMMMMM => => => $imageUrlStr');
-  
-    DocumentSnapshot doc = await Firestore.instance.document('users/${user.uid}').get();
-    firstName = doc['firstName'];
-    lastName = doc['lastName'];
+
   }
+
   List<Widget> _buildOverallRatings(int rating) {
     List ratingItems = <Widget>[];
     for (int i = 0; i < 5; i++) {
@@ -89,11 +87,19 @@ class UserRatingPageState extends State<UserRatingPage> {
 
     List reviewWidgets = <Widget>[];
     for (String cmt in document['comments']){
-      String author = cmt.substring(0, cmt.lastIndexOf('★')+1);
+      String author = cmt.substring(cmt.indexOf('★')+1, cmt.lastIndexOf('★')+1);
       String comment = cmt.substring(cmt.lastIndexOf('★')+1);
         reviewWidgets.add(_buildReview(context, author, comment));
         reviewWidgets.add(Divider());
     }
+
+    Firestore.instance.document('users/${widget.userDocumentID}').get().then((doc) {
+      setState(() {
+        firstName = doc['firstName'];
+        lastName = doc['lastName'];
+      });
+    });
+
 
     return Scaffold
       (
@@ -151,7 +157,8 @@ class UserRatingPageState extends State<UserRatingPage> {
                             new Container(
                               width: 450.0,
                             );
-                            showDialog(context: context, child: new MyRatingDialog(colorIndex: widget.colorIndex,));
+                            showDialog(context: context, child: new MyRatingDialog(colorIndex: widget.colorIndex, userDocumentID: widget.userDocumentID,
+                            projectDocumentID: widget.projectDocumentID, firstName: firstName, lastName: lastName));
                           },
                           child: Padding
                             (

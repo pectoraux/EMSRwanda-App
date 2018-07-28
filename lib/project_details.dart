@@ -38,7 +38,8 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
   final _projectDescription = GlobalKey(debugLabel: 'Project Description');
   String author = '';//'Anirudh\nRajashekar';
   String authorId = '';
-  bool isDisabled = false;
+  bool isDisabled = false, isStaff = false;
+  List user_projects = [];
 
   final List<List<double>> charts =
   [
@@ -318,42 +319,10 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
                         RaisedButton(
                           key: _raisedButton,
                           padding: EdgeInsets.all(18.0),
-                          onPressed: isDisabled ? () => showInSnackBar('You Already Sent A Work Request', Colors.redAccent) : () async {
-                            setState(() {
-                              isDisabled = true;
-                            });
-
-                            Map<String, Object> made_by_you_data = <String, Object>{
-                             'projectTitle': title,
-                              'projectId': widget.projectDocumentID,
-                              'to': authorId,
-                              'type': 'Made By You',
-                            };
-                            String myId;
-                            Firestore.instance.runTransaction((transaction) async {
-                              DocumentReference ref = Firestore.instance.collection('users/${user.uid}/pending_requests').document();
-                              myId = ref.documentID;
-                              DocumentReference reference =
-                              Firestore.instance.document('users/${user.uid}/pending_requests/${myId}');
-                              await reference.setData(made_by_you_data);
-                            });
-                            Map<String, Object> made_to_data = <String, Object>{
-                              'projectTitle': title,
-                              'projectId': widget.projectDocumentID,
-                              'from': user.uid,
-                              'type': 'Made To You'
-                            };
-                            Firestore.instance.runTransaction((transaction) async {
-                              DocumentReference reference =
-                              Firestore.instance.document('users/${authorId}/pending_requests/${myId}');
-                              await reference.setData(made_to_data);
-                            });
-                          },
-                          child:   Text(
-                            button_message,
-                            style: TodoColors.textStyle4,),
+                          onPressed: isDisabled ? () => showInSnackBar('You Already Sent A Work Request', Colors.redAccent) : (){_sendWorkRequest();},
+                          child:   Text(button_message, style: TodoColors.textStyle4,),
                         )
-    : Center(child:Text('Work\nRequest Pending', style: TodoColors.textStyle4,) )
+    : Center(child:Text(isStaff? button_message : 'Work\nRequest Pending', style: TodoColors.textStyle4, textDirection: TextDirection.ltr,) )
         : Container()
                       ],
                     ),
@@ -381,12 +350,28 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
       isUpcoming = !(project['startDate'].isBefore(DateTime.now()) || project['endDate'].isBefore(DateTime.now()));
       isOngoing = !(project['startDate'].isAfter(DateTime.now()) || project['endDate'].isBefore(DateTime.now()));
 
-
-      Firestore.instance.document('users/${project['author']}').get().then((doc){
+      Firestore.instance.collection('users/${user.uid}/projects').getDocuments().then((query) {
+        List results = [];
         setState(() {
-            author = '${doc['firstName']}\n${doc['lastName']}';
-            button_message = isUpcoming ? 'Send   Work   Request' : isOngoing ? '': 'Send   Payment   Request';
+          for (DocumentSnapshot doc in query.documents) {
+            results.add(doc.documentID);
+          }
+          user_projects = results;
+          setState(() {
+            isStaff = user_projects.contains(widget.projectDocumentID);
+            if(isStaff){
+              isDisabled = true;
+            }
+          });
         });
+      }).whenComplete((){
+
+      Firestore.instance.document('users/${project['author']}'). get().then((doc){
+      setState(() {
+      author = '${doc['firstName']}\n${doc['lastName']}';
+      button_message = isStaff ? 'STAFF MEMBER' : isUpcoming ? 'Send   Work   Request' : isOngoing ? '': 'Send   Payment   Request';
+      });
+      });
       });
 
       title = project['projectTitle'];
@@ -687,8 +672,8 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
           'projectTitle': doc['projectTitle'],
           'projectId': widget.projectDocumentID,
           'to': authorId,
-          'type': 'Made By You',
           'page': 'project_details',
+          'type': 'Made By You',
         };
 
         String myId;
@@ -704,8 +689,8 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
             'projectTitle': doc['projectTitle'],
             'projectId': widget.projectDocumentID,
             'from': user.uid,
-            'type': 'Made To You',
             'page': 'project_details',
+            'type': 'Made To You',
           };
           Firestore.instance.runTransaction((transaction) async {
             DocumentReference reference =

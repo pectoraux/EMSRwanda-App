@@ -1,15 +1,26 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
 import 'color_override.dart';
 import 'star_rating.dart';
+import 'loading_screen.dart';
+import 'user_rating_page.dart';
 
 class MyRatingDialog extends StatefulWidget {
   final int colorIndex;
+  final String projectDocumentID;
+  final String userDocumentID;
+  final String firstName, lastName;
 
   const MyRatingDialog({
     @required this.colorIndex,
-  }) : assert(colorIndex != null);
+    @required this.projectDocumentID,
+    @required this.userDocumentID,
+    @required this.firstName,
+    @required this.lastName,
+  }) : assert(colorIndex != null), assert(projectDocumentID != null), assert(userDocumentID != null),
+  assert(firstName != null), assert(lastName != null);
 
   @override
   State createState() => new MyRatingDialogState();
@@ -28,7 +39,13 @@ class MyRatingDialogState extends State<MyRatingDialog> {
   final _tags = GlobalKey(debugLabel: 'Project or User Related Tags');
 
   List<DropdownMenuItem> _ratingTypeMenuItems, _ratingMenuItems;
-  List<String> ratingTypes = ["Rating Type", "Punctuality", "Initiative Taking", "Communication", "Reporting"];
+  List<String> ratingTypes = [
+    "Rating Type",
+    "Punctuality",
+    "Initiative Taking",
+    "Communication",
+    "Reporting"
+  ];
   List<String> ratings = ["Ratings", "1", "2", "3", "4", "5"];
   String _ratingTypesValue, _ratingsValue;
   double rating = 0.0;
@@ -56,9 +73,9 @@ class MyRatingDialogState extends State<MyRatingDialog> {
       ));
     }
     setState(() {
-      if(idx == 13) { //if location drop down
+      if (idx == 13) { //if location drop down
         _ratingTypeMenuItems = newItems;
-      } else if (idx == 12){
+      } else if (idx == 12) {
         _ratingMenuItems = newItems;
       }
     });
@@ -75,9 +92,7 @@ class MyRatingDialogState extends State<MyRatingDialog> {
 
   Widget _createDropdown(int idx, String currentValue, ValueChanged<dynamic>
 
-  onChanged)
-
-  {
+  onChanged) {
     return Container(
       decoration: BoxDecoration(
         // This sets the color of the [DropdownButton] itself
@@ -105,10 +120,13 @@ class MyRatingDialogState extends State<MyRatingDialog> {
                   children: <Widget>[
                     DropdownButton(
                       value: currentValue,
-                      items: (idx == 13) ? _ratingTypeMenuItems : _ratingMenuItems,
+                      items: (idx == 13)
+                          ? _ratingTypeMenuItems
+                          : _ratingMenuItems,
                       onChanged: onChanged,
                       style: TodoColors.textStyle2,
-                    ),]
+                    ),
+                  ]
               ),),
           ),
         ),
@@ -128,80 +146,125 @@ class MyRatingDialogState extends State<MyRatingDialog> {
     });
   }
 
+  double computeMean(List lst){
+    double result = 0.0;
+    for(int k = 0; k < lst.length; k++){
+      result += lst[k];
+    }
+    return result/lst.length;
+  }
 
   Widget build(BuildContext context) {
-
-
     final _ratingCommentController = TextEditingController();
     final _ratingComment = GlobalKey(debugLabel: 'Rating Comment');
 
-    return new AlertDialog(
-      title: new Text('Rate User',
-        style: TodoColors.textStyle.apply(
-            color: TodoColors.baseColors[widget.colorIndex]),),
-      content: new SingleChildScrollView(
-        child: new ListBody(
-          children: <Widget>[
+    return new StreamBuilder<DocumentSnapshot>(
+        stream: Firestore.instance.document(
+            'projects/${widget.projectDocumentID}/users/${widget.userDocumentID}').snapshots(),
+        builder: (BuildContext context,
+            AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (!snapshot.hasData) {
+            return new Center(
+              child: new BarLoadingScreen(),
+            );
+          } else if (snapshot.data != null) {
+            DocumentSnapshot document = snapshot.data;
+            return new AlertDialog(
+              title: new Text('Rate User',
+                style: TodoColors.textStyle.apply(
+                    color: TodoColors.baseColors[widget.colorIndex]),),
+              content: new SingleChildScrollView(
+                child: new ListBody(
+                  children: <Widget>[
 
-            const SizedBox(height: 12.0),
-            _createDropdown(13, _ratingTypesValue, _updateRatingTypesValue),
+                    const SizedBox(height: 12.0),
+                    _createDropdown(
+                        13, _ratingTypesValue, _updateRatingTypesValue),
 
-            const SizedBox(height: 12.0),
-            _createDropdown(12, _ratingsValue, _updateRatingsValue),
+                    const SizedBox(height: 12.0),
+                    _createDropdown(12, _ratingsValue, _updateRatingsValue),
 
-            SizedBox(height: 12.0),
-            PrimaryColorOverride(
-              color: TodoColors.baseColors[widget.colorIndex],
-              child: new StarRating(
-                rating: rating,
-                onRatingChanged: (rating) => setState(() => rating = rating),
-              ),
-            ),
+                    SizedBox(height: 12.0),
+                    PrimaryColorOverride(
+                      color: TodoColors.baseColors[widget.colorIndex],
+                      child: new StarRating(
+                        rating: rating,
+                        onRatingChanged: (rating) =>
+                            setState(() => rating = rating),
+                      ),
+                    ),
 
-            SizedBox(height: 12.0),
-            PrimaryColorOverride(
-              color: TodoColors.baseColors[widget.colorIndex],
-              child: TextField(
-                key: _ratingComment,
-                maxLines: null,
-                controller: _ratingCommentController,
-                decoration: InputDecoration(
-                  labelText: 'Rating Comment',
-                  labelStyle: TodoColors.textStyle2,
-                  border: CutCornersBorder(),
+                    SizedBox(height: 12.0),
+                    PrimaryColorOverride(
+                      color: TodoColors.baseColors[widget.colorIndex],
+                      child: TextField(
+                        key: _ratingComment,
+                        maxLines: null,
+                        controller: _ratingCommentController,
+                        decoration: InputDecoration(
+                          labelText: 'Rating Comment',
+                          labelStyle: TodoColors.textStyle2,
+                          border: CutCornersBorder(),
+                        ),
+                      ),
+                    ),
+
+
+                  ],
                 ),
+
               ),
-            ),
 
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('CANCEL'),
+                  textColor: TodoColors.baseColors[widget.colorIndex],
+                  shape: BeveledRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(7.0)),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
 
-          ],
-        ),
-
-      ),
-
-      actions: <Widget>[
-        FlatButton(
-          child: Text('CANCEL'),
-          textColor: TodoColors.baseColors[widget.colorIndex],
-          shape: BeveledRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(7.0)),
-          ),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-
-        RaisedButton(
-          child: Text('RATE'),
-          textColor: TodoColors.baseColors[widget.colorIndex],
-          elevation: 8.0,
-          shape: BeveledRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(7.0)),
-          ),
-          onPressed: () {},
-        ),
-
-      ],
-    );
+                RaisedButton(
+                  child: Text('RATE'),
+                  textColor: TodoColors.baseColors[widget.colorIndex],
+                  elevation: 8.0,
+                  shape: BeveledRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(7.0)),
+                  ),
+                  onPressed: () {
+                    List<double> ratings = [];
+//                    for (int i = 0; i < 4; i++) {
+//                      if (_ratingTypesValue == ratingTypes[i + 1]) {
+//                        ratings[i] = double.parse(_ratingsValue);
+//                      } else {
+//                        ratings[i] = -1.0;
+//                      }
+                      String stars = '';
+                      for(int j = 0; j < int.parse(_ratingsValue); j++){
+                        stars += '★';
+                      }
+                      List cmts = document['comments'];
+                      List mComments = [];
+                      mComments.addAll(cmts);
+                      String cmt = '${_ratingTypesValue} ${_ratingsValue} ★ ${widget.firstName} ${widget.lastName} $stars ${_ratingCommentController.text}';
+                      mComments.add(cmt);
+                      Firestore.instance.runTransaction((transaction) async {
+                        DocumentSnapshot snapshot = await transaction.get(
+                            document.reference);
+                        await transaction.update(snapshot.reference, {
+                          'comments': mComments,
+                        });
+                      });
+//                    print('OUTPUT => => => ${mComments}');
+                  Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          }
+        });
   }
 }

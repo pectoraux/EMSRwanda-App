@@ -153,6 +153,13 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
   }
 
   @override
+  void didUpdateWidget(UserHistoryPage oldWidget) {
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
+    _page = 0;
+  }
+
+  @override
   void dispose() {
     super.dispose();
     _pageController.dispose();

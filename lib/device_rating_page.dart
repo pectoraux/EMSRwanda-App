@@ -83,7 +83,7 @@ class DeviceRatingPageState extends State<DeviceRatingPage> {
                             new Container(
                               width: 450.0,
                             );
-                            showDialog(context: context, child: new MyRatingDialog(colorIndex: widget.colorIndex,));
+//                            showDialog(context: context, child: new MyRatingDialog(colorIndex: widget.colorIndex,));
                           },
                           child: Padding
                             (

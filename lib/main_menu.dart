@@ -77,7 +77,7 @@ MainMenu({Key key, this.currentUserId, this.storage}): super(key: key);
   void onTap(BuildContext context, String command) {
     if (command == "Primary Details") {
       Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => ViewPrimaryPage(currentUserId: currentUserId,)));
+          MaterialPageRoute(builder: (_) => ViewPrimaryPage(currentUserId: currentUserId, storage: storage,)));
     } else if (command == "Banking Details") {
       Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => ViewBankingPage(currentUserId: currentUserId,)));

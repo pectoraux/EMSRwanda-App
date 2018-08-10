@@ -46,7 +46,6 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
   final _dob = GlobalKey(debugLabel: 'Date Of Birth');
   final _padding = EdgeInsets.all(5.0);
   int _colorIndex = 0;
-
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _email1Controller = TextEditingController();
@@ -142,7 +141,6 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
     userInfo.displayName='';
     _auth.updateProfile(userInfo);
     setState(() {
-
       photoUrl = '$downloadUrl';
       this.showLoadingAnimation = false;
       print("Loading animation ended");
@@ -208,11 +206,7 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
     });
   }
 
-  Widget _createDropdown(int idx, String currentValue, ValueChanged<dynamic>
-
-  onChanged)
-
-  {
+  Widget _createDropdown(int idx, String currentValue, ValueChanged<dynamic> onChanged) {
     return Container(
       decoration: BoxDecoration(
         // This sets the color of the [DropdownButton] itself
@@ -742,7 +736,6 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
               ),
             );
           }
-
         });
   }
 

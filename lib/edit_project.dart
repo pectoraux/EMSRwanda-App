@@ -31,16 +31,17 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
   final Connectivity _connectivity = new Connectivity();
   StreamSubscription<ConnectivityResult> _connectivitySubscription;
   FirebaseAuth _auth = FirebaseAuth.instance;
-
+  final _teamCountController = TextEditingController();
+  final _staffCountController = TextEditingController();
   final _projectTitleController = TextEditingController();
   final _projectDescriptionController = TextEditingController();
   final _projectTitle = GlobalKey(debugLabel: 'Project Title');
+  final _staffCount = GlobalKey(debugLabel: 'Staff Count');
+  final _teamCount = GlobalKey(debugLabel: 'Team Count');
   final _myProjectDescription = GlobalKey(debugLabel: 'Project Description');
   static final formKey = new GlobalKey<FormState>();
-
-
-  DateTime _fromDate;
-  DateTime _toDate;
+  DateTime _fromDate = DateTime.now();
+  DateTime _toDate = DateTime.now();
 
 
   bool _sendRequestToAvailableUsers = false;
@@ -227,6 +228,34 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
             controller: _projectDescriptionController,
             decoration: InputDecoration(
               labelText: 'Project Description',
+              labelStyle: TodoColors.textStyle2,
+              border: CutCornersBorder(),
+            ),
+          ),
+        ),
+
+        SizedBox(height: 12.0),
+        PrimaryColorOverride(
+          color: TodoColors.baseColors[_colorIndex],
+          child: TextField(
+            key: _staffCount,
+            controller: _staffCountController,
+            decoration: InputDecoration(
+              labelText: 'Number of Employees on Project',
+              labelStyle: TodoColors.textStyle2,
+              border: CutCornersBorder(),
+            ),
+          ),
+        ),
+
+        SizedBox(height: 12.0),
+        PrimaryColorOverride(
+          color: TodoColors.baseColors[_colorIndex],
+          child: TextField(
+            key: _teamCount,
+            controller: _teamCountController,
+            decoration: InputDecoration(
+              labelText: 'Number of Employees per Team',
               labelStyle: TodoColors.textStyle2,
               border: CutCornersBorder(),
             ),
@@ -442,9 +471,12 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),
               ),
               onPressed: _connectionStatus == 'ConnectivityResult.none' ? () => onTap2() :()  async {
-//                _projectTitleController.text.trim() != "" &&
-//                    _projectDescriptionController.text.trim() != ""
-                if (true) {
+
+                if (_projectTitleController.text.trim() != "" &&
+                    _projectDescriptionController.text.trim() != "" &&
+                    _teamCountController.text.trim() != "" &&
+                    _staffCountController.text.trim() != "" &&
+                    _fromDate.isBefore(_toDate) && _toDate.isAfter(DateTime.now())) {
                   String muid = (await _auth.currentUser()).uid;
                   Map<String, Object> project_data = <String, Object>{
                     'projectTitle': _projectTitleController.text,
@@ -455,13 +487,15 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
                     'author': muid,
                     'startDate': _fromDate,
                     'endDate': _toDate,
+                    'staffCount': _staffCountController.text,
+                    'teamCount': _teamCountController.text,
+                    'currentGroup': 0,
+                    'currentGroupCount': 0,
                   };
-
                   Firestore.instance.runTransaction((transaction) async {
                     DocumentReference reference =
                     Firestore.instance.collection('projects').document();
                     await transaction.set(reference, project_data);
-
                     DocumentReference userRef = Firestore.instance.document(
                         'projects/${reference.documentID}/users/${muid}');
                     await userRef.setData({
@@ -471,24 +505,23 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
                       'overAllRating': -1.0,
                       'punctualityRating': -1.0,
                       'reportingRating': -1.0,
+                      'userGroup': -1,
                     });
-
-//                    print('YYYYYYYYYYYY => => => ${reference.documentID}');
                   });
-
-
-
                   _projectTitleController.clear();
                   _projectDescriptionController.clear();
+                  _staffCountController.clear();
+                  _teamCountController.clear();
+                  _fromDate = DateTime.now();
+                  _toDate = DateTime.now();
                   selectedLocations = new Set();
                   selectedTags = new Set();
                   devicesWithRole = new Map<String, Object>();
                   selectedDevices = new Set();
-
                   showInSnackBar(
                       "Project Created Successfully", TodoColors.baseColors[_colorIndex]);
                 } else {
-                  showInSnackBar("Please Specify A Value For All Fields",
+                  showInSnackBar("Please Specify A Value For All Fields And Check All Fields",
                       Colors.redAccent);
                 }
               },

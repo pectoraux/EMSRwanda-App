@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -436,7 +435,9 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
                           .toString()
                           .length - 1),
                       project['projectTitle'],
-                      project['projectDescription']
+                      project['projectDescription'],
+                    project['startDate'],
+                    project['endDate']
                   ),
                   _buildTile(
                     Padding(
@@ -703,7 +704,7 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
     }
   }
 
-  Widget _buildTile2(Widget child, String locations, String title, String description) {
+  Widget _buildTile2(Widget child, String locations, String title, String description, DateTime startDate, DateTime endDate) {
     return Material(
         elevation: 14.0,
         borderRadius: BorderRadius.circular(12.0),
@@ -713,7 +714,7 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
           // Do onTap() if it isn't null, otherwise do print()
             onTap: () {
               showDialog(context: context, child: new MyProjectDetailsDialog(colorIndex: widget.colorIndex, title: title,
-              project_description: description, locations: locations,));
+              project_description: description, locations: locations, startDate: startDate, endDate: endDate,));
             },
             child: child
         )

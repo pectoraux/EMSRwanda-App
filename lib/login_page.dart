@@ -5,7 +5,6 @@ import 'color_override.dart';
 import 'constants.dart';
 import 'package:flutter/animation.dart';
 import 'animated_logo.dart';
-import 'loading_screen.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key, this.title, this.auth, this.onSignIn}) : super(key: key);
@@ -54,7 +53,7 @@ class _LoginPageState extends State<LoginPage>   with SingleTickerProviderStateM
   void validateAndSubmit() async {
     if (validateAndSave()) {
       try {
-        String uid = await widget.auth.signIn(_emailController.text, _passwordController.text);
+        String uid = await widget.auth.signIn(_emailController.text+'@laterite.com', _passwordController.text);
         setState(() {
           _authHint = 'Signed In\n\nUser id: $uid';
           userId = uid;
@@ -134,7 +133,7 @@ class _LoginPageState extends State<LoginPage>   with SingleTickerProviderStateM
                       autocorrect: false,
                       controller: _emailController,
                       validator: (val) => val.isEmpty ? 'Email can\'t be empty.' : null,
-                      onSaved: (val) => _emailController.text = val.split('@')[0]+'@laterite.com',
+                      onSaved: (val) => _emailController.text = val.split('@')[0],
                       decoration: InputDecoration(
                         labelText: 'Username',
                         border: CutCornersBorder(),

@@ -43,6 +43,7 @@ class _ProfilePageState extends State<ProfilePage> {
   /// Indicating the current displayed page
   int _page = 0;
 
+
   Widget _buildPage(BuildContext context, DocumentSnapshot roleDocument, Profile profile) {
 
     var navigationItems;
@@ -73,7 +74,7 @@ class _ProfilePageState extends State<ProfilePage> {
             children: <Widget>[
               new ProfileHeader(profile),
               new QuickActions(currentUserId: currentUserId,),
-              new MainMenu(currentUserId: currentUserId,),
+              new MainMenu(currentUserId: currentUserId, storage: storage),
             ],
           ),
         );
@@ -150,7 +151,7 @@ class _ProfilePageState extends State<ProfilePage> {
             children: <Widget>[
               new ProfileHeader(profile),
               new QuickActions(),
-              new MainMenu(currentUserId: currentUserId, storage: storage,),
+              new MainMenu(currentUserId: currentUserId, ),
             ],
           ),
         );

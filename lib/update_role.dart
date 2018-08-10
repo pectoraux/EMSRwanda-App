@@ -231,7 +231,7 @@ class UpdateRolePageState extends State<UpdateRolePage>  with SingleTickerProvid
                     Navigator.of(context).pop();
 
                   showInSnackBar(
-                      "Role Created Successfully", TodoColors.baseColors[widget.colorIndex]);
+                      "Role Updated Successfully", TodoColors.baseColors[widget.colorIndex]);
 
                 } else {
                   showInSnackBar(

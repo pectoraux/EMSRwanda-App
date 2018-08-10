@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'constants.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'accept_request.dart';
 import 'user_history_page.dart';
 import 'supplemental/cut_corners_border.dart';
 

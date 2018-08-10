@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+//import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'loading_screen.dart';
 import 'supplemental/cut_corners_border.dart';
@@ -16,12 +16,14 @@ import 'package:flutter_country_picker/flutter_country_picker.dart';
 class ViewUserPrimaryPage extends StatefulWidget {
   final int colorIndex;
   final String currentUserId;
-  final FirebaseStorage storage;
+  final String projectDocumentId;
+   bool canCreateUser;
 
-  const ViewUserPrimaryPage({
+  ViewUserPrimaryPage({
     @required this.colorIndex,
     @required this.currentUserId,
-    this.storage,
+    this.canCreateUser,
+    this.projectDocumentId,
   }) : assert(colorIndex != null),
         assert(currentUserId != null);
   @override
@@ -32,7 +34,6 @@ class ViewUserPrimaryPageState extends State<ViewUserPrimaryPage>  with SingleTi
   AnimationController controller;
   Animation<double> animation;
   String imagePath;
-  File _image;
   final _userName = GlobalKey(debugLabel: 'Username');
   final _userStatus = GlobalKey(debugLabel: 'User Status');
   final _firstName = GlobalKey(debugLabel: 'First Name');
@@ -57,36 +58,16 @@ class ViewUserPrimaryPageState extends State<ViewUserPrimaryPage>  with SingleTi
   final _emergencyContactPhone = GlobalKey(debugLabel: 'Emergency Contact Phone');
   final _bankAcctNo = GlobalKey(debugLabel: 'Banc Acct No');
   final _bankName = GlobalKey(debugLabel: 'Bank Name');
+  final _userGroup = GlobalKey(debugLabel: 'User Group');
+  final _userGroup2 = GlobalKey(debugLabel: 'User Group2');
   final _padding = EdgeInsets.all(5.0);
 
-  final _firstNameController = TextEditingController();
-  final _lastNameController = TextEditingController();
-  final _email1Controller = TextEditingController();
-  final _email2Controller = TextEditingController();
-  final _sexController = TextEditingController();
-  final _countryController = TextEditingController();
-  final _mainPhoneController = TextEditingController();
-  final _phone1Controller = TextEditingController();
-  final _phone2Controller = TextEditingController();
-  final _passportNoController = TextEditingController();
-  final _bankAcctNoController = TextEditingController();
-  final _bankNameController = TextEditingController();
-  final _insuranceController = TextEditingController();
-  final _insuranceNoController = TextEditingController();
-  final _insuranceCpyController = TextEditingController();
-  final _tinController = TextEditingController();
-  final _cvStatusElecController = TextEditingController();
-  final _dobController = TextEditingController();
-  final _nationalIDController = TextEditingController();
+  final _userGroup2Controller = TextEditingController();
   static final formKey = new GlobalKey<FormState>();
   bool showLoadingAnimation = false;
   String imageUrlStr = '';
-  Country _selected;
   DateTime picked;
-  List<DropdownMenuItem> _sexMenuItems;
-  String _sexValue;
-
-
+  int userGroup, userGroup2;
 
   @override
   initState() {
@@ -95,6 +76,24 @@ class ViewUserPrimaryPageState extends State<ViewUserPrimaryPage>  with SingleTi
         duration: const Duration(milliseconds: 2000), vsync: this);
     animation = new Tween(begin: 0.0, end: 300.0).animate(controller);
     controller.forward();
+    if(widget.projectDocumentId != null) {
+      setDefaults();
+    }
+  }
+
+  void setDefaults() async {
+    Firestore.instance.collection('projects/${widget.projectDocumentId}/users')
+        .getDocuments()
+        .then((query) {
+      query.documents.forEach((doc) {
+//        print('=> => => ${doc.documentID}');
+        if (doc.documentID == widget.currentUserId){
+          setState(() {
+            userGroup = doc['userGroup'];
+          });
+        }
+      });
+    });
   }
 
 
@@ -103,6 +102,19 @@ class ViewUserPrimaryPageState extends State<ViewUserPrimaryPage>  with SingleTi
 //    controller.dispose();
 //    super.dispose();
 //  }
+
+  void _changeUserGroup(String newGrp){
+    Firestore.instance.runTransaction((transaction) async {
+      DocumentReference reference =
+      Firestore.instance.document('projects/${widget.projectDocumentId}/users/${widget.currentUserId}');
+      await transaction.update(reference,
+      {'userGroup': int.parse(newGrp)});
+      setState(() {
+        userGroup = int.parse(newGrp);
+        formKey.currentState.setState(null);
+      });
+    });
+  }
 
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot document){
@@ -141,6 +153,7 @@ class ViewUserPrimaryPageState extends State<ViewUserPrimaryPage>  with SingleTi
               child: new Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children:<Widget>[
+
                   SizedBox(height: 12.0),
                   ListTile(
                     title: Container(
@@ -159,6 +172,92 @@ class ViewUserPrimaryPageState extends State<ViewUserPrimaryPage>  with SingleTi
                       ),
                     ),
                   ),
+
+                  widget.projectDocumentId != null ? SizedBox(height: 12.0):SizedBox(height: 0.0),
+                  widget.projectDocumentId != null ?
+                  ListTile(
+                    title: Container(
+                      child: InputDecorator(
+                        key: _userGroup,
+                        child: Text(
+                          '$userGroup',
+                          style: TodoColors.textStyle3.apply(
+                              color: TodoColors.baseColors[widget.colorIndex]),
+                        ),
+                        decoration: InputDecoration(
+                          labelText: 'User Group',
+                          labelStyle: TodoColors.textStyle2,
+                          border: CutCornersBorder(),
+                        ),
+                      ),
+                    ),
+                  ):Container(),
+                  widget.projectDocumentId != null ?
+                  RaisedButton(
+                    child: Text('CHANGE USER GROUP'),
+                    textColor: TodoColors.baseColors[widget.colorIndex],
+                    elevation: 6.0,
+                    shape: BeveledRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(7.0)),
+                    ),
+                    onPressed: () {
+                      showDialog<Null>(
+                        context: context,
+                        barrierDismissible: false, // user must tap button!
+                        builder: (BuildContext context) {
+                          return new AlertDialog(
+                            title: new Text(
+                              'CHANGE  USER  GROUP', style: TodoColors.textStyle3,
+                            ),
+                            content: new SingleChildScrollView(
+                              child: new ListBody(
+                                children: <Widget>[
+                                  SizedBox(height: 12.0),
+                                  PrimaryColorOverride(
+                                    color: TodoColors.baseColors[widget.colorIndex],
+                                    child: TextFormField(
+                                      key: _userGroup2,
+                                      controller: _userGroup2Controller,
+                                      decoration: InputDecoration(
+                                        labelText: 'User Group',
+                                        hintText: '$userGroup',
+                                        border: CutCornersBorder(),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            actions: <Widget>[
+                              RaisedButton(
+                                child: Text('CANCEL'),
+                                textColor: TodoColors.baseColors[0],
+                                elevation: 8.0,
+                                shape: BeveledRectangleBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(7.0)),
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+
+                              FlatButton(
+                                child: Text('CHANGE'),
+                                textColor: TodoColors.baseColors[0],
+                                shape: BeveledRectangleBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(7.0)),
+                                ),
+                                onPressed: () {
+                                  _changeUserGroup(_userGroup2Controller.text);
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                  ):Container(),
 
                   SizedBox(height: 12.0),
                   ListTile(
@@ -564,6 +663,7 @@ class ViewUserPrimaryPageState extends State<ViewUserPrimaryPage>  with SingleTi
                   ),
 
                   SizedBox(height: 12.0),
+                  widget.canCreateUser ?
                   ListTile(
                     title: Container(child:
                     InputDecorator(
@@ -580,9 +680,10 @@ class ViewUserPrimaryPageState extends State<ViewUserPrimaryPage>  with SingleTi
                       ),
                     ),
                     ),
-                  ),
+                  ):Container(),
 
                   SizedBox(height: 12.0),
+                  widget.canCreateUser ?
                   ListTile(
                     title: Container(child:
                     InputDecorator(
@@ -599,9 +700,10 @@ class ViewUserPrimaryPageState extends State<ViewUserPrimaryPage>  with SingleTi
                       ),
                     ),
                     ),
-                  ),
-
-                ],),),
+                  ):Container(),
+                ],
+              ),
+            ),
           ],
         ),
       );

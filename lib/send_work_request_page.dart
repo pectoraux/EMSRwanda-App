@@ -14,12 +14,14 @@ class SendWorkRequestPage extends StatefulWidget
   final int colorIndex;
   final String userDocumentID;
   final String projectDocumentID;
+  final noButton;
 
   const SendWorkRequestPage({
     @required this.colorIndex,
     @required this.userDocumentID,
     this.projectDocumentID,
-  }) : assert(colorIndex != null), assert(projectDocumentID != null), assert(userDocumentID != null);
+    this.noButton,
+  }) : assert(colorIndex != null), assert(userDocumentID != null);
 
 
   @override
@@ -33,11 +35,14 @@ class _SendWorkRequestPageState extends State<SendWorkRequestPage>
   FirebaseUser user;
   String authorId;
   String button_text = '';
+  int userGroup;
 
   @override
   void initState() {
     super.initState();
-    setDefaults();
+    if(widget.projectDocumentID != null) {
+      setDefaults();
+    }
   }
 
   Future setDefaults()async {
@@ -72,6 +77,7 @@ class _SendWorkRequestPageState extends State<SendWorkRequestPage>
               setState(() {
                 isDisabled = true;
                 button_text = 'STAFF MEMBER';
+                userGroup = doc['userGroup'];
               });
             }
           });
@@ -79,6 +85,7 @@ class _SendWorkRequestPageState extends State<SendWorkRequestPage>
     });
   });
         }
+
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
     final _bkey = GlobalKey(debugLabel: 'Back Key');
@@ -141,8 +148,8 @@ class _SendWorkRequestPageState extends State<SendWorkRequestPage>
                   elevation: 8.0,
                   color: Colors.black,
                   borderRadius: BorderRadius.circular(32.0),
-                  child:
-                  InkWell
+                  child: widget.noButton ? Container()
+:                  InkWell
                     (
                     onTap: isDisabled ? (){} : (){_sendWorkRequest();} ,
                     child: Padding

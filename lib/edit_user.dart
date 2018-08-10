@@ -96,9 +96,7 @@ FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   Widget _createDropdown(int idx, String currentValue, ValueChanged<dynamic>
 
-  onChanged)
-
-  {
+  onChanged) {
 
     return Container(
       decoration: BoxDecoration(
@@ -217,13 +215,13 @@ FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),
               ),
               onPressed: _connectionStatus == 'ConnectivityResult.none' ? () => onTap() : () {
-//                _userNameController.value.text.trim() != "" &&
-//                    _roleValue != "Project Staff Roles"
+
                 if (true) {
                 String email = _userNameController.text+'@laterite.com';
                 String mrole = _roleValue;
-                List<String> userLocations = [], items = ['0'];
-
+                List<String> userLocations = [];
+                List items = [0];
+                
                 widget.auth.createUser(email, defaultPassword).then((newId) {
                   if(newId != null) {
 
@@ -261,6 +259,7 @@ FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
                       'punctualityRating': -1.0,
                       'reportingRating': -1.0,
                       'overAllRating': -1.0,
+                      'photoUrl': 'https://firebasestorage.googleapis.com/v0/b/emsrwanda-app.appspot.com/o/users_photos%2Flaterite.PNG?alt=media&token=c48a857c-4979-4d8b-9cc3-27676dd54295',
                       'editing': false,
                     };
                     Firestore.instance.runTransaction((transaction) async {
@@ -328,8 +327,6 @@ FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
 
-
-//    print("=> => => => => => => ${roles.toString()}");
 
 //, "Enumerator", "Project Lead", "Project Supervisor", "Administrator"
     return new StreamBuilder<QuerySnapshot>(

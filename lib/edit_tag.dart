@@ -311,10 +311,9 @@ class EditTagPageState extends State<EditTagPage> with SingleTickerProviderState
                   borderRadius: BorderRadius.all(Radius.circular(7.0)),
                 ),
                 onPressed: _connectionStatus == 'ConnectivityResult.none' ? () => onTap() :() {
-//                  _tagNameController.value.text.trim() != "" &&
-//                      _tagTypeController.value.text.trim() != "" &&
-//                      _tagDescriptionController.value.text.trim() != ""
-                  if (true) {
+                  if (_tagNameController.value.text.trim() != "" &&
+                      _tagTypeController.value.text.trim() != "" &&
+                      _tagDescriptionController.value.text.trim() != "") {
 
                     if(!allFalse(changed)) {
                       Map<String, Object> tag_data = <String, Object>{

@@ -45,134 +45,119 @@ class ViewUsersAdminPageState extends State<ViewUsersAdminPage> {
     return Scaffold
       (
       key: _scaffoldKey,
-        appBar: AppBar
-          (
-          leading: new BackButton(key: _bkey, color: Colors.black,),
-          elevation: 2.0,
-          backgroundColor: Colors.white,
-          title: Text('Available Users',
-               style: TodoColors.textStyle6),
-          actions: <Widget>
-          [
-            Container
+      appBar: AppBar
+        (
+        leading: new BackButton(key: _bkey, color: Colors.black,),
+        elevation: 2.0,
+        backgroundColor: Colors.white,
+        title: Text('Available Users',
+            style: TodoColors.textStyle6),
+        actions: <Widget>
+        [
+          Container(
+            margin: EdgeInsets.only(right: 8.0),
+            child: Row
               (
-              margin: EdgeInsets.only(right: 8.0),
-              child: Row
-                (
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>
-                [
-
-                  new FloatingActionButton(
-                    elevation: 200.0,
-                    child: new Icon(Icons.search),
-                    backgroundColor: TodoColors.baseColors[widget.colorIndex],
-                    onPressed: () {
-                      print("MMMMMMMMCCCCC => => => ${widget.colorIndex}");
-                      new Container(
-                        width: 450.0,
-                      );
-                      showDialog(context: context, child: new MyUserDialog(colorIndex: widget.colorIndex,));
-                    },
-                  ),
-                ],
-              ),
-            )
-          ],
-        ),
-        body: StreamBuilder<QuerySnapshot>(
-            stream: Firestore.instance.collection('users').getDocuments().asStream(),
-
-            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (!snapshot.hasData) {
-                return new Center
-                  (
-                    child: new BarLoadingScreen(),
-                );
-              }
-
-
-              return StaggeredGridView.count(
-          crossAxisCount: 2,
-          crossAxisSpacing: 12.0,
-          mainAxisSpacing: 12.0,
-          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                controller: controller,
-                children: snapshot.data.documents.map((user) {
-
-//                  print(user.documentID + ': ' + user['userName']);
-
-                  mTiles.add(StaggeredTile.extent(2, 110.0));
-//                  print('VVVVVVVVV => => =>  ${user.documentID}');
-
-                   userName = "${user['firstName']} ${user['lastName']}";
-                   locations = user['locations']
-                       .toString()
-                       .substring(1, user['locations']
-                       .toString()
-                       .length - 1);
-
-                   if(userName.trim().isEmpty)
-                     userName = 'Missing User Name';
-                   if(locations.trim().isEmpty)
-                     locations = 'Missing Locations';
-
-
-                  return _buildTile(
-              Padding
-                (
-                padding: const EdgeInsets.all(24.0),
-                child: Row
-                  (
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>
-                    [
-                      Column
-                        (
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>
-                        [
-                          SizedBox(width: 180.0,
-                              child:Text(locations,
-                                style: TextStyle(color: TodoColors.baseColors[widget.colorIndex]),) ),
-
-                          Expanded(child:Text(userName, style: TodoColors.textStyle6), flex: 1,),
-                        ],
-                      ),
-                      Material
-                        (
-                          color: TodoColors.baseColors[widget.colorIndex],
-                          borderRadius: BorderRadius.circular(24.0),
-                          child: Center
-                            (
-                              child: Padding
-                                (
-                                padding: const EdgeInsets.all(16.0),
-                                child: Icon(LineAwesomeIcons.user, color: Colors.white,
-                                    size: 30.0),
-                              )
-                          )
-                      )
-                    ]
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>
+              [
+                new FloatingActionButton(
+                  elevation: 200.0,
+                  child: new Icon(Icons.search),
+                  backgroundColor: TodoColors.baseColors[widget.colorIndex],
+                  onPressed: ()  {
+                    new Container(
+                      width: 450.0,
+                    );
+                    showDialog(context: context, child: new MyUserDialog(colorIndex: widget.colorIndex,));
+                  },
                 ),
-              ),
-    userName,
-    user.documentID
+              ],
+            ),
+          )
+        ],
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+          stream: Firestore.instance.collection('users').getDocuments().asStream(),
+          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (!snapshot.hasData) {
+              return new Center
+                (
+                child: new BarLoadingScreen(),
+              );
+            }
+            return StaggeredGridView.count(
+              crossAxisCount: 2,
+              crossAxisSpacing: 12.0,
+              mainAxisSpacing: 12.0,
+              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              controller: controller,
+              children: snapshot.data.documents.map((user) {
+                mTiles.add(StaggeredTile.extent(2, 110.0));
+
+                userName = "${user['firstName']} ${user['lastName']}";
+                locations = user['locations']
+                    .toString()
+                    .substring(1, user['locations']
+                    .toString()
+                    .length - 1);
+
+                if(userName.trim().isEmpty)
+                  userName = 'Missing User Name';
+                if(locations.trim().isEmpty)
+                  locations = 'Missing Locations';
+
+
+                return _buildTile(
+                    Padding
+                      (
+                      padding: const EdgeInsets.all(24.0),
+                      child: Row
+                        (
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>
+                          [
+                            Column
+                              (
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>
+                              [
+                                SizedBox(width: 180.0,
+                                    child:Text(locations,
+                                      style: TextStyle(color: TodoColors.baseColors[widget.colorIndex]),) ),
+
+                                Expanded(child:Text(userName, style: TodoColors.textStyle6), flex: 1,),
+                              ],
+                            ),
+                            Material
+                              (
+                                color: TodoColors.baseColors[widget.colorIndex],
+                                borderRadius: BorderRadius.circular(24.0),
+                                child: Center
+                                  (
+                                    child: Padding
+                                      (
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Icon(LineAwesomeIcons.user, color: Colors.white,
+                                          size: 30.0),
+                                    )
+                                )
+                            )
+                          ]
+                      ),
+                    ),
+                    userName,
+                    user.documentID
+                );
+              }).toList(),
+              staggeredTiles: mTiles,
+            );
+          }),
     );
-  }).toList(),
-
-
-
-  staggeredTiles: mTiles,
-  );
-
-
-}),
-);
-}
+  }
 
   void updateUser(){
     Navigator.of(context).push(
@@ -191,8 +176,6 @@ class ViewUsersAdminPageState extends State<ViewUsersAdminPage> {
   }
 
   void showDeleteDialog(){
-
-
     showDialog<Null>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -255,12 +238,12 @@ class ViewUsersAdminPageState extends State<ViewUsersAdminPage> {
             children: <Widget>[
               new ListTile(
                 leading: new Icon(Icons.work, color: TodoColors.baseColors[widget.colorIndex],),
-                title: new Text('View ${name} History'),
+                title: new Text("View ${name}'s History"),
                 onTap: gotoUserHistory,
               ),
               new ListTile(
                 leading: new Icon(Icons.update, color: TodoColors.baseColors[widget.colorIndex],),
-                title: new Text('Update ${name} Information'),
+                title: new Text("Update ${name}'s Information"),
                 onTap: updateUser,
               ),
               new ListTile(
@@ -290,12 +273,10 @@ class ViewUsersAdminPageState extends State<ViewUsersAdminPage> {
   }
 
   void deleteUser() async {
-    DocumentReference projRef = Firestore.instance.document('users/${userDocumentID}');
-//    await projRef.delete();
+    DocumentReference userRef = Firestore.instance.document('users/${userDocumentID}');
+//    await userRef.delete();
+
     Navigator.of(context).pop();
   }
 
 }
-
-
-

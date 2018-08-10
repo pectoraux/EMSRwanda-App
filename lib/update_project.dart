@@ -31,16 +31,19 @@ class UpdateProjectPageState extends State<UpdateProjectPage> with SingleTickerP
   final Connectivity _connectivity = new Connectivity();
   StreamSubscription<ConnectivityResult> _connectivitySubscription;
   FirebaseAuth _auth = FirebaseAuth.instance;
-
+  final _teamCountController = TextEditingController();
+  final _staffCountController = TextEditingController();
   final _projectTitleController = TextEditingController();
   final _projectDescriptionController = TextEditingController();
   final _projectTitle = GlobalKey(debugLabel: 'Project Title');
   final _myProjectDescription = GlobalKey(debugLabel: 'Project Description');
+  final _staffCount = GlobalKey(debugLabel: 'Staff Count');
+  final _teamCount = GlobalKey(debugLabel: 'Team Count');
   static final formKey = new GlobalKey<FormState>();
 
 
-  DateTime _fromDate;
-  DateTime _toDate;
+  DateTime _fromDate = DateTime.now();
+  DateTime _toDate = DateTime.now();
 
 
   bool _sendRequestToAvailableUsers = false;
@@ -55,11 +58,11 @@ class UpdateProjectPageState extends State<UpdateProjectPage> with SingleTickerP
   Map<String, Object> devicesWithRole = new Map<String, Object>();
   List devices_values;
   List<Color> _mcolors;
-  List<bool> hasChanged = [false, false, false, false, false, false, false];
+  List<bool> hasChanged = [false, false, false, false, false, false, false, false, false];
   String projectTitleStr ='', devicesPerRole = '', projectDescriptionStr = '', devicesPerRoleStr = '';
   List locationsList = List(), tagsList = List();
   DateTime startDateDd = DateTime.now(), endDateDd = DateTime.now();
-
+  int staffCount, teamCount;
   @override
   void initState() {
     super.initState();
@@ -255,6 +258,53 @@ class UpdateProjectPageState extends State<UpdateProjectPage> with SingleTickerP
                       ),
                     ),
                   ),
+
+                  const SizedBox(height: 12.0),
+                  PrimaryColorOverride(
+                    color: TodoColors.baseColors[_colorIndex],
+                    child: TextFormField(
+                      key: _staffCount,
+//                      maxLines: null,
+                      initialValue: "${document['staffCount']}",
+                      onSaved: (text) {
+                        _staffCountController.text = text;
+                        hasChanged[7] = true;
+                      },
+                      onFieldSubmitted: (text) {
+                        _staffCountController.text = text;
+                        hasChanged[7] = true;
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Number of Employees on Project',
+                        hintText: "${document['staffCount']}",
+                        border: CutCornersBorder(),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 12.0),
+                  PrimaryColorOverride(
+                    color: TodoColors.baseColors[_colorIndex],
+                    child: TextFormField(
+                      key: _teamCount,
+//                      maxLines: null,
+                      initialValue: "${document['teamCount']}",
+                      onSaved: (text) {
+                        _teamCountController.text = text;
+                        hasChanged[8] = true;
+                      },
+                      onFieldSubmitted: (text) {
+                        _teamCountController.text = text;
+                        hasChanged[8] = true;
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Number of Employees per Team',
+                        hintText: "${document['teamCount']}",
+                        border: CutCornersBorder(),
+                      ),
+                    ),
+                  ),
+
 
                   const SizedBox(height: 12.0),
                   _createDropdown(0, _locationValue, _updateLocationValue),
@@ -492,6 +542,9 @@ class UpdateProjectPageState extends State<UpdateProjectPage> with SingleTickerP
                           devicesPerRoleStr = hasChanged[4] ? devicesWithRole.toString(): document['devicesPerRole'];
                           startDateDd = hasChanged[5] ? _fromDate: document['startDate'];
                           endDateDd = hasChanged[6] ? _toDate: document['endDate'];
+                          staffCount = hasChanged[7] ? int.parse(_staffCountController.text): document['staffCount'];
+                          teamCount = hasChanged[8] ? int.parse(_teamCountController.text): document['teamCount'];
+
                           if (true) {
 
                             Map<String, Object> project_data = <String, Object>{
@@ -502,6 +555,8 @@ class UpdateProjectPageState extends State<UpdateProjectPage> with SingleTickerP
                               'devicesPerRole': devicesPerRoleStr,
                               'startDate': startDateDd,
                               'endDate': endDateDd,
+                              'staffCount': staffCount,
+                              'teamCount': teamCount,
                             };
 
                             Firestore.instance.runTransaction((transaction) async {

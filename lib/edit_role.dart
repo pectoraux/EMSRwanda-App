@@ -212,7 +212,7 @@ class EditRolesPageState extends State<EditRolesPage> with SingleTickerProviderS
           'canCreateTag':_createTagPermission,
           'canCreateRole':_createRolePermission,
           'canCreateDevice': _createDevicePermission,
-          'canGrantPermission':_grantUserPermission
+          'canGrantPermission':_grantUserPermission,
         };
 
         Firestore.instance.runTransaction((transaction) async {

@@ -113,16 +113,17 @@ class ProfileHeaderState extends State<ProfileHeader> {
       mainAxisAlignment: MainAxisAlignment.end,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        new IconButton(
-            icon: new Icon(
-              LineAwesomeIcons.bell, color: Colors.white, size: 30.0,),
-            onPressed: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => NotificationsPage(colorIndex: _colorIndex,)));
-            }),
+//        new IconButton(
+//            icon: new Icon(
+//              LineAwesomeIcons.bell, color: Colors.white, size: 30.0,),
+//            onPressed: () {},
+//              Navigator.of(context).push(
+//                  MaterialPageRoute(builder: (_) => NotificationsPage(colorIndex: _colorIndex,)));
+//            }),
       ],
     );
   }
+
 
   void setDefaults()async {
     FirebaseAuth _auth = FirebaseAuth.instance;

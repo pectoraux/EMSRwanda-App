@@ -74,14 +74,15 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
     final navigationItems = <BottomNavigationBarItem>[];
     final items = <Widget>[];
-      navigationItems.add(
-        new BottomNavigationBarItem(
-            icon: new Icon(Icons.details, color: getColor(0),),
-            title: new Text("User\nDetails", textAlign: TextAlign.center,)
-        ),
-      );
-      items.add(new ViewUserPrimaryPage(colorIndex: widget.colorIndex,
-          currentUserId: widget.userDocumentID),);
+
+    navigationItems.add(
+      new BottomNavigationBarItem(
+          icon: new Icon(Icons.details, color: getColor(0),),
+          title: new Text("User\nDetails", textAlign: TextAlign.center,)
+      ),
+    );
+    items.add(new ViewUserPrimaryPage(colorIndex: widget.colorIndex,
+      currentUserId: widget.userDocumentID, projectDocumentId: widget.projectDocumentID, canCreateUser: widget.colorIndex == 0,),);
 
     navigationItems.add(
       new BottomNavigationBarItem(
@@ -93,7 +94,7 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
     if(widget.canRecruit){
       items.add(new SendWorkRequestPage(colorIndex: widget.colorIndex,
         userDocumentID: document.documentID,
-        projectDocumentID: widget.projectDocumentID,));
+        projectDocumentID: widget.projectDocumentID, noButton: widget.noButton,));
 
     }else {
       items.add(new EmploymentHistoryPage(colorIndex: widget.colorIndex,
@@ -176,7 +177,9 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
                 child: new BarLoadingScreen(),
             );
           } else {
+
             DocumentSnapshot document = snapshot.data.documents.where((doc){
+
               return doc.documentID == widget.userDocumentID;}).first;
 
 

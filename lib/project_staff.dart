@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'profile_icons.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -29,6 +30,22 @@ class ProjectStaffPageState extends State<ProjectStaffPage> {
   String userName = '', locations = '';
   bool read = false;
   List project_users = [];
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  FirebaseUser user;
+  int userGroup;
+  String userDocumentID, name;
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setDefaults();
+  }
+
+  void setDefaults() async {
+    user = await _auth.currentUser();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,28 +63,39 @@ class ProjectStaffPageState extends State<ProjectStaffPage> {
     List<StaggeredTile> mTiles = [];
     ScrollController controller = new ScrollController();
 
-
-    Firestore.instance.collection('projects/${widget.projectDocumentId}/users').getDocuments().then((query) {
-      List results = [];
-      setState(() {
-        for (DocumentSnapshot doc in query.documents) {
-          results.add(doc.documentID);
+    Firestore.instance.collection('projects/${widget.projectDocumentId}/users').getDocuments().then((query){
+       for (DocumentSnapshot doc in query.documents) {
+          if(doc.documentID == user.uid) {
+            setState(() {
+              userGroup = doc['userGroup'];
+            });
+          }
         }
-        project_users = results;
+    }).whenComplete(() {
+      Firestore.instance.collection(
+          'projects/${widget.projectDocumentId}/users').getDocuments().then((
+          query) {
+        List results = [];
+        setState(() {
+          for (DocumentSnapshot doc in query.documents) {
+            if(doc['userGroup'] == userGroup || userGroup == -1) {
+              results.add(doc.documentID);
+            }
+          }
+          project_users = results;
+        });
       });
     });
-
-//    print('JJJJJJJJJJJJ => => => ${project_users}');
 
     return Scaffold
       (
       appBar: AppBar
         (
+        key: _scaffoldKey,
         leading: new BackButton(key: _bkey, color: Colors.black,),
         elevation: 2.0,
         backgroundColor: Colors.white,
-        title: Text((widget.projectDocumentId != null) ? 'Project Staff' : 'Available Users',
-            style: TodoColors.textStyle6),
+        title: Text('Project Staff', style: TodoColors.textStyle6),
         actions: <Widget>
         [
           Container
@@ -79,13 +107,11 @@ class ProjectStaffPageState extends State<ProjectStaffPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>
               [
-
                 new FloatingActionButton(
                   elevation: 200.0,
                   child: new Icon(Icons.search),
                   backgroundColor: TodoColors.baseColors[widget.colorIndex],
                   onPressed: () {
-                    print("MMMMMMMMCCCCC => => => ${widget.colorIndex}");
                     new Container(
                       width: 450.0,
                     );
@@ -99,7 +125,6 @@ class ProjectStaffPageState extends State<ProjectStaffPage> {
       ),
       body: StreamBuilder<QuerySnapshot>(
           stream: Firestore.instance.collection('users').getDocuments().asStream(),
-
           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {
               return new Center
@@ -107,8 +132,6 @@ class ProjectStaffPageState extends State<ProjectStaffPage> {
                 child: new BarLoadingScreen(),
               );
             }
-
-
             return StaggeredGridView.count(
               crossAxisCount: 2,
               crossAxisSpacing: 12.0,
@@ -116,17 +139,13 @@ class ProjectStaffPageState extends State<ProjectStaffPage> {
               padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               controller: controller,
               children: snapshot.data.documents.where((user){
-
                   if (!project_users.contains('${user.documentID}')) {
                     return false;
                 }
                 return true;
               }).map((user) {
 
-//                  print(user.documentID + ': ' + user['userName']);
-
                 mTiles.add(StaggeredTile.extent(2, 110.0));
-//                  print('VVVVVVVVV => => =>  ${user.documentID}');
 
                 userName = "${user['firstName']} ${user['lastName']}";
                 locations = user['locations']
@@ -180,23 +199,112 @@ class ProjectStaffPageState extends State<ProjectStaffPage> {
                           ]
                       ),
                     ),
+                    userName,
                     user.documentID
                 );
               }).toList(),
-
-
-
               staggeredTiles: mTiles,
             );
-
-
           }),
     );
   }
 
 
+  void _bottomDialog(String fullName, String muserID) {
+    new Container(
+      width: 450.0,
+    );
+    setState(() {
+      userDocumentID = muserID;
+      name = fullName;
+    });
 
-  Widget _buildTile(Widget child, String userID) {
+    showModalBottomSheet(
+        context: context,
+        builder: (builder){
+      return new Container(
+          child: new Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              new ListTile(
+                leading: new Icon(Icons.work, color: TodoColors.baseColors[widget.colorIndex],),
+                title: new Text('View ${name} Project Details'),
+                onTap: gotoUserHistory,
+              ),
+              new ListTile(
+                  leading: new Icon(Icons.delete, color: Colors.red,),
+                  title: new Text('Delete ${name} Project'),
+                  onTap: showDeleteDialog
+              ),
+            ],
+          )
+      );
+    });
+  }
+
+  void gotoUserHistory(){
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) =>
+            UserHistoryPage(colorIndex: widget.colorIndex,
+                userDocumentID: userDocumentID,
+                canRateUser: true,
+                canRecruit: true,
+                noButton: false,
+                projectDocumentID: widget.projectDocumentId)));
+  }
+
+  void showDeleteDialog(){
+
+
+    showDialog<Null>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return new AlertDialog(
+          title: new Text('DELETE  PROJECT', style: TodoColors.textStyle3.apply(color: Colors.red),
+          ),
+          content: new SingleChildScrollView(
+            child: new ListBody(
+              children: <Widget>[
+                new Text('Are You Sure You Want To'),
+                new Text('Delete Project ?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            RaisedButton(
+              child: Text('CANCEL'),
+              textColor: TodoColors.baseColors[widget.colorIndex],
+              elevation: 8.0,
+              shape: BeveledRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(7.0)),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+
+            FlatButton(
+              child: Text('YES'),
+              textColor: Colors.red,
+              shape: BeveledRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(7.0)),
+              ),
+              onPressed: dropUserFromProject,
+            ),
+
+          ],
+        );
+      },
+    );
+
+  }
+
+  void dropUserFromProject(){
+
+  }
+
+  Widget _buildTile(Widget child, String uName, String userID) {
     return Material(
         elevation: 14.0,
         borderRadius: BorderRadius.circular(12.0),
@@ -204,18 +312,7 @@ class ProjectStaffPageState extends State<ProjectStaffPage> {
         child: InkWell
           (
           // Do onTap() if it isn't null, otherwise do print()
-            onTap: () {
-              print('TTTVVVVVVVVV => => =>  ${widget.projectDocumentId}');
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) =>
-                      UserHistoryPage(colorIndex: widget.colorIndex,
-                          userDocumentID: userID,
-                          canRateUser: true,
-                          canRecruit: true,
-                          noButton: false,
-                          projectDocumentID: widget.projectDocumentId)));
-
-            },
+            onTap: (){ _bottomDialog(uName, userID);},
             child: child
         )
     );

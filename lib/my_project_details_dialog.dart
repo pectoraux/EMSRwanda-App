@@ -8,16 +8,22 @@ class MyProjectDetailsDialog extends StatefulWidget {
   final String title;
   final String locations;
   final String project_description;
+  final DateTime startDate;
+  final DateTime endDate;
 
   const MyProjectDetailsDialog({
     @required this.colorIndex,
     @required this.title,
-  @required this.locations,
-  @required this.project_description,
+    @required this.locations,
+    @required this.project_description,
+    @required this.startDate,
+    @required this.endDate,
   }) : assert(colorIndex != null),
   assert(title != null),
   assert(locations!=null),
-  assert(project_description != null);
+  assert(project_description != null),
+  assert(startDate != null),
+  assert(endDate != null);
 
   @override
   State createState() => new MyProjectDetailsDialogState();
@@ -61,7 +67,8 @@ class MyProjectDetailsDialogState extends State<MyProjectDetailsDialog> {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   ListTile(
-                      title: Text("Project Title: ${widget.title}\nProject Location: ${widget.locations}",
+                      title: Text("Project Title: ${widget.title}\nProject Location: ${widget.locations}\n"
+                          "Start Time: ${widget.startDate.toIso8601String().split('T')[0]}\nEnd Time: ${widget.endDate.toIso8601String().split('T')[0]}\nDescription",
                         style: TextStyle(color: TodoColors.baseColors[widget.colorIndex]),),
                       subtitle: Text(widget.project_description)
                   ),

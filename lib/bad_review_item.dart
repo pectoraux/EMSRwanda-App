@@ -86,7 +86,6 @@ class BadReviewItemState extends State<BadReviewItem> {
     List chuncks = name.trim().split('★').join(' ').trim().split(' ');
     for(String part in chuncks){
       if(part.trim().length != 0) {
-//        print('= = = = ${part}');
         result += part.trim()[0].toUpperCase();
       }
     }

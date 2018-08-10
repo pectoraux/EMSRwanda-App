@@ -16,15 +16,13 @@ class UserRatingPage extends StatefulWidget {
     @required this.colorIndex,
     @required this.projectDocumentID,
     @required this.userDocumentID,
-  }) : assert(colorIndex != null), assert(projectDocumentID != null), assert(userDocumentID != null);
+  }) : assert(colorIndex != null), assert(userDocumentID != null), assert(projectDocumentID != null);
 
   @override
   UserRatingPageState createState() => UserRatingPageState();
 }
 
 class UserRatingPageState extends State<UserRatingPage> {
-  final _replyController = TextEditingController();
-  final _reply = GlobalKey(debugLabel: 'Reply');
   String imageUrlStr = '', firstName = '', lastName = '';
 
 
@@ -35,13 +33,25 @@ class UserRatingPageState extends State<UserRatingPage> {
     setDefaults();
   }
 
+  String _getInitials(String name){
+    String result = '';
+    List chuncks = name.trim().split('★').join(' ').trim().split(' ');
+    for(String part in chuncks){
+      if(part.trim().length != 0) {
+        result += part.trim()[0].toUpperCase();
+      }
+    }
+    if(result.length <= 2) {
+      return result;
+    } else {
+      return result.substring(0, 2);
+    }
+  }
 
   void setDefaults()async {
     FirebaseAuth _auth = FirebaseAuth.instance;
     FirebaseUser user = await _auth.currentUser();
     imageUrlStr = user.photoUrl;
-//    print('MMMMMMMMMMM => => => $imageUrlStr');
-
   }
 
   List<Widget> _buildOverallRatings(int rating) {
@@ -126,7 +136,7 @@ class UserRatingPageState extends State<UserRatingPage> {
                   alignment: Alignment.center,
                   children: <Widget>
                   [
-                    (imageUrlStr.isNotEmpty) ? Image.network(imageUrlStr) : Image.asset("assets/images/emma-watson.jpg"),
+                   Image.asset("assets/images/emma-watson.jpg"),
                     Container(color: Colors.black26)
                   ],
                 ),
@@ -180,7 +190,7 @@ class UserRatingPageState extends State<UserRatingPage> {
                       )
                   ),
 
-                  /// Rating average
+//                   Rating average
                   Center
                     (
                     child: Container
@@ -195,7 +205,7 @@ class UserRatingPageState extends State<UserRatingPage> {
                     ),
                   ),
 
-                  /// Rating stars
+                  // Rating stars
                   Padding
                     (
                     padding: EdgeInsets.symmetric(horizontal: 60.0),
@@ -206,7 +216,7 @@ class UserRatingPageState extends State<UserRatingPage> {
                     ),
                   ),
 
-                  /// Rating chart lines
+//                  Rating chart lines
                   Padding
                     (
                     padding: EdgeInsets.symmetric(
@@ -355,8 +365,6 @@ class UserRatingPageState extends State<UserRatingPage> {
                     ),
                   ),
                   Divider(),
-                  /// Review
-//                  _buildReview(context, document),
                 ]..addAll(reviewWidgets.getRange(0, reviewWidgets.length))
             ),
           ),
@@ -392,7 +400,7 @@ class UserRatingPageState extends State<UserRatingPage> {
               leading: CircleAvatar
                 (
                 backgroundColor: TodoColors.baseColors[widget.colorIndex],
-                child: Text('AI'),
+                child: Text('${_getInitials(comment.substring(comment.indexOf('★')+1, comment.lastIndexOf('★')+1))}'),
               ),
               title: Text(author, style: TextStyle()),
               subtitle: Text(comment,

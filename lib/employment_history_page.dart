@@ -43,11 +43,18 @@ class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
   FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseUser user;
   String authorId;
+  String currentGroup, teamCount, staffCount, currentGroupCount;
 
   @override
   void initState() {
     super.initState();
-    setDefaults();
+    try {
+      if (widget.projectDocumentID != null) {
+        setDefaults();
+      }
+    } catch(_){
+
+    }
   }
 
   Future setDefaults()async {
@@ -57,15 +64,27 @@ class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
           .getDocuments()
           .then((query) {
         query.documents.forEach((doc) {
-            if (doc['projectId'] == widget.projectDocumentID &&
-                doc['type'] == 'Made By You') {
+            if (doc['projectId'] == widget.projectDocumentID) {
               setState(() {
                 isDisabled = true;
               });
-              print('RRRRRRRRR => => => ${doc['projectId']} == ${widget
-                  .projectDocumentID}');
+//              print('RRRRRRRRR => => => ${doc['projectId']} == ${widget
+//                  .projectDocumentID}');
             }
         });
+      });
+    });
+
+    Firestore.instance.runTransaction((transaction) async {
+      Firestore.instance.document('projects/${widget.projectDocumentID}')
+          .get()
+          .then((doc) {
+            setState(() {
+              currentGroup = doc['currentGroup'].toString();
+              teamCount = doc['teamCount'].toString();
+              staffCount = doc['staffCount'].toString();
+              currentGroupCount = doc['currentGroupCount'].toString();
+            });
       });
     });
   }
@@ -236,26 +255,32 @@ class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
       Firestore.instance.document('users/${user.uid}/pending_requests/${widget.requestId}').get().then((d){
         if(d['page'] == 'project_details'){
           mId = d['from'];
-//          print('=> => => ${mId} <= <= <=');
         }else {
           mId = user.uid;
-//          print('acc => => => ${mId} <= <= <=');
         }
       }).whenComplete(() async {
         DocumentReference reference =
         Firestore.instance.document(
             'projects/${widget.projectDocumentID}/users/${mId}');
-        await reference.setData({
+        await reference.setData({ // Inserting User's records in project
           'comments': [],
+          'userGroup': (currentGroupCount == teamCount) ? int.parse(currentGroup)+1 : int.parse(currentGroup),
           'communicationRating': -1.0,
           'initiativeTakingRating': -1.0,
           'overAllRating': -1.0,
           'punctualityRating': -1.0,
           'reportingRating': -1.0,
         });
+      }).whenComplete(() async { // Update currentGroupCount and currentGroup in projects
+        DocumentReference reference =
+        Firestore.instance.document('projects/${widget.projectDocumentID}');
+        await reference.updateData({
+          'currentGroupCount': (currentGroupCount == teamCount) ? 0 : int.parse(currentGroupCount)+1,
+          'currentGroup': (currentGroupCount == teamCount) ? int.parse(currentGroup)+1 : int.parse(currentGroup),
+           });
       });
     });
-
+// Delete Pending Requests
     Firestore.instance.runTransaction((transaction) async {
       String mId;
       Firestore.instance.document('users/${user.uid}/pending_requests/${widget.requestId}').get().then((d){
@@ -304,10 +329,12 @@ class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
                 child: new BarLoadingScreen()
             );
           } else {
-            final converter = _buildListItem(
-                context, snapshot.data.documents.where((user){
-               return (user.documentID == widget.documentID);
-            }).first);
+            DocumentSnapshot docu = snapshot.data.documents.where((user){
+              print('MMMMMMMMM => => => ${widget.documentID}');
+              return (user.documentID == widget.documentID);
+            }).first;
+
+            final converter = _buildListItem(context, docu);
 
             return OrientationBuilder(
               builder: (BuildContext context, Orientation orientation) {

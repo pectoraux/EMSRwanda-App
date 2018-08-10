@@ -69,8 +69,7 @@ class ViewUsersPageState extends State<ViewUsersPage> {
           leading: new BackButton(key: _bkey, color: Colors.black,),
           elevation: 2.0,
           backgroundColor: Colors.white,
-          title: Text((widget.projectDocumentId != null) ? 'Project Staff' : 'Available Users',
-               style: TodoColors.textStyle6),
+          title: Text('Available Users', style: TodoColors.textStyle6),
           actions: <Widget>
           [
             Container

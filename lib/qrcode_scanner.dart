@@ -364,10 +364,10 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
               }).documentID;
               DocumentReference reference = Firestore.instance.document(
                   'users/${userdocId}/devices/$currentDeviceId');
-//              await reference.setData({});
+              await reference.setData({});
           Firestore.instance.runTransaction((transaction) async {
             DocumentReference reference = Firestore.instance.document('devices/$currentDeviceId');
-//            await transaction.update(reference, {'deviceStatus': 'In Use'});
+            await transaction.update(reference, {'deviceStatus': 'In Use'});
           });
             });
       }});

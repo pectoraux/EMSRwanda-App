@@ -83,7 +83,7 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
       ),
     );
     items.add(new ViewUserPrimaryPage(colorIndex: widget.colorIndex,
-      currentUserId: widget.userDocumentID, projectDocumentId: widget.projectDocumentID, canCreateUser: widget.colorIndex == 0,),);
+      currentUserId: widget.userDocumentID, projectDocumentId: widget.projectDocumentID, canCreateUser: widget.colorIndex == 0, isStaff: widget.isStaff),);
 
     navigationItems.add(
       new BottomNavigationBarItem(
@@ -105,7 +105,7 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
         canRecruit: widget.canRecruit,
         projectDocumentID: widget.projectDocumentID,));
     }
-    if(widget.projectDocumentID != null && widget.isStaff){
+    if(widget.isStaff){
       if(widget.canRateUser) {
         navigationItems.add(new BottomNavigationBarItem(
             icon: new Icon(Icons.stars, color: getColor(2)),

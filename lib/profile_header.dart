@@ -19,7 +19,7 @@ class ProfileHeader extends StatefulWidget {
 
 class ProfileHeaderState extends State<ProfileHeader> {
   int _colorIndex = 0;
-  String imageUrlStr = '';
+  String imageUrlStr = 'https://firebasestorage.googleapis.com/v0/b/emsrwanda-app.appspot.com/o/users_photos%2Flaterite.PNG?alt=media&token=c48a857c-4979-4d8b-9cc3-27676dd54295';
   String defaultUrl = 'https://firebasestorage.googleapis.com/v0/b/emsrwanda-app.appspot.com/o/users_photos%2Flaterite.PNG?alt=media&token=c48a857c-4979-4d8b-9cc3-27676dd54295';
 
   @override
@@ -129,7 +129,7 @@ class ProfileHeaderState extends State<ProfileHeader> {
     FirebaseAuth _auth = FirebaseAuth.instance;
     FirebaseUser user = await _auth.currentUser();
 
-    imageUrlStr = (user.photoUrl != null)? user.photoUrl : defaultUrl;
+//    imageUrlStr = (user.photoUrl != null)? user.photoUrl : defaultUrl;
 //    print('MMMMMMMMMMM => => => $imageUrlStr');
   }
 

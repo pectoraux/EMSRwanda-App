@@ -237,19 +237,43 @@ void showDeleteDialog(){
             shape: BeveledRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(7.0)),
             ),
-            onPressed: deleteProject,
+            onPressed: (){
+              deleteProject();
+              Navigator.of(context).pop();
+            }
           ),
 
         ],
       );
     },
   );
-
 }
 
-void deleteProject() async {
-  DocumentReference projRef = Firestore.instance.document('projects/${projectDocumentID}');
-  await projRef.delete();
+void deleteUser(String user) async {
+  DocumentReference userRef = Firestore.instance.document('projects/${projectDocumentID}/users/${user}');
+  await userRef.delete();
+}
+
+  void deleteDevice(String device) async {
+    DocumentReference deviceRef = Firestore.instance.document('projects/${projectDocumentID}/devices/${device}');
+    await deviceRef.delete();
+  }
+
+void deleteProject()  {
+  Firestore.instance.runTransaction((transaction) async {
+    Firestore.instance.collection('projects/${projectDocumentID}/users').getDocuments().then((query){
+      for (DocumentSnapshot doc in query.documents) {
+        deleteUser(doc.documentID);
+      }
+    });
+    Firestore.instance.collection('projects/${projectDocumentID}/devices').getDocuments().then((query){
+      for (DocumentSnapshot doc in query.documents) {
+        deleteDevice(doc.documentID);
+      }
+    });
+    DocumentReference projRef = Firestore.instance.document('projects/${projectDocumentID}');
+    await projRef.delete();
+  });
   Navigator.of(context).pop();
 }
 

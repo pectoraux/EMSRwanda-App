@@ -228,13 +228,17 @@ class ProjectStaffPageState extends State<ProjectStaffPage> {
             children: <Widget>[
               new ListTile(
                 leading: new Icon(Icons.work, color: TodoColors.baseColors[widget.colorIndex],),
-                title: new Text('View ${name} Project Details'),
-                onTap: gotoUserHistory,
+                title: new Text('View ${name}\'s Details'),
+                onTap: (){
+                  gotoUserHistory(muserID);
+                }
               ),
               new ListTile(
                   leading: new Icon(Icons.delete, color: Colors.red,),
-                  title: new Text('Delete ${name} Project'),
-                  onTap: showDeleteDialog
+                  title: new Text('Remove ${name} from Project'),
+                  onTap: () {
+                    showDeleteDialog(muserID);
+                  }
               ),
             ],
           )
@@ -242,18 +246,26 @@ class ProjectStaffPageState extends State<ProjectStaffPage> {
     });
   }
 
-  void gotoUserHistory(){
+  void gotoUserHistory(String uid){
     Navigator.of(context).push(
         MaterialPageRoute(builder: (_) =>
             UserHistoryPage(colorIndex: widget.colorIndex,
-                userDocumentID: userDocumentID,
+                userDocumentID: uid,
                 canRateUser: true,
                 canRecruit: true,
                 noButton: false,
+                isStaff: true,
                 projectDocumentID: widget.projectDocumentId)));
   }
 
-  void showDeleteDialog(){
+  void showInSnackBar(String value, Color c) {
+    Scaffold.of(context).showSnackBar(new SnackBar(
+      content: new Text(value),
+      backgroundColor: c,
+    ));
+  }
+
+  void showDeleteDialog(String userId){
 
 
     showDialog<Null>(
@@ -261,13 +273,13 @@ class ProjectStaffPageState extends State<ProjectStaffPage> {
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return new AlertDialog(
-          title: new Text('DELETE  PROJECT', style: TodoColors.textStyle3.apply(color: Colors.red),
+          title: new Text('REMOVE USER FROM PROJECT', style: TodoColors.textStyle3.apply(color: Colors.red),
           ),
           content: new SingleChildScrollView(
             child: new ListBody(
               children: <Widget>[
                 new Text('Are You Sure You Want To'),
-                new Text('Delete Project ?'),
+                new Text('Remove This User From The Project ?'),
               ],
             ),
           ),
@@ -290,7 +302,11 @@ class ProjectStaffPageState extends State<ProjectStaffPage> {
               shape: BeveledRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),
               ),
-              onPressed: dropUserFromProject,
+              onPressed: () {
+                dropUserFromProject(userId);
+                showInSnackBar("User Successfully Removed From Project", TodoColors.baseColors[widget.colorIndex]);
+                Navigator.of(context).pop();
+              }
             ),
 
           ],
@@ -300,8 +316,16 @@ class ProjectStaffPageState extends State<ProjectStaffPage> {
 
   }
 
-  void dropUserFromProject(){
-
+  void dropUserFromProject(String uid) async {
+    Firestore.instance.runTransaction((transaction) async {
+    DocumentReference userRef = Firestore.instance.document('projects/${widget.projectDocumentId}/users/${uid}');
+    await userRef.delete();
+      DocumentReference projRef = Firestore.instance.document(
+          'users/${uid}/projects/${widget.projectDocumentId}');
+      await projRef.delete();
+//    print('=> => => ${projRef.documentID} <= <= <=');
+    });
+    Navigator.of(context).pop();
   }
 
   Widget _buildTile(Widget child, String uName, String userID) {

@@ -18,12 +18,14 @@ class ViewUserPrimaryPage extends StatefulWidget {
   final String currentUserId;
   final String projectDocumentId;
    bool canCreateUser;
+   bool isStaff;
 
   ViewUserPrimaryPage({
     @required this.colorIndex,
     @required this.currentUserId,
     this.canCreateUser,
     this.projectDocumentId,
+    this.isStaff,
   }) : assert(colorIndex != null),
         assert(currentUserId != null);
   @override
@@ -192,7 +194,7 @@ class ViewUserPrimaryPageState extends State<ViewUserPrimaryPage>  with SingleTi
                       ),
                     ),
                   ):Container(),
-                  widget.projectDocumentId != null ?
+                  widget.isStaff ?
                   RaisedButton(
                     child: Text('CHANGE USER GROUP'),
                     textColor: TodoColors.baseColors[widget.colorIndex],

@@ -14,7 +14,6 @@ class ViewUsersPage extends StatefulWidget {
   final bool canRateUser;
   final bool canRecruit;
   final bool noButton;
-  final isStaff;
 
   const ViewUsersPage({
     @required this.colorIndex,
@@ -22,7 +21,6 @@ class ViewUsersPage extends StatefulWidget {
     @required this.canRateUser,
     @required this.canRecruit,
     this.noButton,
-    this.isStaff,
   }) : assert(colorIndex != null),
   assert(canRateUser != null), assert(canRecruit != null);
 
@@ -34,6 +32,7 @@ class ViewUsersPageState extends State<ViewUsersPage> {
   String userName = '', locations = '', userDocumentID = '';
   bool read = false;
   List project_users = [];
+  List user_projects = [];
 
   @override
   Widget build(BuildContext context) {
@@ -205,16 +204,28 @@ class ViewUsersPageState extends State<ViewUsersPage> {
           (
           // Do onTap() if it isn't null, otherwise do print()
             onTap: () {
-              print('TTTVVVVVVVVV => => =>  ${widget.projectDocumentId}');
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) =>
-                      UserHistoryPage(colorIndex: widget.colorIndex,
-                          userDocumentID: userID,
-                          canRateUser: widget.canRateUser,
-                          canRecruit: widget.canRecruit,
-                          noButton: widget.noButton,
-                          projectDocumentID: widget.projectDocumentId, isStaff: widget.isStaff)));
+              bool isStaff = false;
 
+              Firestore.instance.collection('users/${userID}/projects').getDocuments().then((query) {
+                  for (DocumentSnapshot doc in query.documents) {
+                    if (doc.documentID == widget.projectDocumentId) {
+                      isStaff = true;
+                      print('TTTVVVVVVVVV => => =>  ${widget.projectDocumentId} <= <= <= ${doc.documentID}');
+                    }
+                  }
+              }).whenComplete(() {
+                print("FFFFFFFFF => => => ${isStaff} <= <= <= ${widget
+                    .projectDocumentId}");
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) =>
+                        UserHistoryPage(colorIndex: widget.colorIndex,
+                            userDocumentID: userID,
+                            canRateUser: widget.canRateUser,
+                            canRecruit: widget.canRecruit,
+                            noButton: widget.noButton,
+                            projectDocumentID: widget.projectDocumentId,
+                            isStaff: isStaff)));
+              });
               },
             child: child
         )

@@ -10,13 +10,11 @@ class StaffNStatsPage extends StatefulWidget {
   final int colorIndex;
   final String projectDocumentId;
   final canRecruit;
-  final isStaff;
 
   const StaffNStatsPage({
     @required this.colorIndex,
     this.projectDocumentId,
     @required this.canRecruit,
-    this.isStaff,
   }) : assert(colorIndex != null), assert(canRecruit != null);
 
   @override
@@ -67,7 +65,7 @@ class StaffNStatsPageState extends State<StaffNStatsPage> {
       );
       items.add(
         new ViewUsersPage(colorIndex: widget.colorIndex, canRateUser: true,
-          canRecruit: widget.canRecruit, projectDocumentId: widget.projectDocumentId, isStaff: widget.isStaff,),
+          canRecruit: widget.canRecruit, projectDocumentId: widget.projectDocumentId,),
       );
       navigationItems.add(
           new BottomNavigationBarItem(

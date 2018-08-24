@@ -493,9 +493,10 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
                     'currentGroupCount': 0,
                   };
                   Firestore.instance.runTransaction((transaction) async {
-                    DocumentReference reference =
-                    Firestore.instance.collection('projects').document();
+                    DocumentReference reference = Firestore.instance.collection('projects').document();
                     await transaction.set(reference, project_data);
+                    DocumentReference userRef2 = Firestore.instance.document('users/${muid}/projects/${reference.documentID}');
+                    await userRef2.setData({});
                     DocumentReference userRef = Firestore.instance.document(
                         'projects/${reference.documentID}/users/${muid}');
                     await userRef.setData({

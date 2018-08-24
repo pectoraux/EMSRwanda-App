@@ -321,7 +321,7 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
                           onPressed: isDisabled ? () => showInSnackBar('You Already Sent A Work Request', Colors.redAccent) : (){_sendWorkRequest();},
                           child:   Text(button_message, style: TodoColors.textStyle4,),
                         )
-    : Center(child:Text(isStaff? button_message : 'Work\nRequest Pending', style: TodoColors.textStyle4, textDirection: TextDirection.ltr,) )
+    : Center(child:Text(button_message, style: TodoColors.textStyle4, textDirection: TextDirection.ltr,) )
         : Container()
                       ],
                     ),
@@ -474,7 +474,7 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
                               StaffNStatsPage(
                                 colorIndex: widget.colorIndex,
                                 projectDocumentId: widget.projectDocumentID,
-                                canRecruit: widget.canRecruit, isStaff: isStaff)));
+                                canRecruit: widget.canRecruit,)));
                     }
                   ),
                   _buildTile(

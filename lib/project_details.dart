@@ -474,7 +474,7 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
                               StaffNStatsPage(
                                 colorIndex: widget.colorIndex,
                                 projectDocumentId: widget.projectDocumentID,
-                                canRecruit: widget.canRecruit,)));
+                                canRecruit: widget.canRecruit, isStaff: isStaff)));
                     }
                   ),
                   _buildTile(

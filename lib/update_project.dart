@@ -40,11 +40,7 @@ class UpdateProjectPageState extends State<UpdateProjectPage> with SingleTickerP
   final _staffCount = GlobalKey(debugLabel: 'Staff Count');
   final _teamCount = GlobalKey(debugLabel: 'Team Count');
   static final formKey = new GlobalKey<FormState>();
-
-
-  DateTime _fromDate = DateTime.now();
-  DateTime _toDate = DateTime.now();
-
+  DateTime _fromDate, _toDate;
 
   bool _sendRequestToAvailableUsers = false;
   String dropdown2Value;
@@ -62,10 +58,13 @@ class UpdateProjectPageState extends State<UpdateProjectPage> with SingleTickerP
   String projectTitleStr ='', devicesPerRole = '', projectDescriptionStr = '', devicesPerRoleStr = '';
   List locationsList = List(), tagsList = List();
   DateTime startDateDd = DateTime.now(), endDateDd = DateTime.now();
-  int staffCount, teamCount;
+  String staffCount, teamCount;
+  bool loaded = false;
+
   @override
   void initState() {
     super.initState();
+    _setDefaults();
     controller = new AnimationController(
         duration: const Duration(milliseconds: 2000), vsync: this);
     animation = new Tween(begin: 0.0, end: 300.0).animate(controller);
@@ -73,7 +72,6 @@ class UpdateProjectPageState extends State<UpdateProjectPage> with SingleTickerP
     _createDropdownMenuItems(0, locations);
     _createDropdownMenuItems(1, widget.tags);
     _createDropdownMenuItems(2, widget.roles);
-    _setDefaults();
 
     initConnectivity();
     _connectivitySubscription =
@@ -110,7 +108,7 @@ class UpdateProjectPageState extends State<UpdateProjectPage> with SingleTickerP
   /// Sets the default values for the 'from' and 'to' [Dropdown]s, and the
   /// updated output value if a user had previously entered an input.
   void _setDefaults() async {
-    setState(() {
+    setState(() async {
       devices_values = List<bool>.generate(widget.devices.toSet().length, (int index) => (false));
       _mcolors = List<Color>.generate(widget.devices.toSet().length, (int index) => (Colors.brown[500]));
       _locationValue = locations[0];
@@ -118,10 +116,10 @@ class UpdateProjectPageState extends State<UpdateProjectPage> with SingleTickerP
       _roleValue = widget.roles[0];
 
 
-      Firestore.instance.document('projects/${widget.projectDocumentID}').get().then((d) {
-      _fromDate = d['startDate'] == null ? _fromDate : d['startDate'];
-      _toDate = d['endDate'] == null ? _toDate : d['endDate'];
-    });
+//      Firestore.instance.document('projects/${widget.projectDocumentID}').get().then((d) {
+//      _fromDate = d['startDate'];
+//      _toDate = d['endDate'];
+//    });
   });
         }
 
@@ -494,19 +492,6 @@ class UpdateProjectPageState extends State<UpdateProjectPage> with SingleTickerP
                       },
                     ),
                   ),
-                  const SizedBox(height: 12.0),
-                  new CheckboxListTile(
-                    title: Text('Send Requests', style: TodoColors.textStyle2,),
-                    value: _sendRequestToAvailableUsers,
-                    activeColor: TodoColors.baseColors[_colorIndex],
-                    onChanged: (bool permission) {
-                      setState(() {
-                        _sendRequestToAvailableUsers = permission;
-                      });
-                    },
-                    secondary: new Icon(
-                      LineAwesomeIcons.user, color: TodoColors.baseColors[_colorIndex], size: 30.0,),
-                  ),
 
 
                   ButtonBar(
@@ -530,7 +515,7 @@ class UpdateProjectPageState extends State<UpdateProjectPage> with SingleTickerP
                         shape: BeveledRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(7.0)),
                         ),
-                        onPressed: _connectionStatus == 'ConnectivityResult.none' ? () => onTap2() :()  async {
+                        onPressed: ()async {
 //                _projectTitleController.text.trim() != "" &&
 //                    _projectDescriptionController.text.trim() != ""
 
@@ -542,10 +527,8 @@ class UpdateProjectPageState extends State<UpdateProjectPage> with SingleTickerP
                           devicesPerRoleStr = hasChanged[4] ? devicesWithRole.toString(): document['devicesPerRole'];
                           startDateDd = hasChanged[5] ? _fromDate: document['startDate'];
                           endDateDd = hasChanged[6] ? _toDate: document['endDate'];
-                          staffCount = hasChanged[7] ? int.parse(_staffCountController.text): document['staffCount'];
-                          teamCount = hasChanged[8] ? int.parse(_teamCountController.text): document['teamCount'];
-
-                          if (true) {
+                          staffCount = hasChanged[7] ? _staffCountController.text: document['staffCount'];
+                          teamCount = hasChanged[8] ? _teamCountController.text: document['teamCount'];
 
                             Map<String, Object> project_data = <String, Object>{
                               'projectTitle': projectTitleStr,
@@ -567,11 +550,7 @@ class UpdateProjectPageState extends State<UpdateProjectPage> with SingleTickerP
                             });
                             Navigator.of(context).pop();
                             showInSnackBar(
-                                "Project Created Successfully", TodoColors.baseColors[_colorIndex]);
-                          } else {
-                            showInSnackBar("Please Specify A Value For All Fields",
-                                Colors.redAccent);
-                          }
+                                "Project Updated Successfully", TodoColors.baseColors[_colorIndex]);
                         },
                       ),
                     ],
@@ -620,19 +599,29 @@ class UpdateProjectPageState extends State<UpdateProjectPage> with SingleTickerP
 
   @override
   Widget build(BuildContext context) {
-    return new StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('projects').snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+
+//    Firestore.instance.document('projects/${widget.projectDocumentID}').get().then((d) {
+//      _fromDate = d['startDate'];
+//      _toDate = d['endDate'];
+//    });
+    return new StreamBuilder<DocumentSnapshot>(
+        stream: Firestore.instance.document('projects/${widget.projectDocumentID}').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (!snapshot.hasData) {
             return new Center(
                 child: new BarLoadingScreen()
             );
           } else {
-            DocumentSnapshot mdoc = snapshot.data.documents.firstWhere((doc){
-              return doc.documentID == widget.projectDocumentID;
-            });
+//            DocumentSnapshot mdoc = snapshot.data.documents.firstWhere((doc){
+//              return doc.documentID == widget.projectDocumentID;
+//            });
+            if(!loaded){
+              _fromDate = snapshot.data['startDate'];
+              _toDate = snapshot.data['endDate'];
+              loaded = true;
+            }
             final converter = _buildListItem(
-                context, mdoc);
+                context, snapshot.data);
 //print('WWWWWWWWWWWWW => => => ${mdoc['locations'].toString()}');
             return OrientationBuilder(
               builder: (BuildContext context, Orientation orientation) {

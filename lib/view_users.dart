@@ -14,6 +14,7 @@ class ViewUsersPage extends StatefulWidget {
   final bool canRateUser;
   final bool canRecruit;
   final bool noButton;
+  final isStaff;
 
   const ViewUsersPage({
     @required this.colorIndex,
@@ -21,6 +22,7 @@ class ViewUsersPage extends StatefulWidget {
     @required this.canRateUser,
     @required this.canRecruit,
     this.noButton,
+    this.isStaff,
   }) : assert(colorIndex != null),
   assert(canRateUser != null), assert(canRecruit != null);
 
@@ -211,7 +213,7 @@ class ViewUsersPageState extends State<ViewUsersPage> {
                           canRateUser: widget.canRateUser,
                           canRecruit: widget.canRecruit,
                           noButton: widget.noButton,
-                          projectDocumentID: widget.projectDocumentId)));
+                          projectDocumentID: widget.projectDocumentId, isStaff: widget.isStaff)));
 
               },
             child: child

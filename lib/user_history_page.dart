@@ -16,6 +16,7 @@ class UserHistoryPage extends StatefulWidget {
   final bool canRecruit;
   final String projectDocumentID;
   final bool noButton;
+  final bool isStaff;
 
   const UserHistoryPage({
     @required this.colorIndex,
@@ -24,6 +25,7 @@ class UserHistoryPage extends StatefulWidget {
     @required this.canRecruit,
     this.projectDocumentID,
     @required this.noButton,
+    this.isStaff,
   }) : assert(colorIndex != null),
         assert(userDocumentID != null),
         assert(canRateUser != null),
@@ -38,7 +40,6 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
   /// This controller can be used to programmatically
   /// set the current displayed page
   PageController _pageController;
-
   /// Indicating the current displayed page
   int _page = 0;
 
@@ -94,7 +95,7 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
     if(widget.canRecruit){
       items.add(new SendWorkRequestPage(colorIndex: widget.colorIndex,
         userDocumentID: document.documentID,
-        projectDocumentID: widget.projectDocumentID, noButton: widget.noButton,));
+        projectDocumentID: widget.projectDocumentID,));
 
     }else {
       items.add(new EmploymentHistoryPage(colorIndex: widget.colorIndex,
@@ -104,13 +105,15 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
         canRecruit: widget.canRecruit,
         projectDocumentID: widget.projectDocumentID,));
     }
+    if(widget.projectDocumentID != null && widget.isStaff){
       if(widget.canRateUser) {
         navigationItems.add(new BottomNavigationBarItem(
             icon: new Icon(Icons.stars, color: getColor(2)),
             title: new Text("Rate\nUser", textAlign: TextAlign.center,),),
         );
         items.add(new UserRatingPage(colorIndex: widget.colorIndex, userDocumentID: document.documentID, projectDocumentID: widget.projectDocumentID,));
-      }
+      }}
+
     navigationItems.add(
       new BottomNavigationBarItem(
           icon: new Icon(Icons.calendar_view_day, color: getColor(widget.canRateUser?3:2),),

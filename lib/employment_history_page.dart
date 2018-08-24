@@ -205,8 +205,8 @@ class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
                   ),
                 )
             ),
-            GoodReviewItem(colorIndex: widget.colorIndex, userDocumentId: widget.documentID,),
-            BadReviewItem(colorIndex: widget.colorIndex, userDocumentId: widget.documentID,),
+//            GoodReviewItem(colorIndex: widget.colorIndex, userDocumentId: widget.documentID,),
+//            BadReviewItem(colorIndex: widget.colorIndex, userDocumentId: widget.documentID,),
 //            NewReviewItem(colorIndex: widget.colorIndex, userDocumentId: widget.documentID,),
           ],
         )

@@ -14,14 +14,12 @@ class SendWorkRequestPage extends StatefulWidget
   final int colorIndex;
   final String userDocumentID;
   final String projectDocumentID;
-  final noButton;
 
   const SendWorkRequestPage({
     @required this.colorIndex,
     @required this.userDocumentID,
     this.projectDocumentID,
-    this.noButton,
-  }) : assert(colorIndex != null), assert(userDocumentID != null);
+  });
 
 
   @override
@@ -42,6 +40,9 @@ class _SendWorkRequestPageState extends State<SendWorkRequestPage>
     super.initState();
     if(widget.projectDocumentID != null) {
       setDefaults();
+      if(button_text.isEmpty){
+        button_text = 'SEND WORK REQUEST';
+      }
     }
   }
 
@@ -52,6 +53,7 @@ class _SendWorkRequestPageState extends State<SendWorkRequestPage>
           .getDocuments()
           .then((query) {
         query.documents.forEach((doc) {
+
             if (doc['projectId'] == widget.projectDocumentID ){
                if(doc['type'] == 'Made By You' && widget.userDocumentID == doc['to']){
                  setState(() {
@@ -69,6 +71,8 @@ class _SendWorkRequestPageState extends State<SendWorkRequestPage>
             }
         });
       }).whenComplete((){
+        print('=> => => button text = ${button_text.isEmpty} <= <= <=');
+
         Firestore.instance.collection('projects/${widget.projectDocumentID}/users')
             .getDocuments()
             .then((query) {
@@ -148,8 +152,8 @@ class _SendWorkRequestPageState extends State<SendWorkRequestPage>
                   elevation: 8.0,
                   color: Colors.black,
                   borderRadius: BorderRadius.circular(32.0),
-                  child: widget.noButton ? Container()
-:                  InkWell
+                  child:
+                  InkWell
                     (
                     onTap: isDisabled ? (){} : (){_sendWorkRequest();} ,
                     child: Padding
@@ -171,8 +175,8 @@ class _SendWorkRequestPageState extends State<SendWorkRequestPage>
                   )
                 )
             ),
-            GoodReviewItem(colorIndex: widget.colorIndex, userDocumentId: widget.userDocumentID,),
-            BadReviewItem(colorIndex: widget.colorIndex, userDocumentId: widget.userDocumentID,),
+//            GoodReviewItem(colorIndex: widget.colorIndex, userDocumentId: widget.userDocumentID,),
+//            BadReviewItem(colorIndex: widget.colorIndex, userDocumentId: widget.userDocumentID,),
 //            NewReviewItem(colorIndex: widget.colorIndex, userDocumentId: widget.userDocumentID,),
           ],
         )

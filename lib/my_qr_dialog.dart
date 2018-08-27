@@ -106,11 +106,13 @@ class MyQRDialogState extends State<MyQRDialog> {
               child: new Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
+                  widget.textAvailable.isNotEmpty ?
                   ListTile(
                     title: Text("Available Devices", style: TextStyle(color: TodoColors.baseColors[widget.colorIndex]),),
                     subtitle: Text(widget.textAvailable,
                       style: TodoColors.textStyle.apply(color: TodoColors.baseColors[widget.colorIndex]),),
-                  ),
+                  ):Container(),
+                  widget.textAvailable.isNotEmpty ?
                   new ButtonTheme.bar( // make buttons use the appropriate styles for cards
                     child: new ButtonBar(
                       children: <Widget>[
@@ -135,12 +137,14 @@ class MyQRDialogState extends State<MyQRDialog> {
                         ):Container(),
                       ],
                     ),
-                  ),
+                  ):Container(),
+                  widget.textInUse.isNotEmpty ?
                   ListTile(
                     title: Text("Devices In Use", style: TextStyle(color: Colors.redAccent),),
                     subtitle: Text(widget.textInUse,
                       style: TodoColors.textStyle.apply(color: Colors.redAccent),),
-                  ),
+                  ):Container(),
+                  widget.textInUse.isNotEmpty ?
                   new ButtonTheme.bar( // make buttons use the appropriate styles for cards
                     child: new ButtonBar(
                       children: <Widget>[
@@ -156,6 +160,7 @@ class MyQRDialogState extends State<MyQRDialog> {
                                       _scannedIn = true;
                                     });
                                     Navigator.of(context).pop();
+                                    Navigator.of(context).pop();
                                   }else{
                                     setState(() {
                                       _scannedIn = true;
@@ -165,7 +170,7 @@ class MyQRDialogState extends State<MyQRDialog> {
                         ):Container(),
                       ],
                     ),
-                  ),
+                  ):Container(),
                 ],
               ),
             )

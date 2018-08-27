@@ -116,7 +116,7 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
 
     navigationItems.add(
       new BottomNavigationBarItem(
-          icon: new Icon(Icons.calendar_view_day, color: getColor(widget.canRateUser?3:2),),
+          icon: new Icon(Icons.calendar_view_day, color: getColor(widget.canRateUser && widget.isStaff ? 3:2),),
           title: new Text("User\nAvailability", textAlign: TextAlign.center,)
       ),
     );
@@ -124,7 +124,7 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
 
     navigationItems.add(
       new BottomNavigationBarItem(
-          icon: new Icon(Icons.devices, color: getColor(widget.canRateUser?4:3),),
+          icon: new Icon(Icons.devices, color: getColor(widget.canRateUser && widget.isStaff ? 4:3),),
           title: new Text("User\nDevices", textAlign: TextAlign.center,)
       ),
       );
@@ -166,7 +166,7 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
   @override
   void dispose() {
     super.dispose();
-    _pageController.dispose();
+    _pageController..dispose();
   }
 
   @override

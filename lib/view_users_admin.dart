@@ -128,8 +128,8 @@ class ViewUsersAdminPageState extends State<ViewUsersAdminPage> {
                                 SizedBox(width: 180.0,
                                     child:Text(locations,
                                       style: TextStyle(color: TodoColors.baseColors[widget.colorIndex]),) ),
-
-                                Expanded(child:Text(userName, style: TodoColors.textStyle6), flex: 1,),
+                                userName.length < 15 ?
+                                Text(userName, style: TodoColors.textStyle6) : Text(userName.substring(0, 15)+'...', style: TodoColors.textStyle6),
                               ],
                             ),
                             Material
@@ -166,13 +166,14 @@ class ViewUsersAdminPageState extends State<ViewUsersAdminPage> {
   }
 
   void gotoUserHistory(){
+
     Navigator.of(context).push(
         MaterialPageRoute(builder: (_) =>
             UserHistoryPage(colorIndex: widget.colorIndex,
               userDocumentID: userDocumentID,
               canRateUser: false,
               canRecruit: false,
-              noButton: true,)));
+              noButton: true, isStaff: false,)));
   }
 
   void showDeleteDialog(){

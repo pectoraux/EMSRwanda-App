@@ -47,7 +47,7 @@ class UpdateProjectPageState extends State<UpdateProjectPage> with SingleTickerP
   String _value = null;
   String dropdown3Value = 'Four';
   List<DropdownMenuItem> _locationMenuItems, _tagMenuItems, _roleMenuItems;
-  List<String> locations = ["Locations", "Gasabo", "Remera", "Kisimenti", "Gaculiro", "Kacyiru"];
+  List<String> locations = ["Locations", "Kigali Only", "Kigali Upcountry",];
   String _tagValue, _locationValue, _roleValue;
   int _colorIndex = 0;
   Set<String> selectedLocations = new Set(), selectedTags = new Set(), selectedDevices = new Set(), documentLocations = new Set();

@@ -39,7 +39,7 @@ class EditDevicePageState extends State<EditDevicePage> with SingleTickerProvide
   final _deviceCondition = GlobalKey(debugLabel: 'Device Condition');
   int _colorIndex = 0;
 //  List<String> deviceTypes = ["Device Type", "Ipad", "Microphone", "Phone", "Tablet", "Dictaphone", "Other"];
-  List<String> deviceConditions = ["Device Condition", "1", "2", "3", "4", "5"];
+  List<String> deviceConditions = ["Device Condition", "Working", "Screen Broken But Working", "Screen Broken And Not Working", "Not Switching On"];
   List<String> deviceStatus = ["Device Status", "Available", 'In Use'];
   List<DropdownMenuItem> _deviceTypeMenuItems, _deviceConditionMenuItems, _deviceStatusMenuItems;
   String _deviceTypeValue, _deviceConditionValue, _deviceStatusValue;
@@ -314,9 +314,10 @@ class EditDevicePageState extends State<EditDevicePage> with SingleTickerProvide
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),
               ),
               onPressed: _connectionStatus == 'ConnectivityResult.none' ? () => onTap() :() {
-//                if (_deviceNameController.value.text.trim() != "" &&
-//                    _deviceConditionController.value.text.trim() != "" && _deviceTypeValue != "Other" && _deviceConditionValue != "Device Condition") {
-                if (true) {
+                if (deviceName.trim() != "" && deviceName.trim() != display_no_scan &&
+                    deviceName.trim() != display_unknown && deviceName.trim() != display_permission_denied &&
+                    _deviceConditionValue.trim() != "" && _deviceConditionValue.trim() != 'Device Condition' &&
+                    _deviceTypeValue != "Other" && _deviceTypeValue != "Device Type"  && _deviceStatusValue != "Device Status") {
                   if(_deviceTypeValue == 'Other'){
                     _deviceTypeValue = _deviceTypeController.text;
                   }
@@ -362,11 +363,17 @@ class EditDevicePageState extends State<EditDevicePage> with SingleTickerProvide
                         TodoColors.baseColors[_colorIndex]);
                     _deviceTypeController.clear();
                   } else {
-                    showInSnackBar("Please Specify A Device For All Fields",
+
+                    showInSnackBar("Please Specify A Value For All Fields",
                         Colors.redAccent);
                   }
                 } else {
-                  showInSnackBar("Please Specify A Device For All Fields",
+                  print("<= <= <= ${_deviceStatusValue}");
+                  print("=> => => Condition ${deviceName.trim() != "" && deviceName.trim() != display_no_scan &&
+                      deviceName.trim() != display_unknown && deviceName.trim() != display_permission_denied &&
+                      _deviceConditionValue.trim() != "" && _deviceConditionValue.trim() != 'Device Condition' &&
+                      _deviceTypeValue != "Other" && _deviceTypeValue != "Device Type"  && _deviceStatusValue != "Device Status"}");
+                  showInSnackBar("Please Specify A Value For All Fields",
                       Colors.redAccent);
                 }
               },

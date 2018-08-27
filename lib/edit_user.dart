@@ -199,11 +199,16 @@ FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
               shape: BeveledRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),
               ),
-              onPressed: () {
+              onPressed: () async {
                 setState(() {
                   _userNameController.clear();
                   _roleValue = widget.roles[0];
                 });
+//                createAllUsers();
+//            Firestore.instance.collection('musers').getDocuments().then((query){
+//              print("HHHHHHH => => => Number of Users ${query.documents.length}");
+//            });
+              
               },
             ),
             RaisedButton(
@@ -292,6 +297,61 @@ FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
         ),
       ],
     );
+  }
+
+  void createAllUsers() async {
+    Firestore.instance.runTransaction((transaction) async {
+      for (List lst in TodoColors.names) {
+//        String email = TodoColors.users[0][0] + '@laterite.com';
+//        String mrole = lst[1];
+        List<String> userLocations = [];
+        List items = [0];
+//        widget.auth.createUser(us, defaultPassword);//.then((newId) {
+//        if (newId != null) {
+        Map<String, Object> user_data = <String, Object>{
+//          'userName': lst[0],
+//          'userRole': mrole,
+//          'userPassword': defaultPassword,
+//          'userStatus': 'Active',
+          'firstName': lst[1],
+          'lastName': lst[2],
+//          'email1': '',
+//          'email2': '',
+//          'sex': '',
+//          'country': '',
+//          'mainPhone': '',
+//          'phone1': '',
+//          'phone2': '',
+//          'passportNo': '',
+//          'bankAcctNo': '',
+//          'bankName': '',
+//          'insurance': '',
+//          'insuranceNo': '',
+//          'insuranceCpy': '',
+//          'tin': '',
+//          'cvStatusElec': '',
+//          'dob': '',
+//          'nationalID': '',
+//          'emergencyContactName': '',
+//          'emergencyContactPhone': '',
+//          'locations': userLocations.toString(),
+//          '_list': items,
+//          '_list2': items,
+//          'initiativeTakingRating': -1.0,
+//          'communicationRating': -1.0,
+//          'punctualityRating': -1.0,
+//          'reportingRating': -1.0,
+//          'overAllRating': -1.0,
+//          'photoUrl': 'https://firebasestorage.googleapis.com/v0/b/emsrwanda-app.appspot.com/o/users_photos%2Flaterite.PNG?alt=media&token=c48a857c-4979-4d8b-9cc3-27676dd54295',
+//          'editing': false,
+        };
+        Firestore.instance.runTransaction((transaction) async {
+          DocumentReference reference =
+          Firestore.instance.document('users/${lst[0]}');
+          await reference.updateData(user_data);
+        });
+      }
+    });
   }
 
   dispose() {

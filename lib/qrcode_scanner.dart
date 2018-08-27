@@ -43,30 +43,30 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
   }
 
   bool checkUserCredentials(String mUser){
-      Firestore.instance.collection('users').snapshots().firstWhere((query){
-        var res = query.documents.where((doc){
-          return doc['firstName'] == mUser;
-        });
-        setState(() {
-//          print('SSSSSSSSS => => => ${res.toList()} <= <= <= ${mUser}');
-          tresult = res.toList().isNotEmpty;
-        });
-        return tresult;
+    Firestore.instance.collection('users').snapshots().firstWhere((query){
+      var res = query.documents.where((doc){
+        return  doc['firstName'] == mUser;
+      });
+      setState(() {
+          print('SSSSSSSSS => => => ${res.toList()} <= <= <= ${mUser}');
+        tresult = res.toList().isNotEmpty;
       });
       return tresult;
+    });
+    return tresult;
   }
 
   bool checkDeviceCredentials(String devName, bool fillStatus){
     Firestore.instance.collection('devices').snapshots().firstWhere((query){
       var res = query.documents.where((doc){
 //        print('SSSSSSSSS => => => ${doc['deviceName'].toLowerCase()} <= <= <= ${devName}');
-      if(doc['deviceName'].toLowerCase() == devName.toLowerCase() && fillStatus) {
-        setState(() {
-          print('SSSSSSSSSSSTTTTTTTTTAV => => => ${devicesStatus}');
-          devicesStatus.add(doc['deviceStatus'] == 'In Use');
-          print('SSSSSSSSSSSTTTTTTTTTAP => => => ${devicesStatus}');
-        });
-      }
+        if(doc['deviceName'].toLowerCase() == devName.toLowerCase() && fillStatus) {
+          setState(() {
+            print('SSSSSSSSSSSTTTTTTTTTAV => => => ${devicesStatus}');
+            devicesStatus.add(doc['deviceStatus'] == 'In Use');
+            print('SSSSSSSSSSSTTTTTTTTTAP => => => ${devicesStatus}');
+          });
+        }
         return doc['deviceName'].toLowerCase() == devName.toLowerCase();
       });
       setState(() {
@@ -81,19 +81,19 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
   Future<List<bool>> checkDeviceExits(List<String> devNames) async {
     mBoolResults = List<bool>.generate(devNames.length, (int index) => (false));
     for(int j = 0; j < devNames.length; j++) {
-      String devName = devNames[j];
-      Firestore.instance.collection('devices').snapshots().firstWhere((query) {
-        var res = query.documents.where((doc) {
+    String devName = devNames[j];
+    Firestore.instance.collection('devices').snapshots().firstWhere((query) {
+    var res = query.documents.where((doc) {
 //    print('SSSSSSSSS => => => ${doc['deviceName'].toLowerCase()} <= <= <= ${devName}');
     print('${doc['deviceName'].toLowerCase() == devName.toLowerCase()}');
-          return (doc['deviceName'].toLowerCase() == devName.toLowerCase());
-        });
-        setState(() {
-          mBoolResults[j] = res.toList().isNotEmpty;
+    return (doc['deviceName'].toLowerCase() == devName.toLowerCase());
+    });
+    setState(() {
+    mBoolResults[j] = res.toList().isNotEmpty;
 //          print('SSSSSSSSS => => => ${res.toList()} <= <= <= ${devName}');
-        });
-        return true;//mBoolResults[j];
-      });
+    });
+    return true;//mBoolResults[j];
+    });
     }
     return mBoolResults;
   }
@@ -103,17 +103,17 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
       String qrResult = await BarcodeScanner.scan();
       setState(() {
         if(result == display_welcome || result == display_permission_denied ||
-          result == display_no_scan || result.startsWith(display_unknown) || result.isEmpty){
+            result == display_no_scan || result.startsWith(display_unknown) || result.isEmpty){
           result = qrResult;
 //          print('SSSSSSSSS => => =>  <= <= <= ${result.trim()}');
-              firstScan = false;
-              deviceScan = true;
-            checkUserCredentials(result.trim());
+          firstScan = false;
+          deviceScan = true;
+          checkUserCredentials(result.trim());
         }else{
           result += "\n" + qrResult;
           int len = result.length;
           result = result.split('\n').toSet().join('\n');
-            checkDeviceCredentials(qrResult, result.length == len);
+          checkDeviceCredentials(qrResult, result.length == len);
         }
 
       });
@@ -152,47 +152,47 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
           title: Text('QR CODE SCAN', style: TodoColors.textStyle6,
           ),
           actions: <Widget>
-        [
-        Container
-        (
-        margin: EdgeInsets.only(right: 8.0),
-      child: Row
-        (
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>
-        [
-          new FloatingActionButton(
-            elevation: 200.0,
-            child: new Icon(Icons.save),
-            backgroundColor: TodoColors.baseColors[widget.colorIndex],
-            onPressed: () {
-              if(result != "" && result != display_welcome && result != display_permission_denied &&
-                  result != display_no_scan && !result.startsWith(display_unknown) && deviceExists) {
-                setState(() {
-                  result = result.split('\n').toSet().join('\n');
-                });
-                onSave(result);
-                setState(() {
-                  result = "";
+          [
+            Container
+              (
+              margin: EdgeInsets.only(right: 8.0),
+              child: Row
+                (
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>
+                [
+                  new FloatingActionButton(
+                    elevation: 200.0,
+                    child: new Icon(Icons.save),
+                    backgroundColor: TodoColors.baseColors[widget.colorIndex],
+                    onPressed: () {
+                      if(result != "" && result != display_welcome && result != display_permission_denied &&
+                          result != display_no_scan && !result.startsWith(display_unknown) && deviceExists) {
+                        setState(() {
+                          result = result.split('\n').toSet().join('\n');
+                        });
+                        onSave(result);
+//                        setState(() {
+//                          result = "";
 //                  _scannedIn = false;
 //                  _scannedOut = false;
-                });
-              } else if (result != display_welcome && result != display_permission_denied &&
-                  result != display_no_scan && !result.startsWith(display_unknown) && result.isNotEmpty){
-                setState(() {
+//                        });
+                      } else if (result != display_welcome && result != display_permission_denied &&
+                          result != display_no_scan && !result.startsWith(display_unknown) && result.isNotEmpty){
+                        setState(() {
 //                print('SSSSSSSSSSSS => => => ${result} <= <= <= ${deviceScan} = = = ${deviceExists} + = + ${tresult}');
-                  buffer = result;
-                  bottom_btn = 'Go Back';
-                  result = 'Could not find ${result.split('\n').removeLast()} in the database.\n Click The Back Button to go back';
-                });
-              }
-            },
-          ),
-        ],
-      ),
-    )
-    ],
+                          buffer = result;
+                          bottom_btn = 'Go Back';
+                          result = 'Could not find ${result.split('\n').removeLast()} in the database.\n Click The Back Button to go back';
+                        });
+                      }
+                    },
+                  ),
+                ],
+              ),
+            )
+          ],
         ),
         body: StaggeredGridView.count(
           crossAxisCount: 2,
@@ -212,44 +212,43 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
                     [
                       Center
                         (
-                      child:
-                         Text('SCAN CODE', style: TodoColors.textStyle6)
+                          child:
+                          Text('SCAN CODE', style: TodoColors.textStyle6)
                       ),
                     ]
                 ),
               ),
               onTap: (){
-            if(firstScan){
-             scanQR();
+                if(firstScan){
+                  scanQR();
 //             print('TRESULT => => => ${tresult} <= <= <= ');
-            }else if(tresult){
-              scanQR();
+                }else if(tresult){
+                  scanQR();
 //              print('TRESULT => => => ${tresult} <= <= <= ');
-              setState(() {
-                tresult = false;
-                userError = false;
-              });
-            }else if (deviceExists)
-    {
-      setState(() {
-        deviceExists = false;
-      });
-      scanQR();
-    }else if (userError == null){
-              setState(() {
-                result = display_user_not_found;
-                firstScan = true;
+                  setState(() {
+                    tresult = false;
+                    userError = false;
+                  });
+                }else if (deviceExists) {
+                  setState(() {
+                    deviceExists = false;
+                  });
+                  scanQR();
+                }else if (userError == null){
+                  setState(() {
+                    result = display_user_not_found;
+                    firstScan = true;
 //                deviceScan = false;
-              });
-            }else {
-              setState(() {
+                  });
+                }else {
+                  setState(() {
 //                print('SSSSSSSSSSSS => => => ${result} <= <= <= ${deviceScan} = = = ${deviceExists} + = + ${tresult}');
-              buffer = result;
-              bottom_btn = 'Go Back';
-                result = 'Could not find ${result.split('\n').removeLast()} in the database.\n Click The Back Button to go back';
-              });
-            }
-            },
+                    buffer = result;
+                    bottom_btn = 'Go Back';
+                    result = 'Could not find ${result.split('\n').removeLast()} in the database.\n Click The Back Button to go back';
+                  });
+                }
+              },
             ),
             _buildTile2(
               Padding
@@ -268,24 +267,24 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
               ),
             ),
             _buildTile(
-              Padding
-                (
-                padding: const EdgeInsets.all(24.0),
-                child: Row
+                Padding
                   (
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>
-                    [
-                      Center
-                        (
-                          child:
-                          Text(bottom_btn, style: TodoColors.textStyle6)
-                      ),
-                    ]
+                  padding: const EdgeInsets.all(24.0),
+                  child: Row
+                    (
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>
+                      [
+                        Center
+                          (
+                            child:
+                            Text(bottom_btn, style: TodoColors.textStyle6)
+                        ),
+                      ]
+                  ),
                 ),
-              ),
-              onTap: onTap
+                onTap: onTap
             ),
           ],
           staggeredTiles: [
@@ -320,12 +319,15 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
   }
 
   Future onSave (String toProcess) async {
-    String status = "Available";
     List<String> mResults = result.split("\n").toList();
     String textInUse = "", textAvailable = "";
+    setState(() {
+      if(devicesStatus != result.split('\n').length - 1) {
+        devicesStatus = devicesStatus.sublist(devicesStatus.length - (result.split('\n').length - 1));
+      }
+    });
 
-//    print('SSSSSSSSSSSTTTTTTTTT => => => ${devicesStatus}');
-
+    print("Showing dialog: result ${devicesStatus}");
     for(int i = 0; i < devicesStatus.length; i++){
       if(devicesStatus[i]){
         textInUse += '${result.split('\n')[i+1]}\n';
@@ -333,15 +335,19 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
         textAvailable += '${result.split('\n')[i+1]}\n';
       }
     }
-//      setState(() {
-//        if(status != "Available") {  // if device is in use
-//          _scanIn = true;
-//        }
-//      });
+      setState(() {
+        devicesStatus = <bool>[];
+      });
 
     showDialog(context: context, child: new MyQRDialog(colorIndex: widget.colorIndex, textInUse: textInUse,
-                                                        textAvailable: textAvailable, user: result.split('\n')[0],
-                                                        projectDocumentId: widget.projectDocumentId,));
+      textAvailable: textAvailable, user: result.split('\n')[0],
+      projectDocumentId: widget.projectDocumentId,));
+
+    setState(() {
+      result = "";
+//      _scannedIn = false;
+//      _scannedOut = false;
+    });
 
     showInSnackBar("Scanner has been reset", TodoColors.baseColors[widget.colorIndex]);
   }
@@ -358,19 +364,19 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
         });
       }).whenComplete(() async {
         for(String s in mdevices.split('\n')){
-        Firestore.instance.collection('devices').getDocuments().then((dd) async {
-          String currentDeviceId =  dd.documents.firstWhere((mdoc) {
-             return mdoc['deviceName'].toLowerCase() == s.toLowerCase();
-              }).documentID;
-              DocumentReference reference = Firestore.instance.document(
-                  'users/${userdocId}/devices/$currentDeviceId');
-              await reference.setData({});
-          Firestore.instance.runTransaction((transaction) async {
-            DocumentReference reference = Firestore.instance.document('devices/$currentDeviceId');
-            await transaction.update(reference, {'deviceStatus': 'In Use'});
-          });
+          Firestore.instance.collection('devices').getDocuments().then((dd) async {
+            String currentDeviceId =  dd.documents.firstWhere((mdoc) {
+              return mdoc['deviceName'].toLowerCase() == s.toLowerCase();
+            }).documentID;
+            DocumentReference reference = Firestore.instance.document(
+                'users/${userdocId}/devices/$currentDeviceId');
+            await reference.setData({});
+            Firestore.instance.runTransaction((transaction) async {
+              DocumentReference reference = Firestore.instance.document('devices/$currentDeviceId');
+              await transaction.update(reference, {'deviceStatus': 'In Use'});
             });
-      }});
+          });
+        }});
     });
   }
 

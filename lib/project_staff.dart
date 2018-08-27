@@ -12,13 +12,13 @@ class ProjectStaffPage extends StatefulWidget {
   final int colorIndex;
   final String projectDocumentId;
 //  final bool canRateUser;
-//  final bool canRecruit;
+  final bool canRecruit;
 
   const ProjectStaffPage({
     @required this.colorIndex,
     this.projectDocumentId,
 //    @required this.canRateUser,
-//    @required this.canRecruit,
+    /*@required*/ this.canRecruit,
   }) : assert(colorIndex != null);
 //        assert(canRateUser != null), assert(canRecruit != null);
 
@@ -233,13 +233,13 @@ class ProjectStaffPageState extends State<ProjectStaffPage> {
                   gotoUserHistory(muserID);
                 }
               ),
-              new ListTile(
+              widget.canRecruit == null ? new ListTile(
                   leading: new Icon(Icons.delete, color: Colors.red,),
                   title: new Text('Remove ${name} from Project'),
                   onTap: () {
                     showDeleteDialog(muserID);
                   }
-              ),
+              ): Container(),
             ],
           )
       );

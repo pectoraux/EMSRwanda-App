@@ -167,7 +167,9 @@ class ViewDevicesPageState extends State<ViewDevicesPage> {
               Text(deviceStatus,
               style: TextStyle(color: (deviceStatus == 'Available')?
               TodoColors.baseColors[widget.colorIndex] : Colors.redAccent)),
-              Text(deviceName, style: TodoColors.textStyle6)
+              (deviceName.length < 15) ?
+              Expanded(child:Text(deviceName, style: TodoColors.textStyle6), flex:1):
+              Expanded(child:Text(deviceName.substring(0,15)+'...', style: TodoColors.textStyle6), flex:1),
                         ],
                       ),
                       Material

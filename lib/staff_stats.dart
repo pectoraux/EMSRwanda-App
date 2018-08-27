@@ -46,7 +46,7 @@ class StaffNStatsPageState extends State<StaffNStatsPage> {
           icon: new Icon(Icons.people, color: getColor(1),),
           title: new Text("Staff", textAlign: TextAlign.center)));
     items.add(
-        new ProjectStaffPage(colorIndex: widget.colorIndex, projectDocumentId: widget.projectDocumentId,)
+        new ProjectStaffPage(colorIndex: widget.colorIndex, projectDocumentId: widget.projectDocumentId, canRecruit: widget.canRecruit,)
     );
 
     if(widget.canRecruit) {

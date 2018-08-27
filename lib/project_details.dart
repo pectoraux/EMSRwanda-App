@@ -506,10 +506,10 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
                           ]
                       ),
                     ),
-                    onTap: () =>
-                        Navigator.of(context).push(
-                            MaterialPageRoute(builder: (_) => NotificationsPage(
-                              colorIndex: widget.colorIndex,))),
+//                    onTap: () =>
+//                        Navigator.of(context).push(
+//                            MaterialPageRoute(builder: (_) => NotificationsPage(
+//                              colorIndex: widget.colorIndex,))),
                   ),
                   _buildTile(
                     Padding

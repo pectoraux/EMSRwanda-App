@@ -91,7 +91,6 @@ class EditPasswordPageState extends State<EditPasswordPage> with SingleTickerPro
               labelText: 'Secret Key',
               border: CutCornersBorder(),
             ),
-            obscureText: true,
           ),
         ),
 
@@ -129,7 +128,7 @@ class EditPasswordPageState extends State<EditPasswordPage> with SingleTickerPro
       String uid = (await _auth.currentUser()).uid;
 //      print("Your User ID ${(await _auth.currentUser()).uid}");
       Firestore.instance.runTransaction((transaction) async {
-        DocumentReference reference = Firestore.instance.document('tusers/${uid}');
+        DocumentReference reference = Firestore.instance.document('users/${uid}');
         await transaction.update(reference, user_data);
       });
         showInSnackBar(

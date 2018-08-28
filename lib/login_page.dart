@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'auth.dart';
@@ -5,6 +6,7 @@ import 'color_override.dart';
 import 'constants.dart';
 import 'package:flutter/animation.dart';
 import 'animated_logo.dart';
+import 'my_login_dialog.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key, this.title, this.auth, this.onSignIn}) : super(key: key);
@@ -35,11 +37,13 @@ class _LoginPageState extends State<LoginPage>   with SingleTickerProviderStateM
   var _login = GlobalKey(debugLabel: 'Login');
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _secretKey = GlobalKey(debugLabel: 'Secret Key');
+  final _secretKeyController = TextEditingController();
   bool active = true;
   String _authHint = 'Type in your details and press the Login button';
   String userId;
   String logingIn = "Login";
-
+  String your_password;
 
   bool validateAndSave() {
     final form = formKey.currentState;
@@ -50,33 +54,48 @@ class _LoginPageState extends State<LoginPage>   with SingleTickerProviderStateM
     return false;
   }
 
+
   void validateAndSubmit() async {
     if (validateAndSave()) {
-      try {
-        String uid = await widget.auth.signIn(_emailController.text+'@laterite.com', _passwordController.text);
-        setState(() {
-          _authHint = 'Signed In\n\nUser id: $uid';
-          userId = uid;
-        });
-        final snackbar = SnackBar(
-          content: Text('Email: ${_emailController.text}, password: ${_passwordController.text}'),
-        );
+        try {
+          String uid = await widget.auth.signIn(_emailController.text + '@laterite.com', 'Laterite');
+          Firestore.instance.document('users/${uid}').get().then((doc){
+              your_password = doc['password'];
 
-        scaffoldKey.currentState.showSnackBar(snackbar);
-        widget.onSignIn();
-      }
-      catch (e) {
-        setState(() {
-          String error = e.toString();
-          int start = error.indexOf('(')+1;
-          int end = error.indexOf(')');
-          String formattedError = error.substring(start, end);
-          _authHint = 'Sign In Error\n\n${formattedError.split(',')[1]}';
-          active = true;
+
+          if(_passwordController.text == doc['userPassword']) {
+          setState(() {
+            _authHint = 'Signed In\n\nUser id: $uid';
+            userId = uid;
+          });
+          final snackbar = SnackBar(
+            content: Text('Email: ${_emailController
+                .text}, password: ${_passwordController.text}'),
+          );
+
+          scaffoldKey.currentState.showSnackBar(snackbar);
+          widget.onSignIn();
+          }else{
+            widget.auth.signOut();
+            setState(() {
+              _authHint = 'Sign In Error: \n\n Invalid Password';
+              active = true;
+            });
+          }
+          });
+        }
+        catch (e) {
+          setState(() {
+            String error = e.toString();
+            int start = error.indexOf('(') + 1;
+            int end = error.indexOf(')');
+            String formattedError = error.substring(start, end);
+            _authHint = 'Sign In Error\n\n${formattedError.split(',')[1]}';
+            active = true;
 //          print("USER ID: $_authHint");
-        });
-        print(e);
-      }
+          });
+          print(e);
+        }
     } else {
       setState(() {
         active = true;
@@ -158,7 +177,9 @@ class _LoginPageState extends State<LoginPage>   with SingleTickerProviderStateM
                   ),
                   InkWell(
                     child: Text('Forgot Your Password', textAlign: TextAlign.end, style: TextStyle(color: TodoColors.primary),),
-                    onTap: () {print("value of your text");},
+                    onTap: () {
+                      showDialog(context: context, child: new MyLoginDialog(colorIndex: _colorIndex,));
+                      },
                   ),
                   ButtonBar(
                     children: <Widget>[

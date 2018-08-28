@@ -43,7 +43,7 @@ class EditUserPageState extends State<EditUserPage>  with SingleTickerProviderSt
   String defaultPassword = "Laterite";
   bool error = false;
   String oldEmail, oldPassword;
-FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   List<String> results = [];
 
   /// Creates fresh list of [DropdownMenuItem] widgets, given a list of [Unit]s.
@@ -208,12 +208,12 @@ FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 //            Firestore.instance.collection('musers').getDocuments().then((query){
 //              print("HHHHHHH => => => Number of Users ${query.documents.length}");
 //            });
-              
+
               },
             ),
             RaisedButton(
               child: Text(_connectionStatus == 'ConnectivityResult.none' ? 'Not Connected'
-              :'CREATE'),
+                  :'CREATE'),
               textColor: _connectionStatus == 'ConnectivityResult.none' ? Colors.redAccent :TodoColors.baseColors[_colorIndex],
               elevation: 8.0,
               shape: BeveledRectangleBorder(
@@ -221,73 +221,21 @@ FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
               ),
               onPressed: _connectionStatus == 'ConnectivityResult.none' ? () => onTap() : () {
 
-                if (true) {
-                String email = _userNameController.text+'@laterite.com';
-                String mrole = _roleValue;
-                List<String> userLocations = [];
-                List items = [0];
-                
-                widget.auth.createUser(email, defaultPassword).then((newId) {
-                  if(newId != null) {
-
-                    Map<String, Object> user_data = <String, Object>{
-                      'userName': newId,
-                      'userRole': mrole,
-                      'userPassword': defaultPassword,
-                      'userStatus': 'Active',
-                      'firstName': '',
-                      'lastName': '',
-                      'email1': email,
-                      'email2': '',
-                      'sex': '',
-                      'country': '',
-                      'mainPhone': '',
-                      'phone1': '',
-                      'phone2': '',
-                      'passportNo': '',
-                      'bankAcctNo': '',
-                      'bankName': '',
-                      'insurance': '',
-                      'insuranceNo': '',
-                      'insuranceCpy': '',
-                      'tin': '',
-                      'cvStatusElec': '',
-                      'dob': '',
-                      'nationalID': '',
-                      'emergencyContactName': '',
-                      'emergencyContactPhone': '',
-                      'locations': userLocations.toString(),
-                      '_list': items,
-                      '_list2': items,
-                      'initiativeTakingRating': -1.0,
-                      'communicationRating': -1.0,
-                      'punctualityRating': -1.0,
-                      'reportingRating': -1.0,
-                      'overAllRating': -1.0,
-                      'photoUrl': 'https://firebasestorage.googleapis.com/v0/b/emsrwanda-app.appspot.com/o/users_photos%2Flaterite.PNG?alt=media&token=c48a857c-4979-4d8b-9cc3-27676dd54295',
-                      'editing': false,
-                    };
-                    Firestore.instance.runTransaction((transaction) async {
-                      DocumentReference reference =
-                      Firestore.instance.document('users/${newId}');
-                      await reference.setData(user_data);
-                    });
-                  }else{
-                    error = true;
-                  }
-
-                }).catchError((err){
-                  error = true;
+                if (_userNameController.value.text.trim() != "" && _roleValue != widget.roles[0]) {
+                  String email = _userNameController.text+'@'+_roleValue+'.com';
+                  String mrole = _roleValue;
+                  widget.auth.createUser(email, defaultPassword).catchError((err){
+                    showInSnackBar(
+                        "Unable To Create User  $err", Colors.red);
+                  });
                   showInSnackBar(
-                      "Unable To Create User  $err", Colors.red);
-                });
+                      "User Created Successfully", TodoColors.baseColors[_colorIndex]);
+                  setState(() {
                     _roleValue = widget.roles[0];
                     _userNameController.clear();
-                    error? '':showInSnackBar(
-                        "User Created Successfully", TodoColors.baseColors[_colorIndex]);
-//                  widget.auth.signOut();
-                  widget.auth.signIn(oldEmail, widget.currentUserPassword);
-                } else {
+                  });
+
+                }else{
                   showInSnackBar("Please Specify A Value For All Fields",
                       Colors.redAccent);
                 }
@@ -302,54 +250,8 @@ FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   void createAllUsers() async {
     Firestore.instance.runTransaction((transaction) async {
       for (List lst in TodoColors.names) {
-//        String email = TodoColors.users[0][0] + '@laterite.com';
-//        String mrole = lst[1];
-        List<String> userLocations = [];
-        List items = [0];
-//        widget.auth.createUser(us, defaultPassword);//.then((newId) {
-//        if (newId != null) {
-        Map<String, Object> user_data = <String, Object>{
-//          'userName': lst[0],
-//          'userRole': mrole,
-//          'userPassword': defaultPassword,
-//          'userStatus': 'Active',
-          'firstName': lst[1],
-          'lastName': lst[2],
-//          'email1': '',
-//          'email2': '',
-//          'sex': '',
-//          'country': '',
-//          'mainPhone': '',
-//          'phone1': '',
-//          'phone2': '',
-//          'passportNo': '',
-//          'bankAcctNo': '',
-//          'bankName': '',
-//          'insurance': '',
-//          'insuranceNo': '',
-//          'insuranceCpy': '',
-//          'tin': '',
-//          'cvStatusElec': '',
-//          'dob': '',
-//          'nationalID': '',
-//          'emergencyContactName': '',
-//          'emergencyContactPhone': '',
-//          'locations': userLocations.toString(),
-//          '_list': items,
-//          '_list2': items,
-//          'initiativeTakingRating': -1.0,
-//          'communicationRating': -1.0,
-//          'punctualityRating': -1.0,
-//          'reportingRating': -1.0,
-//          'overAllRating': -1.0,
-//          'photoUrl': 'https://firebasestorage.googleapis.com/v0/b/emsrwanda-app.appspot.com/o/users_photos%2Flaterite.PNG?alt=media&token=c48a857c-4979-4d8b-9cc3-27676dd54295',
-//          'editing': false,
-        };
-        Firestore.instance.runTransaction((transaction) async {
-          DocumentReference reference =
-          Firestore.instance.document('users/${lst[0]}');
-          await reference.updateData(user_data);
-        });
+        String email = TodoColors.users[0][0] + '@laterite.com';
+        widget.auth.createUser(email, defaultPassword);
       }
     });
   }
@@ -387,23 +289,21 @@ FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
 
-
-//, "Enumerator", "Project Lead", "Project Supervisor", "Administrator"
     return new StreamBuilder<QuerySnapshot>(
         stream: Firestore.instance.collection('users').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
             return new Center(
-                child: new BarLoadingScreen(),
+              child: new BarLoadingScreen(),
             );
           } else {
 
-          print("=> => => => ${_firebaseAuth.currentUser().then((user) async {
+            print("=> => => => ${_firebaseAuth.currentUser().then((user) async {
 
-            setState(() {
-              oldEmail = user.email;
-            });
-          })}");
+              setState(() {
+                oldEmail = user.email;
+              });
+            })}");
             final converter = _buildListItem(
                 context, snapshot.data.documents.first);
 

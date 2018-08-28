@@ -87,7 +87,7 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
         value: unit,
         child: Container(
           child: Text(
-            'unit',
+            unit,
             softWrap: true,
           ),
         ),
@@ -199,337 +199,342 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
           ],
         ),
 
-//        Form(
-//        key: formKey,
-//        child: new Column(
-//      crossAxisAlignment: CrossAxisAlignment.stretch,
-//      children:<Widget>[
-//        SizedBox(height: 12.0),
-//        PrimaryColorOverride(
-//          color: TodoColors.baseColors[_colorIndex],
-//          child: TextField(
-//            key: _projectTitle,
-//            controller: _projectTitleController,
-//            decoration: InputDecoration(
-//              labelText: 'Project Title',
-//              labelStyle: TodoColors.textStyle2,
-//              border: CutCornersBorder(),
-//            ),
-//          ),
-//        ),
-//
-//
-//        const SizedBox(height: 12.0),
-//        PrimaryColorOverride(
-//          color: TodoColors.baseColors[_colorIndex],
-//          child: TextField(
-//            key: _myProjectDescription,
-//            maxLines: null,
-//            controller: _projectDescriptionController,
-//            decoration: InputDecoration(
-//              labelText: 'Project Description',
-//              labelStyle: TodoColors.textStyle2,
-//              border: CutCornersBorder(),
-//            ),
-//          ),
-//        ),
-//
-//        SizedBox(height: 12.0),
-//        PrimaryColorOverride(
-//          color: TodoColors.baseColors[_colorIndex],
-//          child: TextField(
-//            key: _staffCount,
-//            controller: _staffCountController,
-//            decoration: InputDecoration(
-//              labelText: 'Number of Employees on Project',
-//              labelStyle: TodoColors.textStyle2,
-//              border: CutCornersBorder(),
-//            ),
-//          ),
-//        ),
-//
-//        SizedBox(height: 12.0),
-//        PrimaryColorOverride(
-//          color: TodoColors.baseColors[_colorIndex],
-//          child: TextField(
-//            key: _teamCount,
-//            controller: _teamCountController,
-//            decoration: InputDecoration(
-//              labelText: 'Number of Employees per Team',
-//              labelStyle: TodoColors.textStyle2,
-//              border: CutCornersBorder(),
-//            ),
-//          ),
-//        ),
-//
-//        const SizedBox(height: 12.0),
-//        _createDropdown(0, _locationValue, _updateLocationValue),
-//
-//        SizedBox(height: 3.0,),
-//
-//       selectedLocations.isNotEmpty? SingleChildScrollView(
-//          scrollDirection: Axis.horizontal,
-//      child: Chip(
-//        backgroundColor: TodoColors.baseColors[_colorIndex],
-//      label: new Text(selectedLocations.toString()
-//          .substring(selectedLocations.toString().indexOf('{')+1, selectedLocations.toString().indexOf('}'))),
-//      ),
-//      ):Container(),
-//        SizedBox(height: 3.0,),
-//        RaisedButton(
-//          child: Text('ADD LOCATION'),
-//          textColor: TodoColors.baseColors[_colorIndex],
-//          elevation: 6.0,
-//          shape: BeveledRectangleBorder(
-//            borderRadius: BorderRadius.all(Radius.circular(7.0)),
-//          ),
-//          onPressed: () {
-//            if (_locationValue != "Locations") {
-//              setState(() {
-//                selectedLocations.add(_locationValue);
-//                _locationValue = locations[0];
-//              });
-//              showInSnackBar("Location Added Successfully", TodoColors.baseColors[_colorIndex]);
-//            } else {
-//              showInSnackBar(
-//                  "Please Specify A Location Before Clicking This Button",
-//                  Colors.redAccent);
-//            }
-//          },
-//        ),
-//
-//        const SizedBox(height: 12.0),
-//        _createDropdown(1, _tagValue, _updateTagValue),
-//
-//        SizedBox(height: 3.0,),
-//        selectedTags.isNotEmpty? SingleChildScrollView(
-//          scrollDirection: Axis.horizontal,
-//          child: Chip(
-//            backgroundColor: TodoColors.baseColors[_colorIndex],
-//            label: new Text(selectedTags.toString()
-//                .substring(selectedTags.toString().indexOf('{')+1, selectedTags.toString().indexOf('}'))),
-//          ),
-//        ):Container(),
-//        SizedBox(height: 3.0,),
-//
-//        RaisedButton(
-//          child: Text('ADD TAG'),
-//          textColor: TodoColors.baseColors[_colorIndex],
-//          elevation: 6.0,
-//          shape: BeveledRectangleBorder(
-//            borderRadius: BorderRadius.all(Radius.circular(7.0)),
-//          ),
-//          onPressed: () {
-//            if (_tagValue != "Tags") {
-//              setState(() {
-//                selectedTags.add(_tagValue);
-//                _tagValue = widget.tags[0];
-//              });
-//
-//              showInSnackBar("Tag Added Successfully", TodoColors.baseColors[_colorIndex]);
-//            } else {
-//              showInSnackBar("Please Specify A Tag Before Clicking This Button",
-//                  Colors.redAccent);
-//            }
-//          },
-//        ),
-//
-//        const SizedBox(height: 12.0),
-//        _createDropdown(2, _roleValue, _updateRoleValue),
-//
-//        GridView.count(
-//          shrinkWrap: true,
-//          crossAxisCount: 3,
-//          children: new List.generate(widget.devices.toSet().length, (i) =>
-//          new InkWell(
-//            onTap: () {
-//              setState(() {
-//                if (_mcolors[i] == Colors.brown[500]) {
-//                  _mcolors[i] = TodoColors.baseColors[_colorIndex];
-//                  selectedDevices.add(widget.devices.toSet().elementAt(i));
-//                } else {
-//                  _mcolors[i] = Colors.brown[500];
-//                }
-//              });
-//            },
-//            child: new Card(
-//              elevation: 15.0,
-//              color: _mcolors[i],
-//              child: new Padding(
-//                padding: const EdgeInsets.all(8.0),
-//                child: new Center(child: new Text(widget.devices.toSet().elementAt(i))),
-//              ),
-//            ),
-//          ),
-//          ),
-//
-//        ),
-//        SizedBox(height: 3.0,),
-//        devicesWithRole.isNotEmpty? SingleChildScrollView(
-//          scrollDirection: Axis.horizontal,
-//          child: Chip(
-//            backgroundColor: TodoColors.baseColors[_colorIndex],
-//            label: new Text(devicesWithRole.toString()),
-//          ),
-//        ):Container(),
-//        SizedBox(height: 3.0,),
-//        const SizedBox(height: 12.0),
-//        RaisedButton(
-//          child: Text('ADD DEVICES TO ROLE'),
-//          textColor: TodoColors.baseColors[_colorIndex],
-//          elevation: 6.0,
-//          shape: BeveledRectangleBorder(
-//            borderRadius: BorderRadius.all(Radius.circular(7.0)),
-//          ),
-//          onPressed: () {
-//            if (_roleValue != "Project Staff Roles" && !areAllBrown(_mcolors)) {
-//
-//              setState(() {
-//                for (int i = 0; i < _mcolors.length; i++) {
-//                    _mcolors.removeAt(i);
-//                  _mcolors.insert(i, Colors.brown[500]);
-//                }
-//                devicesWithRole.addAll({_roleValue: selectedDevices});
-//                _roleValue = widget.roles[0];
-//                selectedDevices = new Set();
-//              });
-//              showInSnackBar(
-//                  "Device(s) Added Successfully To Role", TodoColors.baseColors[_colorIndex]);
-//            } else {
-//              showInSnackBar(
-//                  "Please Specify A Role and At Least One Device Before Clicking This Button",
-//                  Colors.redAccent);
-//            }
-//          },
-//        ),
-//
-//        SizedBox(height: 12.0),
-//        DatePicker(
-//          labelText: 'Start Date',
-//          selectedDate: _fromDate,
-//          selectDate: (DateTime date) {
-//            setState(() {
-//              _fromDate = date;
-//            });
-//          },
-//        ),
-//
-//        SizedBox(height: 12.0),
-//        PrimaryColorOverride(
-//          color: TodoColors.baseColors[_colorIndex],
-//          child: DatePicker(
-//            labelText: 'End Date',
-//            selectedDate: _toDate,
-//            selectDate: (DateTime date) {
-//              setState(() {
-//                _toDate = date;
-//              });
-//            },
-//          ),
-//        ),
-//        const SizedBox(height: 12.0),
-//        new CheckboxListTile(
-//          title: Text('Send Requests', style: TodoColors.textStyle2,),
-//          value: _sendRequestToAvailableUsers,
-//          activeColor: TodoColors.baseColors[_colorIndex],
-//          onChanged: (bool permission) {
-//            setState(() {
-//              _sendRequestToAvailableUsers = permission;
-//            });
-//          },
-//          secondary: new Icon(
-//            LineAwesomeIcons.user, color: TodoColors.baseColors[_colorIndex], size: 30.0,),
-//        ),
-//
-//
-//        ButtonBar(
-//          children: <Widget>[
-//            FlatButton(
-//              child: Text('CANCEL'),
-//              textColor: TodoColors.baseColors[_colorIndex],
-//              shape: BeveledRectangleBorder(
-//                borderRadius: BorderRadius.all(Radius.circular(7.0)),
-//              ),
-//              onPressed: () {
-//                _projectTitleController.clear();
-//                _projectDescriptionController.clear();
-//                setState(() {
-//                  _sendRequestToAvailableUsers = false;
-//                  _roleValue = widget.roles[0];
-//                  _tagValue = widget.tags[0];
-//                  _locationValue = locations[0];
-//                });
-//              },
-//            ),
-//
-//            RaisedButton(
-//              child: Text(_connectionStatus == 'ConnectivityResult.none' ? 'Not Connected'
-//                  :'CREATE'),
-//              textColor: _connectionStatus == 'ConnectivityResult.none' ? Colors.redAccent :TodoColors.baseColors[_colorIndex],
-//              elevation: 8.0,
-//              shape: BeveledRectangleBorder(
-//                borderRadius: BorderRadius.all(Radius.circular(7.0)),
-//              ),
-//              onPressed: _connectionStatus == 'ConnectivityResult.none' ? () => onTap2() :()  async {
-//
-//                if (_projectTitleController.text.trim() != "" &&
-//                    _projectDescriptionController.text.trim() != "" &&
-//                    _teamCountController.text.trim() != "" &&
-//                    _staffCountController.text.trim() != "" &&
-//                    _fromDate.isBefore(_toDate) && _toDate.isAfter(DateTime.now())) {
-//                  String muid = (await _auth.currentUser()).uid;
-//                  Map<String, Object> project_data = <String, Object>{
-//                    'projectTitle': _projectTitleController.text,
-//                    'projectDescription': _projectDescriptionController.text,
-//                    'locations':selectedLocations.toList(),
-//                    'tags': selectedTags.toList(),
-//                    'devicesPerRole': devicesWithRole.toString(),
-//                    'author': muid,
-//                    'startDate': _fromDate,
-//                    'endDate': _toDate,
-//                    'staffCount': _staffCountController.text,
-//                    'teamCount': _teamCountController.text,
-//                    'currentGroup': 0,
-//                    'currentGroupCount': 0,
-//                  };
-//                  Firestore.instance.runTransaction((transaction) async {
-//                    DocumentReference reference = Firestore.instance.collection('projects').document();
-//                    await transaction.set(reference, project_data);
-//                    DocumentReference userRef2 = Firestore.instance.document('users/${muid}/projects/${reference.documentID}');
-//                    await userRef2.setData({});
-//                    DocumentReference userRef = Firestore.instance.document(
-//                        'projects/${reference.documentID}/users/${muid}');
-//                    await userRef.setData({
-//                      'comments': [],
-//                      'communicationRating': -1.0,
-//                      'initiativeTakingRating': -1.0,
-//                      'overAllRating': -1.0,
-//                      'punctualityRating': -1.0,
-//                      'reportingRating': -1.0,
-//                      'userGroup': -1,
-//                    });
-//                  });
-//                  _projectTitleController.clear();
-//                  _projectDescriptionController.clear();
-//                  _staffCountController.clear();
-//                  _teamCountController.clear();
-//                  _fromDate = DateTime.now();
-//                  _toDate = DateTime.now();
-//                  selectedLocations = new Set();
-//                  selectedTags = new Set();
-//                  devicesWithRole = new Map<String, Object>();
-//                  selectedDevices = new Set();
-//                  showInSnackBar(
-//                      "Project Created Successfully", TodoColors.baseColors[_colorIndex]);
-//                } else {
-//                  showInSnackBar("Please Specify A Value For All Fields And Check All Fields",
-//                      Colors.redAccent);
-//                }
-//              },
-//            ),
-//          ],
-//        ),
-//      ])),
+        Form(
+        key: formKey,
+        child: new Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children:<Widget>[
+        SizedBox(height: 12.0),
+        PrimaryColorOverride(
+          color: TodoColors.baseColors[_colorIndex],
+          child: TextField(
+            key: _projectTitle,
+            controller: _projectTitleController,
+            decoration: InputDecoration(
+              labelText: 'Project Title',
+              labelStyle: TodoColors.textStyle2,
+              border: CutCornersBorder(),
+            ),
+          ),
+        ),
+
+
+        const SizedBox(height: 12.0),
+        PrimaryColorOverride(
+          color: TodoColors.baseColors[_colorIndex],
+          child: TextField(
+            key: _myProjectDescription,
+            maxLines: null,
+            controller: _projectDescriptionController,
+            decoration: InputDecoration(
+              labelText: 'Project Description',
+              labelStyle: TodoColors.textStyle2,
+              border: CutCornersBorder(),
+            ),
+          ),
+        ),
+
+        SizedBox(height: 12.0),
+        PrimaryColorOverride(
+          color: TodoColors.baseColors[_colorIndex],
+          child: TextField(
+            key: _staffCount,
+            controller: _staffCountController,
+            decoration: InputDecoration(
+              labelText: 'Number of Employees on Project',
+              labelStyle: TodoColors.textStyle2,
+              border: CutCornersBorder(),
+            ),
+          ),
+        ),
+
+        SizedBox(height: 12.0),
+        PrimaryColorOverride(
+          color: TodoColors.baseColors[_colorIndex],
+          child: TextField(
+            key: _teamCount,
+            controller: _teamCountController,
+            decoration: InputDecoration(
+              labelText: 'Number of Employees per Team',
+              labelStyle: TodoColors.textStyle2,
+              border: CutCornersBorder(),
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 12.0),
+        _createDropdown(0, _locationValue, _updateLocationValue),
+
+        SizedBox(height: 3.0,),
+
+       selectedLocations.isNotEmpty? SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+      child: Chip(
+        backgroundColor: TodoColors.baseColors[_colorIndex],
+      label: new Text(selectedLocations.toString()
+          .substring(selectedLocations.toString().indexOf('{')+1, selectedLocations.toString().indexOf('}'))),
+      ),
+      ):Container(),
+        SizedBox(height: 3.0,),
+        RaisedButton(
+          child: Text('ADD LOCATION'),
+          textColor: TodoColors.baseColors[_colorIndex],
+          elevation: 6.0,
+          shape: BeveledRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(7.0)),
+          ),
+          onPressed: () {
+            if (_locationValue != "Locations") {
+              setState(() {
+                selectedLocations.add(_locationValue);
+                _locationValue = locations[0];
+              });
+              showInSnackBar("Location Added Successfully", TodoColors.baseColors[_colorIndex]);
+            } else {
+              showInSnackBar(
+                  "Please Specify A Location Before Clicking This Button",
+                  Colors.redAccent);
+            }
+          },
+        ),
+
+        const SizedBox(height: 12.0),
+        _createDropdown(1, _tagValue, _updateTagValue),
+
+        SizedBox(height: 3.0,),
+        selectedTags.isNotEmpty? SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Chip(
+            backgroundColor: TodoColors.baseColors[_colorIndex],
+            label: new Text(selectedTags.toString()
+                .substring(selectedTags.toString().indexOf('{')+1, selectedTags.toString().indexOf('}'))),
+          ),
+        ):Container(),
+        SizedBox(height: 3.0,),
+
+        RaisedButton(
+          child: Text('ADD TAG'),
+          textColor: TodoColors.baseColors[_colorIndex],
+          elevation: 6.0,
+          shape: BeveledRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(7.0)),
+          ),
+          onPressed: () {
+            if (_tagValue != "Tags") {
+              setState(() {
+                selectedTags.add(_tagValue);
+                _tagValue = widget.tags[0];
+              });
+
+              showInSnackBar("Tag Added Successfully", TodoColors.baseColors[_colorIndex]);
+            } else {
+              showInSnackBar("Please Specify A Tag Before Clicking This Button",
+                  Colors.redAccent);
+            }
+          },
+        ),
+
+        const SizedBox(height: 12.0),
+        _createDropdown(2, _roleValue, _updateRoleValue),
+
+        GridView.count(
+          shrinkWrap: true,
+          crossAxisCount: 3,
+          children: new List.generate(widget.devices.toSet().length, (i) =>
+          new InkWell(
+            onTap: () {
+              setState(() {
+                if (_mcolors[i] == Colors.brown[500]) {
+                  _mcolors[i] = TodoColors.baseColors[_colorIndex];
+                  selectedDevices.add(widget.devices.toSet().elementAt(i));
+                } else {
+                  _mcolors[i] = Colors.brown[500];
+                }
+              });
+            },
+            child: new Card(
+              elevation: 15.0,
+              color: _mcolors[i],
+              child: new Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: new Center(child: new Text(widget.devices.toSet().elementAt(i))),
+              ),
+            ),
+          ),
+          ),
+
+        ),
+        SizedBox(height: 3.0,),
+        devicesWithRole.isNotEmpty? SingleChildScrollView(scrollDirection: Axis.horizontal,
+          child: Chip(
+            backgroundColor: TodoColors.baseColors[_colorIndex],
+            label: new Text(devicesWithRole.toString()),
+          ),
+        ):Container(),
+        SizedBox(height: 3.0,),
+        const SizedBox(height: 12.0),
+        RaisedButton(
+          child: Text('ADD DEVICES TO ROLE'),
+          textColor: TodoColors.baseColors[_colorIndex],
+          elevation: 6.0,
+          shape: BeveledRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(7.0)),
+          ),
+          onPressed: () {
+            if (_roleValue != "Project Staff Roles" && !areAllBrown(_mcolors)) {
+
+              setState(() {
+                for (int i = 0; i < _mcolors.length; i++) {
+                    _mcolors.removeAt(i);
+                  _mcolors.insert(i, Colors.brown[500]);
+                }
+                devicesWithRole.addAll({_roleValue: selectedDevices});
+                _roleValue = widget.roles[0];
+                selectedDevices = new Set();
+              });
+              showInSnackBar(
+                  "Device(s) Added Successfully To Role", TodoColors.baseColors[_colorIndex]);
+            } else {
+              showInSnackBar(
+                  "Please Specify A Role and At Least One Device Before Clicking This Button",
+                  Colors.redAccent);
+            }
+          },
+        ),
+
+        SizedBox(height: 12.0),
+        DatePicker(
+          labelText: 'Start Date',
+          selectedDate: _fromDate,
+          selectDate: (DateTime date) {
+            setState(() {
+              _fromDate = date;
+            });
+          },
+        ),
+
+        SizedBox(height: 12.0),
+        PrimaryColorOverride(
+          color: TodoColors.baseColors[_colorIndex],
+          child: DatePicker(
+            labelText: 'End Date',
+            selectedDate: _toDate,
+            selectDate: (DateTime date) {
+              setState(() {
+                _toDate = date;
+              });
+            },
+          ),
+        ),
+        const SizedBox(height: 12.0),
+        new CheckboxListTile(
+          title: Text('Send Requests', style: TodoColors.textStyle2,),
+          value: _sendRequestToAvailableUsers,
+          activeColor: TodoColors.baseColors[_colorIndex],
+          onChanged: (bool permission) {
+            setState(() {
+              _sendRequestToAvailableUsers = permission;
+            });
+          },
+          secondary: new Icon(
+            LineAwesomeIcons.user, color: TodoColors.baseColors[_colorIndex], size: 30.0,),
+        ),
+
+
+        ButtonBar(
+          children: <Widget>[
+            FlatButton(
+              child: Text('CANCEL'),
+              textColor: TodoColors.baseColors[_colorIndex],
+              shape: BeveledRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(7.0)),
+              ),
+              onPressed: () {
+                _projectTitleController.clear();
+                _projectDescriptionController.clear();
+                setState(() {
+                  _sendRequestToAvailableUsers = false;
+                  _roleValue = widget.roles[0];
+                  _tagValue = widget.tags[0];
+                  _locationValue = locations[0];
+                  _fromDate = DateTime.now();
+                  _toDate = DateTime.now();
+                  selectedLocations = new Set();
+                  selectedTags = new Set();
+                  devicesWithRole = new Map<String, Object>();
+                  selectedDevices = new Set();
+                });
+              },
+            ),
+
+            RaisedButton(
+              child: Text(_connectionStatus == 'ConnectivityResult.none' ? 'Not Connected'
+                  :'CREATE'),
+              textColor: _connectionStatus == 'ConnectivityResult.none' ? Colors.redAccent :TodoColors.baseColors[_colorIndex],
+              elevation: 8.0,
+              shape: BeveledRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(7.0)),
+              ),
+              onPressed: _connectionStatus == 'ConnectivityResult.none' ? () => onTap2() :()  async {
+
+                if (_projectTitleController.text.trim() != "" &&
+                    _projectDescriptionController.text.trim() != "" &&
+                    _teamCountController.text.trim() != "" &&
+                    _staffCountController.text.trim() != "" &&
+                    _fromDate.isBefore(_toDate) && _toDate.isAfter(DateTime.now())) {
+                  String muid = (await _auth.currentUser()).uid;
+                  Map<String, Object> project_data = <String, Object>{
+                    'projectTitle': _projectTitleController.text,
+                    'projectDescription': _projectDescriptionController.text,
+                    'locations':selectedLocations.toList(),
+                    'tags': selectedTags.toList(),
+                    'devicesPerRole': devicesWithRole.toString(),
+                    'author': muid,
+                    'startDate': _fromDate,
+                    'endDate': _toDate,
+                    'staffCount': _staffCountController.text,
+                    'teamCount': _teamCountController.text,
+                    'currentGroup': 0,
+                    'currentGroupCount': 0,
+                  };
+                  Firestore.instance.runTransaction((transaction) async {
+                    DocumentReference reference = Firestore.instance.collection('projects').document();
+                    await transaction.set(reference, project_data);
+                    DocumentReference userRef2 = Firestore.instance.document('users/${muid}/projects/${reference.documentID}');
+                    await userRef2.setData({});
+                    DocumentReference userRef = Firestore.instance.document(
+                        'projects/${reference.documentID}/users/${muid}');
+                    await userRef.setData({
+                      'comments': [],
+                      'communicationRating': -1.0,
+                      'initiativeTakingRating': -1.0,
+                      'overAllRating': -1.0,
+                      'punctualityRating': -1.0,
+                      'reportingRating': -1.0,
+                      'userGroup': -1,
+                    });
+                  });
+                  _projectTitleController.clear();
+                  _projectDescriptionController.clear();
+                  _staffCountController.clear();
+                  _teamCountController.clear();
+                  _fromDate = DateTime.now();
+                  _toDate = DateTime.now();
+                  selectedLocations = new Set();
+                  selectedTags = new Set();
+                  devicesWithRole = new Map<String, Object>();
+                  selectedDevices = new Set();
+                  showInSnackBar(
+                      "Project Created Successfully", TodoColors.baseColors[_colorIndex]);
+                } else {
+                  showInSnackBar("Please Specify A Value For All Fields And Check All Fields",
+                      Colors.redAccent);
+                }
+              },
+            ),
+          ],
+        ),
+      ])),
       ],
     );
 

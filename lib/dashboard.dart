@@ -251,6 +251,7 @@ class _ProfilePageState extends State<ProfilePage> {
 //          print('Role: ${role['roleName']}');
             mResults.add(device['deviceType']);
 //          mResults2.add(device['deviceName']);
+//            print('=< =< =< ${device['deviceType']}');
           }
         });
         setState(() {

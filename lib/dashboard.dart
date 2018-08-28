@@ -32,7 +32,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  String currentUserRole, currentUserPassword, currentUserId, firstName, lastName, location;
+  String currentUserRole, currentUserPassword, currentUserId, firstName, lastName, location, dob, overAllRating, numProjects;
   bool canCreateRole = false, canCreateProject = false, canCreateTag = false, canCreateUser = false, canCreateDevice = false,  canGrantPermission = false;
   /// This controller can be used to programmatically
   /// set the current displayed page
@@ -203,13 +203,22 @@ class _ProfilePageState extends State<ProfilePage> {
     try {
       widget.auth.currentUser().then((userId) async {
         List<String> results =
-        await Firestore.instance.document('users/${userId}').get().then((doc) {
+        await Firestore.instance.document('users/${userId}').get().then((doc) async {
+          int numProjects = 0;
+          numProjects = await Firestore.instance.collection('users/${userId}/projects').getDocuments().then((query) {
+return query.documents.length;
+          });
+          int age =  DateTime.now().year - int.parse(doc['dob'].substring(0,4));
+          print("oooottt => ${numProjects}");
           return [
             doc['userRole'],
             doc['userPassword'],
             doc['firstName'],
             doc['lastName'],
-            doc['locations'].toString()
+            doc['locations'].toString(),
+            doc['dob'] == '' ? '-1' : age.toString(),
+            doc['overAllRating'].toString(),
+            numProjects.toString()
           ];
         });
 
@@ -221,6 +230,9 @@ class _ProfilePageState extends State<ProfilePage> {
           lastName = results[3];
           location = results[4].substring(
               results[4].indexOf('[') + 1, results[4].indexOf(']'));
+          dob = results[5];
+          overAllRating = results[6];
+          numProjects = results[7];
         });
       });
 
@@ -298,15 +310,15 @@ class _ProfilePageState extends State<ProfilePage> {
                     doc) {
                   return doc['roleName'] == currentUserRole;
                 }).first;
+//                print('=> => => OOOOO ${overAllRating}');
 //              print("Role Document => => => ${document.data}");
-
                 final profile = new Profile()
                   ..firstName = firstName
                   ..lastName = lastName
                   ..location = location
-                  ..age = 35
-                  ..rating = 4.6
-                  ..numberProjects = 17;
+                  ..age = int.parse(dob)
+                  ..rating = double.parse(overAllRating)
+                  ..numberProjects = int.parse(numProjects);
 
                 return _buildPage(context, document, profile);
               } catch (e) {

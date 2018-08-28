@@ -41,7 +41,7 @@ class Profile {
 }
 
 Profile getProfile(BaseAuth auth)  {
-  String firstName;
+  String firstName, lastName;
 
   auth.currentUser().then((userId) async {
     firstName = await Firestore.instance.collection('tables/users/$userId')

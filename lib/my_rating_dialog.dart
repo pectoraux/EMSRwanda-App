@@ -5,7 +5,7 @@ import 'constants.dart';
 import 'color_override.dart';
 import 'star_rating.dart';
 import 'loading_screen.dart';
-import 'user_rating_page.dart';
+import 'dart:math';
 
 class MyRatingDialog extends StatefulWidget {
   final int colorIndex;
@@ -27,16 +27,6 @@ class MyRatingDialog extends StatefulWidget {
 }
 
 class MyRatingDialogState extends State<MyRatingDialog> {
-  final _userNameController = TextEditingController();
-  final _userName = GlobalKey(debugLabel: 'User Name');
-  final _userRoleController = TextEditingController();
-  final _userRole = GlobalKey(debugLabel: 'User Role');
-  final _userStatusController = TextEditingController();
-  final _userStatus = GlobalKey(debugLabel: 'User Status');
-  final _userLocationsController = TextEditingController();
-  final _tagsController = TextEditingController();
-  final _userLocations = GlobalKey(debugLabel: 'Users Locations');
-  final _tags = GlobalKey(debugLabel: 'Project or User Related Tags');
 
   List<DropdownMenuItem> _ratingTypeMenuItems, _ratingMenuItems;
   List<String> ratingTypes = [
@@ -251,12 +241,41 @@ class MyRatingDialogState extends State<MyRatingDialog> {
                       mComments.addAll(cmts);
                       String cmt = '${_ratingTypesValue} ${_ratingsValue} ★ ${widget.firstName} ${widget.lastName} $stars ${_ratingCommentController.text}';
                       mComments.add(cmt);
+                      double punct = document['punctualityRating'] < 0 ? 0.0 : document['punctualityRating']*1.0;
+                      double report = document['reportingRating'] < 0 ? 0.0 : document['reportingRating']*1.0;
+                      double initiative = document['initiativeTakingRating'] < 0 ? 0.0 : document['initiativeTakingRating']*1.0;
+                      double communicate = document['communicationRating'] < 0 ? 0.0 : document['communicationRating']*1.0;
+    Map<String, Object> ratings_data = <String, Object>{};
+                      if(_ratingTypesValue == "Reporting") {
+                        ratings_data = <String, Object>{
+                          'comments': mComments,
+                          'reportingRating': report == 0.0 ? double.parse(_ratingsValue) : (report + double.parse(_ratingsValue))/2.0,
+                          'overAllRating':(punct + initiative + communicate + report)/4.0
+                        };
+                      }else if(_ratingTypesValue == "Communication") {
+                        ratings_data = <String, Object>{
+                          'comments': mComments,
+                          'communicationRating': communicate == 0.0 ? double.parse(_ratingsValue) : (communicate + double.parse(_ratingsValue))/2.0,
+                          'overAllRating':(punct + initiative + communicate + report)/4.0
+                        };
+                      }else if(_ratingTypesValue == "Initiative Taking") {
+                        ratings_data = <String, Object>{
+                          'comments': mComments,
+                          'initiativeTakingRating': initiative == 0.0 ? double.parse(_ratingsValue) : (initiative + double.parse(_ratingsValue))/2.0,
+                          'overAllRating':(punct + initiative + communicate + report)/4.0
+                        };
+                      }else if(_ratingTypesValue == "Punctuality") {
+                        ratings_data = <String, Object>{
+                          'comments': mComments,
+                          'punctualityRating': punct == 0 ? double.parse(_ratingsValue) : (punct + double.parse(_ratingsValue))/2.0,
+                          'overAllRating':(punct + initiative + communicate + report)/4.0
+                        };
+                      }
+
                       Firestore.instance.runTransaction((transaction) async {
                         DocumentSnapshot snapshot = await transaction.get(
                             document.reference);
-                        await transaction.update(snapshot.reference, {
-                          'comments': mComments,
-                        });
+                        await transaction.update(snapshot.reference, ratings_data);
                       });
 //                    print('OUTPUT => => => ${mComments}');
                   Navigator.of(context).pop();

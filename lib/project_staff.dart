@@ -233,7 +233,7 @@ class ProjectStaffPageState extends State<ProjectStaffPage> {
                   gotoUserHistory(muserID);
                 }
               ),
-              widget.canRecruit == null ? new ListTile(
+              widget.colorIndex == 0 ? new ListTile(
                   leading: new Icon(Icons.delete, color: Colors.red,),
                   title: new Text('Remove ${name} from Project'),
                   onTap: () {

@@ -97,7 +97,8 @@ class UserRatingPageState extends State<UserRatingPage> {
 
     List reviewWidgets = <Widget>[];
     for (String cmt in document['comments']){
-      String author = cmt.substring(cmt.indexOf('★')+1, cmt.lastIndexOf('★')+1);
+      String author_stars = cmt.substring(cmt.indexOf('★')+1, cmt.lastIndexOf('★')+1);
+      String author = widget.colorIndex == 0 ? author_stars : author_stars.substring(author_stars.indexOf('★'));
       String comment = cmt.substring(cmt.lastIndexOf('★')+1);
         reviewWidgets.add(_buildReview(context, author, comment));
         reviewWidgets.add(Divider());
@@ -364,7 +365,7 @@ class UserRatingPageState extends State<UserRatingPage> {
                     ),
                   ),
                   Divider(),
-                ]//..addAll(reviewWidgets.getRange(0, reviewWidgets.length))
+                ]..addAll(reviewWidgets.getRange(0, reviewWidgets.length ))
             ),
           ),
         ],

@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
 import 'color_override.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'loading_screen.dart';
 
 class MyUserDialog extends StatefulWidget {
   final int colorIndex;
@@ -15,30 +19,23 @@ class MyUserDialog extends StatefulWidget {
 }
 
 class MyUserDialogState extends State<MyUserDialog> {
-  final _userNameController = TextEditingController();
-  final _userName = GlobalKey(debugLabel: 'User Name');
-  final _userRoleController = TextEditingController();
-  final _userRole = GlobalKey(debugLabel: 'User Role');
-  final _userStatusController = TextEditingController();
-  final _userStatus = GlobalKey(debugLabel: 'User Status');
-  final _userLocationsController = TextEditingController();
-  final _tagsController = TextEditingController();
-  final _userLocations = GlobalKey(debugLabel: 'Users Locations');
-  final _tags = GlobalKey(debugLabel: 'Project or User Related Tags');
+  final _firstNameController = TextEditingController();
+  final _firstName = GlobalKey(debugLabel: 'First Name');
+  final _lastNameController = TextEditingController();
+  final _lastName = GlobalKey(debugLabel: 'Last Name');
 
   List<DropdownMenuItem> _locationMenuItems, _tagMenuItems, _roleMenuItems, _statusMenuItems;
-  List<String> locations = [" Locations", " Gasabo", " Remera", " Kisimenti", " Gaculiro", " Kacyiru"];
-  List<String> tags = ["Tags", "Over18", "Male", "Female", "Education", "Sensitive"];
-  List<String> roles = ["Project Staff Roles", "Enumerator", "Project Lead", "Project Supervisor", "Administrator"];
+  List<String> locations = ["Locations", "Kigali Only", "Kigali Upcountry",];
+  List<String> tags = ["Tags"];
+  List<String> roles = ["Project Staff Roles"];
   List<String> status = ["User Status", "Active", "Busy"];
   String _tagValue, _locationValue, _roleValue, _statusValue;
+  Set<String> selectedLocations = new Set(), selectedTags = new Set(), selectedDevices = new Set();
 
   @override
   void initState() {
     super.initState();
     _createDropdownMenuItems(0, locations);
-    _createDropdownMenuItems(1, tags);
-    _createDropdownMenuItems(2, roles);
     _createDropdownMenuItems(11, status);
     _setDefaults();
   }
@@ -75,9 +72,31 @@ class MyUserDialogState extends State<MyUserDialog> {
   void _setDefaults() {
     setState(() {
       _locationValue = locations[0];
-      _tagValue = tags[0];
-      _roleValue = roles[0];
       _statusValue = status[0];
+    });
+
+    Firestore.instance.collection('tags').getDocuments().asStream()
+        .forEach((snap) {
+      for (var tag in snap.documents) {
+        tags.add(tag['tagName']);
+      }
+    }).whenComplete((){
+      setState(() {
+        _createDropdownMenuItems(1, tags);
+        _tagValue = tags[0];
+      });
+    });
+
+    Firestore.instance.collection('roles').getDocuments().asStream()
+        .forEach((snap) {
+      for (var role in snap.documents) {
+        roles.add(role['roleName']);
+      }
+    }).whenComplete((){
+      setState(() {
+        _createDropdownMenuItems(2, roles);
+        _roleValue = roles[0];
+      });
     });
   }
 
@@ -149,85 +168,184 @@ class MyUserDialogState extends State<MyUserDialog> {
 
 
   Widget build(BuildContext context) {
-    return new AlertDialog(
-      title: new Text('Search User',
-        style: TodoColors.textStyle.apply(
-            color: TodoColors.baseColors[widget.colorIndex]),),
-      content: new SingleChildScrollView(
-        child: new ListBody(
-          children: <Widget>[
-            SizedBox(height: 12.0),
-            PrimaryColorOverride(
-              color: TodoColors.baseColors[widget.colorIndex],
-              child: TextField(
-                key: _userName,
-                controller: _userNameController,
-                decoration: InputDecoration(
-                  labelText: 'User Name',
-                  labelStyle: TodoColors.textStyle2,
-                  border: CutCornersBorder(),
+
+    try {
+      return new AlertDialog(
+        title: new Text('Search User',
+          style: TodoColors.textStyle.apply(
+              color: TodoColors.baseColors[widget.colorIndex]),),
+        content: new SingleChildScrollView(
+          child: new ListBody(
+            children: <Widget>[
+              SizedBox(height: 12.0),
+              PrimaryColorOverride(
+                color: TodoColors.baseColors[widget.colorIndex],
+                child: TextField(
+                  key: _firstName,
+                  controller: _firstNameController,
+                  decoration: InputDecoration(
+                    labelText: 'First Name',
+                    labelStyle: TodoColors.textStyle2,
+                    border: CutCornersBorder(),
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 12.0),
-            _createDropdown(2, _roleValue, _updateRoleValue),
 
-            const SizedBox(height: 12.0),
-            _createDropdown(11, _statusValue, _updateStatusValue),
-
-            const SizedBox(height: 12.0),
-            _createDropdown(0, _locationValue, _updateLocationValue),
-
-            RaisedButton(
-              child: Text('ADD LOCATION'),
-              textColor: TodoColors.baseColors[widget.colorIndex],
-              elevation: 8.0,
-              shape: BeveledRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(7.0)),
+              SizedBox(height: 12.0),
+              PrimaryColorOverride(
+                color: TodoColors.baseColors[widget.colorIndex],
+                child: TextField(
+                  key: _lastName,
+                  controller: _lastNameController,
+                  decoration: InputDecoration(
+                    labelText: 'Last Name',
+                    labelStyle: TodoColors.textStyle2,
+                    border: CutCornersBorder(),
+                  ),
+                ),
               ),
-              onPressed: () {},
-            ),
-            const SizedBox(height: 12.0),
-            _createDropdown(1, _tagValue, _updateTagValue),
 
-            RaisedButton(
-              child: Text('ADD TAG'),
-              textColor: TodoColors.baseColors[widget.colorIndex],
-              elevation: 8.0,
-              shape: BeveledRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(7.0)),
-              ),
-              onPressed: () {},
-            ),
-            SizedBox(height: 12.0,),
-          ],
-        ),
+              const SizedBox(height: 12.0),
+              _createDropdown(2, _roleValue, _updateRoleValue),
 
-      ),
+              const SizedBox(height: 12.0),
+              _createDropdown(11, _statusValue, _updateStatusValue),
 
-      actions: <Widget>[
-        FlatButton(
-          child: Text('CANCEL'),
-          textColor: TodoColors.baseColors[widget.colorIndex],
-          shape: BeveledRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(7.0)),
+//              const SizedBox(height: 12.0),
+//              _createDropdown(0, _locationValue, _updateLocationValue),
+//              SizedBox(height: 3.0,),
+//
+//              selectedLocations.isNotEmpty ? SingleChildScrollView(
+//                scrollDirection: Axis.horizontal,
+//                child: Chip(
+//                  backgroundColor: TodoColors.baseColors[widget.colorIndex],
+//                  label: new Text(selectedLocations.toString()
+//                      .substring(selectedLocations.toString().indexOf('{') + 1,
+//                      selectedLocations.toString().indexOf('}'))),
+//                ),
+//              ) : Container(),
+//
+//              RaisedButton(
+//                child: Text('ADD LOCATION'),
+//                textColor: TodoColors.baseColors[widget.colorIndex],
+//                elevation: 8.0,
+//                shape: BeveledRectangleBorder(
+//                  borderRadius: BorderRadius.all(Radius.circular(7.0)),
+//                ),
+//                onPressed: () {
+//                  if (_locationValue != "Locations") {
+//                    setState(() {
+//                      selectedLocations.add(_locationValue);
+//                      _locationValue = locations[0];
+//                    });
+//                    showInSnackBar("Location Added Successfully",
+//                        TodoColors.baseColors[widget.colorIndex]);
+//                  } else {
+//                    showInSnackBar(
+//                        "Please Specify A Location Before Clicking This Button",
+//                        Colors.redAccent);
+//                  }
+//                },
+//              ),
+//              const SizedBox(height: 12.0),
+//              _createDropdown(1, _tagValue, _updateTagValue),
+//
+//              SizedBox(height: 3.0,),
+//              selectedTags.isNotEmpty ? SingleChildScrollView(
+//                scrollDirection: Axis.horizontal,
+//                child: Chip(
+//                  backgroundColor: TodoColors.baseColors[widget.colorIndex],
+//                  label: new Text(selectedTags.toString()
+//                      .substring(selectedTags.toString().indexOf('{') + 1,
+//                      selectedTags.toString().indexOf('}'))),
+//                ),
+//              ) : Container(),
+//
+//              SizedBox(height: 3.0,),
+//              RaisedButton(
+//                child: Text('ADD TAG'),
+//                textColor: TodoColors.baseColors[widget.colorIndex],
+//                elevation: 8.0,
+//                shape: BeveledRectangleBorder(
+//                  borderRadius: BorderRadius.all(Radius.circular(7.0)),
+//                ),
+//                onPressed: () {
+//                  if (_tagValue != "Tags") {
+//                    setState(() {
+//                      selectedTags.add(_tagValue);
+//                      _tagValue = tags[0];
+//                    });
+//
+//                    showInSnackBar("Tag Added Successfully",
+//                        TodoColors.baseColors[widget.colorIndex]);
+//                  } else {
+//                    showInSnackBar(
+//                        "Please Specify A Tag Before Clicking This Button",
+//                        Colors.redAccent);
+//                  }
+//                },
+//              ),
+              SizedBox(height: 12.0,),
+            ],
           ),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+
         ),
 
-        RaisedButton(
-          child: Text('SEARCH'),
-          textColor: TodoColors.baseColors[widget.colorIndex],
-          elevation: 8.0,
-          shape: BeveledRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(7.0)),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('CANCEL'),
+            textColor: TodoColors.baseColors[widget.colorIndex],
+            shape: BeveledRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(7.0)),
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
           ),
-          onPressed: () {},
-        ),
 
-      ],
-    );
+          RaisedButton(
+            child: Text('SEARCH'),
+            textColor: TodoColors.baseColors[widget.colorIndex],
+            elevation: 8.0,
+            shape: BeveledRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(7.0)),
+            ),
+            onPressed: () {
+              Map<String, Object> search_data = <String, Object>{};
+              if (_firstNameController.value.text.trim() != "") {
+                search_data['firstName'] = _firstNameController.value.text;
+              }
+              if (_lastNameController.value.text.trim() != "") {
+                search_data['lastName'] = _lastNameController.value.text;
+              }
+              if (_roleValue != "Project Staff Roles") {
+                search_data['userRole'] = _roleValue;
+              }
+              if (_statusValue != "User Status") {
+                search_data['userStatus'] = _statusValue;
+              }
+//              if (selectedLocations.isNotEmpty) {
+//                search_data['locations'] = selectedLocations;
+//              }
+//              if (selectedTags.isNotEmpty) {
+//                search_data['tags'] = selectedTags;
+//              }
+              Navigator.of(context).pop([search_data]);
+            },
+          ),
+
+        ],
+      );
+    } catch(_){
+      return BarLoadingScreen();
+    }
+  }
+
+  void showInSnackBar(String value, Color c) {
+    Scaffold.of(context).showSnackBar(new SnackBar(
+      content: new Text(value),
+      backgroundColor: c,
+    ));
   }
 }
+

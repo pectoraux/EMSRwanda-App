@@ -6,7 +6,6 @@ import 'constants.dart';
 import 'user_history_page.dart';
 import 'loading_screen.dart';
 import 'my_user_dialog.dart';
-import 'update_user.dart';
 
 class ViewUsersPage extends StatefulWidget {
   final int colorIndex;
@@ -14,12 +13,14 @@ class ViewUsersPage extends StatefulWidget {
   final bool canRateUser;
   final bool canRecruit;
   final bool noButton;
+  final List res;
 
   const ViewUsersPage({
     @required this.colorIndex,
     this.projectDocumentId,
     @required this.canRateUser,
     @required this.canRecruit,
+    this.res,
     this.noButton,
   }) : assert(colorIndex != null),
   assert(canRateUser != null), assert(canRecruit != null);
@@ -37,16 +38,6 @@ class ViewUsersPageState extends State<ViewUsersPage> {
   @override
   Widget build(BuildContext context) {
     final _bkey = GlobalKey(debugLabel: 'Back Key');
-    final _userNameController = TextEditingController();
-    final _userName = GlobalKey(debugLabel: 'User Name');
-    final _userRoleController = TextEditingController();
-    final _userRole = GlobalKey(debugLabel: 'User Role');
-    final _userStatusController = TextEditingController();
-    final _userStatus = GlobalKey(debugLabel: 'User Status');
-    final _userLocationsController = TextEditingController();
-    final _tagsController = TextEditingController();
-    final _userLocations = GlobalKey(debugLabel: 'Users Locations');
-    final _tags = GlobalKey(debugLabel: 'Project or User Related Tags');
     List<StaggeredTile> mTiles = [];
     ScrollController controller = new ScrollController();
 
@@ -87,12 +78,13 @@ class ViewUsersPageState extends State<ViewUsersPage> {
                     elevation: 200.0,
                     child: new Icon(Icons.search),
                     backgroundColor: TodoColors.baseColors[widget.colorIndex],
-                    onPressed: () {
-                      print("MMMMMMMMCCCCC => => => ${widget.colorIndex}");
+                    onPressed: ()async {
                       new Container(
                         width: 450.0,
                       );
-                      showDialog(context: context, child: new MyUserDialog(colorIndex: widget.colorIndex,));
+                      List mres = await showDialog(context: context, child: new MyUserDialog(colorIndex: widget.colorIndex,));
+                      Navigator.of(context).push(MaterialPageRoute(builder: (_) => ViewUsersPage(colorIndex: widget.colorIndex, res: mres,
+                        canRateUser: true, canRecruit: widget.canRecruit, projectDocumentId: widget.projectDocumentId,)));
                     },
                   ),
                 ],
@@ -118,12 +110,18 @@ class ViewUsersPageState extends State<ViewUsersPage> {
           mainAxisSpacing: 12.0,
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 controller: controller,
-                children: snapshot.data.documents.map((user) {
-
-//                  print(user.documentID + ': ' + user['userName']);
+                children: snapshot.data.documents.where((user){
+                  if(widget.res != null) {
+                    Map final_result = widget.res[0];
+                    return (final_result['firstName'] != null ? final_result['firstName'] == user['firstName']: true) &&
+                        (final_result['lastName'] != null ? final_result['lastName'] == user['lastName']: true) &&
+                        (final_result['userRole'] != null ? final_result['userRole'] == user['userRole']: true) &&
+                        (final_result['userStatus'] != null ? final_result['userStatus'] == user['userStatus']: true);
+                  }
+                  return true;
+                }).map((user) {
 
                   mTiles.add(StaggeredTile.extent(2, 110.0));
-//                  print('VVVVVVVVV => => =>  ${user.documentID}');
 
                    userName = "${user['firstName']} ${user['lastName']}";
                    locations = user['locations']
@@ -210,12 +208,12 @@ class ViewUsersPageState extends State<ViewUsersPage> {
                   for (DocumentSnapshot doc in query.documents) {
                     if (doc.documentID == widget.projectDocumentId) {
                       isStaff = true;
-                      print('TTTVVVVVVVVV => => =>  ${widget.projectDocumentId} <= <= <= ${doc.documentID}');
+//                      print('TTTVVVVVVVVV => => =>  ${widget.projectDocumentId} <= <= <= ${doc.documentID}');
                     }
                   }
               }).whenComplete(() {
-                print("FFFFFFFFF => => => ${isStaff} <= <= <= ${widget
-                    .projectDocumentId}");
+//                print("FFFFFFFFF => => => ${isStaff} <= <= <= ${widget
+//                    .projectDocumentId}");
                 Navigator.of(context).push(
                     MaterialPageRoute(builder: (_) =>
                         UserHistoryPage(colorIndex: widget.colorIndex,

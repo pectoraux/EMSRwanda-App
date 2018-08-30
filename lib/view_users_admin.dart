@@ -10,9 +10,11 @@ import 'update_user.dart';
 
 class ViewUsersAdminPage extends StatefulWidget {
   final int colorIndex;
+  final List res;
 
   const ViewUsersAdminPage({
     @required this.colorIndex,
+    this.res,
   }) : assert(colorIndex != null);
 
   @override
@@ -25,19 +27,10 @@ class ViewUsersAdminPageState extends State<ViewUsersAdminPage> {
   List project_users = [];
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
+
   @override
   Widget build(BuildContext context) {
     final _bkey = GlobalKey(debugLabel: 'Back Key');
-    final _userNameController = TextEditingController();
-    final _userName = GlobalKey(debugLabel: 'User Name');
-    final _userRoleController = TextEditingController();
-    final _userRole = GlobalKey(debugLabel: 'User Role');
-    final _userStatusController = TextEditingController();
-    final _userStatus = GlobalKey(debugLabel: 'User Status');
-    final _userLocationsController = TextEditingController();
-    final _tagsController = TextEditingController();
-    final _userLocations = GlobalKey(debugLabel: 'Users Locations');
-    final _tags = GlobalKey(debugLabel: 'Project or User Related Tags');
     List<StaggeredTile> mTiles = [];
     ScrollController controller = new ScrollController();
 
@@ -66,11 +59,14 @@ class ViewUsersAdminPageState extends State<ViewUsersAdminPage> {
                   elevation: 200.0,
                   child: new Icon(Icons.search),
                   backgroundColor: TodoColors.baseColors[widget.colorIndex],
-                  onPressed: ()  {
+                  onPressed: ()  async {
                     new Container(
                       width: 450.0,
                     );
-                    showDialog(context: context, child: new MyUserDialog(colorIndex: widget.colorIndex,));
+
+                    List mres = await showDialog(context: context, child: new MyUserDialog(colorIndex: widget.colorIndex,));
+ Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => ViewUsersAdminPage(colorIndex: widget.colorIndex, res: mres,)));
                   },
                 ),
               ],
@@ -93,7 +89,16 @@ class ViewUsersAdminPageState extends State<ViewUsersAdminPage> {
               mainAxisSpacing: 12.0,
               padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               controller: controller,
-              children: snapshot.data.documents.map((user) {
+              children: snapshot.data.documents.where((user){
+                if(widget.res != null) {
+                  Map final_result = widget.res[0];
+                  return (final_result['firstName'] != null ? final_result['firstName'] == user['firstName']: true) &&
+                         (final_result['lastName'] != null ? final_result['lastName'] == user['lastName']: true) &&
+                      (final_result['userRole'] != null ? final_result['userRole'] == user['userRole']: true) &&
+                      (final_result['userStatus'] != null ? final_result['userStatus'] == user['userStatus']: true);
+                }
+                return true;
+              }).map((user) {
                 mTiles.add(StaggeredTile.extent(2, 110.0));
 
                 userName = "${user['firstName']} ${user['lastName']}";

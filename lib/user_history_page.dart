@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'employment_history_page.dart';
 import 'user_rating_page.dart';
@@ -42,6 +43,19 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
   PageController _pageController;
   /// Indicating the current displayed page
   int _page = 0;
+  FirebaseUser user;
+
+  @override
+  void initState() {
+    super.initState();
+    setDefaults();
+    _pageController = new PageController();
+  }
+
+  void setDefaults()async {
+    FirebaseAuth _auth = FirebaseAuth.instance;
+    user = await _auth.currentUser();
+  }
 
   Color getColor(int idx) {
     final iconColor = Color(0xEFCCCCCD);
@@ -51,6 +65,7 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
       return iconColor;
     }
   }
+
 
   void onPageChanged(int page) {
     setState(() {
@@ -105,18 +120,25 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
         canRecruit: widget.canRecruit,
         projectDocumentID: widget.projectDocumentID,));
     }
-    if(widget.isStaff){
-      if(widget.canRateUser) {
-        navigationItems.add(new BottomNavigationBarItem(
+    String uid;
+    if(user != null) {
+      uid = user.uid;
+      if (widget.isStaff && uid != document.documentID) {
+        if (widget.canRateUser) {
+          navigationItems.add(new BottomNavigationBarItem(
             icon: new Icon(Icons.stars, color: getColor(2)),
             title: new Text("Rate\nUser", textAlign: TextAlign.center,),),
-        );
-        items.add(new UserRatingPage(colorIndex: widget.colorIndex, userDocumentID: document.documentID, projectDocumentID: widget.projectDocumentID,));
-      }}
+          );
+          items.add(new UserRatingPage(colorIndex: widget.colorIndex,
+            userDocumentID: document.documentID,
+            projectDocumentID: widget.projectDocumentID,));
+        }
+      }
+    }
 
     navigationItems.add(
       new BottomNavigationBarItem(
-          icon: new Icon(Icons.calendar_view_day, color: getColor(widget.canRateUser && widget.isStaff ? 3:2),),
+          icon: new Icon(Icons.calendar_view_day, color: getColor((widget.canRateUser && widget.isStaff && uid != document.documentID) ? 3:2),),
           title: new Text("User\nAvailability", textAlign: TextAlign.center,)
       ),
     );
@@ -124,7 +146,7 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
 
     navigationItems.add(
       new BottomNavigationBarItem(
-          icon: new Icon(Icons.devices, color: getColor(widget.canRateUser && widget.isStaff ? 4:3),),
+          icon: new Icon(Icons.devices, color: getColor((widget.canRateUser && widget.isStaff && uid != document.documentID) ? 4:3),),
           title: new Text("User\nDevices", textAlign: TextAlign.center,)
       ),
       );
@@ -148,12 +170,6 @@ class _UserHistoryPageState extends State<UserHistoryPage> {
         type: BottomNavigationBarType.fixed,
       ),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController = new PageController();
   }
 
   @override

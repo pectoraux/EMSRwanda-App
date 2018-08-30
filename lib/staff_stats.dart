@@ -39,7 +39,7 @@ class StaffNStatsPageState extends State<StaffNStatsPage> {
           icon: new Icon(Icons.assessment, color: getColor(0)),
           title: new Text("Project\nStats", textAlign: TextAlign.center)));
     items.add(
-        new AnimatedPieChartPage(colorIndex: widget.colorIndex,)
+        new AnimatedPieChartPage(colorIndex: widget.colorIndex, projectDocumentId: widget.projectDocumentId,)
     );
     navigationItems.add(
       new BottomNavigationBarItem(

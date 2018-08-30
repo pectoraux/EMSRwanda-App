@@ -23,8 +23,8 @@ class UserRatingPage extends StatefulWidget {
 }
 
 class UserRatingPageState extends State<UserRatingPage> {
-  String imageUrlStr = '', firstName = '', lastName = '';
-
+  String imageUrlStr = '', firstName = '', lastName = '', currUserFirstName = '', currUserLastName = '';
+  FirebaseUser user;
 
   @override
   void initState() {
@@ -50,7 +50,7 @@ class UserRatingPageState extends State<UserRatingPage> {
 
   void setDefaults()async {
     FirebaseAuth _auth = FirebaseAuth.instance;
-    FirebaseUser user = await _auth.currentUser();
+    user = await _auth.currentUser();
     imageUrlStr = user.photoUrl;
   }
 
@@ -108,6 +108,12 @@ class UserRatingPageState extends State<UserRatingPage> {
       setState(() {
         firstName = doc['firstName'];
         lastName = doc['lastName'];
+      });
+    });
+    Firestore.instance.document('users/${user.uid}').get().then((doc) {
+      setState(() {
+        currUserFirstName = doc['firstName'];
+        currUserLastName = doc['lastName'];
       });
     });
 
@@ -168,7 +174,7 @@ class UserRatingPageState extends State<UserRatingPage> {
                               width: 450.0,
                             );
                             showDialog(context: context, child: new MyRatingDialog(colorIndex: widget.colorIndex, userDocumentID: widget.userDocumentID,
-                            projectDocumentID: widget.projectDocumentID, firstName: firstName, lastName: lastName));
+                            projectDocumentID: widget.projectDocumentID, firstName: currUserFirstName, lastName: currUserLastName));
                           },
                           child: Padding
                             (
@@ -400,7 +406,7 @@ class UserRatingPageState extends State<UserRatingPage> {
               leading: CircleAvatar
                 (
                 backgroundColor: TodoColors.baseColors[widget.colorIndex],
-                child: Text(''),//${_getInitials(comment.substring(comment.indexOf('★')+1, comment.lastIndexOf('★')+1))}'),
+                child: Text('${_getInitials(comment.substring(comment.indexOf('★')+1, comment.lastIndexOf('★')+1))}'),
               ),
               title: Text(author, style: TextStyle()),
               subtitle: Text(comment,

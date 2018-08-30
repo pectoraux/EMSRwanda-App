@@ -209,7 +209,7 @@ class _ProfilePageState extends State<ProfilePage> {
 return query.documents.length;
           });
           int age =  DateTime.now().year - int.parse(doc['dob'].substring(0,4));
-          print("oooottt => ${numProjects}");
+//          print("oooottt => ${numProjects}");
           return [
             doc['userRole'],
             doc['userPassword'],

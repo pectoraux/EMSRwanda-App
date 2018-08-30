@@ -175,9 +175,9 @@ class _SendWorkRequestPageState extends State<SendWorkRequestPage>
                   )
                 )
             ),
-//            GoodReviewItem(colorIndex: widget.colorIndex, userDocumentId: widget.userDocumentID,),
-//            BadReviewItem(colorIndex: widget.colorIndex, userDocumentId: widget.userDocumentID,),
-//            NewReviewItem(colorIndex: widget.colorIndex, userDocumentId: widget.userDocumentID,),
+            GoodReviewItem(colorIndex: widget.colorIndex, userDocumentId: widget.userDocumentID,),
+            BadReviewItem(colorIndex: widget.colorIndex, userDocumentId: widget.userDocumentID,),
+            NewReviewItem(colorIndex: widget.colorIndex, userDocumentId: widget.userDocumentID,),
           ],
         )
     );

@@ -43,7 +43,7 @@ class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
   FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseUser user;
   String authorId;
-  String currentGroup, teamCount, staffCount, currentGroupCount;
+  String currentGroup, teamCount, staffCount, currentGroupCount, gender;
 
   @override
   void initState() {
@@ -91,14 +91,6 @@ class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
     final _bkey = GlobalKey(debugLabel: 'Back Key');
-    final _projectTitleController = TextEditingController();
-    final _projectTitle = GlobalKey(debugLabel: 'Project Title');
-    final _projectLocationsController = TextEditingController();
-    final _projectTagsController = TextEditingController();
-    final _projectLocations = GlobalKey(debugLabel: 'Project Locations');
-    final _projectTags = GlobalKey(debugLabel: 'Project Tags');
-    final _minRatingController = TextEditingController();
-    final _minRating = GlobalKey(debugLabel: 'Minimum Rating');
 
     return Scaffold
       (
@@ -153,7 +145,7 @@ class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
                   child: widget.noButton ? new Container() :
                   InkWell
                     (
-                    onTap: widget.isMadeByYou ? (){_cancelRequest();} : (){_acceptRequest();} ,
+                    onTap: widget.isMadeByYou ? (){_cancelRequest();} : (){_acceptRequest(document['sex']);} ,
                     child: Padding
                       (
                       padding: EdgeInsets.all(12.0),
@@ -205,9 +197,9 @@ class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
                   ),
                 )
             ),
-//            GoodReviewItem(colorIndex: widget.colorIndex, userDocumentId: widget.documentID,),
-//            BadReviewItem(colorIndex: widget.colorIndex, userDocumentId: widget.documentID,),
-//            NewReviewItem(colorIndex: widget.colorIndex, userDocumentId: widget.documentID,),
+            GoodReviewItem(colorIndex: widget.colorIndex, userDocumentId: widget.documentID,),
+            BadReviewItem(colorIndex: widget.colorIndex, userDocumentId: widget.documentID,),
+            NewReviewItem(colorIndex: widget.colorIndex, userDocumentId: widget.documentID,),
           ],
         )
     );
@@ -230,7 +222,7 @@ class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
       Navigator.of(context).pop();
   }
 
-  void _acceptRequest(){
+  void _acceptRequest(String gender){
 //    print('MMMMMMMMM => => => ${user.uid}  <= <= <= ${widget.projectDocumentID}');
     Firestore.instance.runTransaction((transaction) async {
       String mId;
@@ -270,6 +262,7 @@ class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
           'overAllRating': -1.0,
           'punctualityRating': -1.0,
           'reportingRating': -1.0,
+          'sex': gender,
         });
       }).whenComplete(() async { // Update currentGroupCount and currentGroup in projects
         DocumentReference reference =

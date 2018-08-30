@@ -42,6 +42,7 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
   static final formKey = new GlobalKey<FormState>();
   DateTime _fromDate = DateTime.now();
   DateTime _toDate = DateTime.now();
+  String gender;
 
 
   bool _sendRequestToAvailableUsers = false;

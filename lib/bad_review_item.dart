@@ -26,9 +26,7 @@ class BadReviewItemState extends State<BadReviewItem> {
 
   @override
   Widget build(BuildContext context) {
-    Firestore.instance.collection('users/${widget.userDocumentId}/projects')
-        .getDocuments()
-        .then((query) {
+    Firestore.instance.collection('users/${widget.userDocumentId}/projects').getDocuments().then((query) {
       List results = [];
       setState(() {
         for (DocumentSnapshot doc in query.documents) {
@@ -38,9 +36,7 @@ class BadReviewItemState extends State<BadReviewItem> {
       });
     }).whenComplete(() {
       for (String project in user_projects) {
-        Firestore.instance.document(
-            'projects/${project}/users/${widget.userDocumentId}').get().then((
-            doc) {
+        Firestore.instance.document('projects/${project}/users/${widget.userDocumentId}').get().then((doc) {
           overAllRatings[project] = (doc['overAllRating']).toDouble();
           userComments[project] = doc['comments'][doc['comments'].length - 1];
         });
@@ -48,9 +44,7 @@ class BadReviewItemState extends State<BadReviewItem> {
     });
 
     return StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('projects')
-            .getDocuments()
-            .asStream(),
+        stream: Firestore.instance.collection('projects').getDocuments().asStream(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
             return new Center
@@ -60,23 +54,23 @@ class BadReviewItemState extends State<BadReviewItem> {
           }
           return Column(
             children: snapshot.data.documents.where((project){
-      try {
-        if (user_projects.contains(project.documentID)) {
-          return overAllRatings[project.documentID] <= badRatingThreshold;
-        }
-        return false;
-      }catch(_){
-        return false;
-      }
-            }).map((project)
-            {
+              try {
+                if (user_projects.contains(project.documentID)) {
+                  return overAllRatings[project.documentID] <= badRatingThreshold && overAllRatings[project.documentID] >= 0;
+
+                }
+                return false;
+              }catch(_){
+                return false;
+              }
+            }).map((project) {
               try{
-              return _buildReviewElt(context, project.documentID, project['projectTitle'], project['projectDescription'],
-                  '${overAllRatings[project.documentID]}', userComments[project.documentID]);
+                return _buildReviewElt(context, project.documentID, project['projectTitle'], project['projectDescription'],
+                    '${overAllRatings[project.documentID]}', userComments[project.documentID]);
               }catch(_){
                 return BarLoadingScreen();
               }
-              }).toList(),
+            }).toList(),
           );
         });
   }
@@ -95,7 +89,7 @@ class BadReviewItemState extends State<BadReviewItem> {
       return result.substring(0, 2);
     }
   }
-  
+
   Widget _buildReviewElt(BuildContext context, String project_id, String project_title, String project_description, String overAllRating, String comment) {
     return Column(
       children: <Widget>[

@@ -42,214 +42,195 @@ class GoodReviewItemState extends State<GoodReviewItem>   {
         Firestore.instance.document(
             'projects/${project}/users/${widget.userDocumentId}').get().then((
             doc) {
+
           overAllRatings[project] = (doc['overAllRating']).toDouble();
           userComments[project] = doc['comments'][doc['comments'].length - 1];
         });
       }
     });
-
     return StreamBuilder<QuerySnapshot>(
         stream: Firestore.instance.collection('projects').getDocuments().asStream(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot)
-        {
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
 
-          if (!snapshot.hasData)
-          {
-            return new Center
-              (
+          if (!snapshot.hasData) {
+            return new Center(
               child: new BarLoadingScreen(),
             );
           }
-
-          return Column(
-            children: snapshot.data.documents.where((project){
-              try{
-              if(user_projects.contains(project.documentID)) {
-                return overAllRatings[project.documentID] >= goodRatingThreshold;
-              }
-              return false;
+          try {
+            return Column(
+              children: snapshot.data.documents.where((project){
+                try{
+                  if(user_projects.contains(project.documentID)) {
+                    return overAllRatings[project.documentID] >= goodRatingThreshold;
+                  }
+                  return false;
+                }catch(_){
+                  return false;
+                }
+              }).map((project){
+                return _buildReviewElt(context, project.documentID, project['projectTitle'], project['projectDescription'],
+                    '${overAllRatings[project.documentID]}', userComments[project.documentID]);
+              }).toList(),
+            );
           }catch(_){
-        return false;
-        }
-            }).map((project)
-          {
-//            print('======== ${overAllRatings[project.documentID]} ====== ${project.documentID}');
-            try {
-              return _buildReviewElt(
-                  context, project.documentID, project['projectTitle'],
-                  project['projectDescription'],
-                  '${overAllRatings[project.documentID]}', userComments[project.documentID]);
-            }catch(_){
-              return BarLoadingScreen();
-            }
-            }).toList(),
-
-          );
+            return BarLoadingScreen();
+          }
         });
-
   }
 
   Widget _buildReviewElt(BuildContext context, String project_id, String project_title, String project_description, String overAllRating, String comment) {
 
-      return Padding
+    return Padding
+      (
+      padding: EdgeInsets.only(bottom: 16.0),
+      child: Stack
         (
-        padding: EdgeInsets.only(bottom: 16.0),
-        child: Stack
-          (
-            children: <Widget>[
+          children: <Widget>[
 
-              /// Item card
-              Align
+            /// Item card
+            Align
+              (
+              alignment: Alignment.topCenter,
+              child: SizedBox.fromSize
                 (
-                alignment: Alignment.topCenter,
-                child: SizedBox.fromSize
-                  (
-                    size: Size.fromHeight(172.0),
-                    child: Stack
-                      (
-                      fit: StackFit.expand,
-                      children:
-                      [
-
-                        /// Item description inside a material
-                        Container
+                  size: Size.fromHeight(172.0),
+                  child: Stack
+                    (
+                    fit: StackFit.expand,
+                    children:
+                    [
+                      /// Item description inside a material
+                      Container
+                        (
+                        margin: EdgeInsets.only(top: 24.0),
+                        child: Material
                           (
-                          margin: EdgeInsets.only(top: 24.0),
-                          child: Material
-                            (
-                            elevation: 14.0,
-                            borderRadius: BorderRadius.circular(12.0),
-                            shadowColor: Color(0x802196F3),
-                            color: Colors.white,
-                            child: InkWell
-                              (
-                              onTap: () =>
-                                  Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (_) =>
-                                          ProjectDetailsPage(
-                                            colorIndex: widget.colorIndex,
-                                            projectDocumentID: project_id,
-                                            canRecruit: false,))),
-                              child: Padding
+                          elevation: 14.0,
+                          borderRadius: BorderRadius.circular(12.0),
+                          shadowColor: Color(0x802196F3),
+                          color: Colors.white,
+                          child: InkWell(
+                            onTap: () =>
+                                Navigator.of(context).push(
+                                    MaterialPageRoute(builder: (_) =>
+                                        ProjectDetailsPage(
+                                          colorIndex: widget.colorIndex,
+                                          projectDocumentID: project_id,
+                                          canRecruit: false,))),
+                            child: Padding(
+                              padding: EdgeInsets.all(24.0),
+                              child: Column
                                 (
-                                padding: EdgeInsets.all(24.0),
-                                child: Column
-                                  (
-                                  mainAxisAlignment: MainAxisAlignment
-                                      .spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment
-                                      .start,
-                                  children: <Widget>
-                                  [
+                                mainAxisAlignment: MainAxisAlignment
+                                    .spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment
+                                    .start,
+                                children: <Widget>
+                                [/// Title and rating
+                                  Column
+                                    (
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget>
+                                    [
+                                      Text(project_title, style: TextStyle(
+                                          color: TodoColors.baseColors[widget.colorIndex])),
+                                      Row
+                                        (
+                                        mainAxisAlignment: MainAxisAlignment
+                                            .start,
+                                        crossAxisAlignment: CrossAxisAlignment
+                                            .center,
+                                        children: <Widget>
+                                        [
+                                          Text('$overAllRating',
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.w700,
+                                                  fontSize: 34.0)),
+                                          Icon(Icons.star,
+                                              color: Colors.black,
+                                              size: 24.0),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
 
-                                    /// Title and rating
-                                    Column
-                                      (
-                                      mainAxisAlignment: MainAxisAlignment
-                                          .start,
-                                      crossAxisAlignment: CrossAxisAlignment
-                                          .start,
-                                      children: <Widget>
-                                      [
-                                        Text(project_title, style: TextStyle(
-                                            color: TodoColors
-                                                .baseColors[widget
-                                                .colorIndex])),
-                                        Row
-                                          (
-                                          mainAxisAlignment: MainAxisAlignment
-                                              .start,
-                                          crossAxisAlignment: CrossAxisAlignment
-                                              .center,
-                                          children: <Widget>
-                                          [
-                                            Text('$overAllRating',
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontWeight: FontWeight.w700,
-                                                    fontSize: 34.0)),
-                                            Icon(Icons.star,
-                                                color: Colors.black,
-                                                size: 24.0),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-
-                                    /// Infos
-                                    Row
-                                      (
-                                      mainAxisAlignment: MainAxisAlignment
-                                          .start,
-                                      crossAxisAlignment: CrossAxisAlignment
-                                          .center,
-                                      children: <Widget>
-                                      [
-                                        Expanded(
-                                            child: Text(project_description),
-                                            flex: 1),
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                                  /// Infos
+                                  Row
+                                    (
+                                    mainAxisAlignment: MainAxisAlignment
+                                        .start,
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .center,
+                                    children: <Widget>
+                                    [
+                                      Expanded(
+                                          child: Text(project_description),
+                                          flex: 1),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
                           ),
                         ),
-                      ],
-                    )
-                ),
+                      ),
+                    ],
+                  )
               ),
+            ),
 
-              /// Review
-              Padding
+            /// Review
+            Padding
+              (
+              padding: EdgeInsets.only(top: 160.0, left: 32.0),
+              child: Material
                 (
-                padding: EdgeInsets.only(top: 160.0, left: 32.0),
-                child: Material
+                elevation: 12.0,
+                color: Colors.transparent,
+                borderRadius: BorderRadius.only
                   (
-                  elevation: 12.0,
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.only
+                  topLeft: Radius.circular(20.0),
+                  bottomLeft: Radius.circular(20.0),
+                  bottomRight: Radius.circular(20.0),
+                ),
+                child: Container
+                  (
+                  decoration: BoxDecoration
                     (
-                    topLeft: Radius.circular(20.0),
-                    bottomLeft: Radius.circular(20.0),
-                    bottomRight: Radius.circular(20.0),
+                      gradient: LinearGradient
+                        (
+                          colors: [ Color(0xFF84fab0), Color(0xFF8fd3f4)],
+                          end: Alignment.topLeft,
+                          begin: Alignment.bottomRight
+                      )
                   ),
                   child: Container
                     (
-                    decoration: BoxDecoration
+                    margin: EdgeInsets.symmetric(vertical: 4.0),
+                    child: ListTile
                       (
-                        gradient: LinearGradient
-                          (
-                            colors: [ Color(0xFF84fab0), Color(0xFF8fd3f4)],
-                            end: Alignment.topLeft,
-                            begin: Alignment.bottomRight
-                        )
-                    ),
-                    child: Container
-                      (
-                      margin: EdgeInsets.symmetric(vertical: 4.0),
-                      child: ListTile
+                      leading: CircleAvatar
                         (
-                        leading: CircleAvatar
-                          (
-                          backgroundColor: Colors.purple,
-                          child: Text('${_getInitials(comment.substring(comment.indexOf('★')+1, comment.lastIndexOf('★')+1))}'),
-                        ),
-                        title: Text(
-                            comment.substring(comment.indexOf('★')+1, comment.lastIndexOf('★')+1), style: TextStyle()),
-                        subtitle: Text(
-                            comment.substring(comment.lastIndexOf('★')+1),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle()),
+                        backgroundColor: Colors.purple,
+                        child: Text('${_getInitials(comment.substring(comment.indexOf('★')+1, comment.lastIndexOf('★')+1))}'),
                       ),
+                      title: Text(
+                          comment.substring(comment.indexOf('★')+1, comment.lastIndexOf('★')+1), style: TextStyle()),
+                      subtitle: Text(
+                          comment.substring(comment.lastIndexOf('★')+1),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle()),
                     ),
                   ),
                 ),
-              )
-            ]),
-      );
+              ),
+            )
+          ]),
+    );
   }
   String _getInitials(String name){
     String result = '';

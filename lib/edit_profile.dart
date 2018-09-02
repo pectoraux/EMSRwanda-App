@@ -724,7 +724,7 @@ class EditProfilePageState extends State<EditProfilePage> {
   @override
   Widget build(BuildContext context) {
     final padding = Padding(padding: _padding);
-
+try{
     return new StreamBuilder<QuerySnapshot>(
         stream: Firestore.instance.collection('users').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot)
@@ -762,28 +762,6 @@ class EditProfilePageState extends State<EditProfilePage> {
     final converter = _buildListItem(context,
                                       snapshot.data.documents.where((doc){
                                       return doc.documentID == 'emma.watson';}).first);
-//
-//    _firstNameController.text = firstName;
-//    _lastNameController.text = lastName;
-//    _email1Controller.text = email1;
-//    _email2Controller.text = email2;
-//    _sexController.text = sex;
-//    _countryController.text = country;
-//    _mainPhoneController.text = mainPhone;
-//    _phone1Controller.text = phone1;
-//    _phone2Controller.text = phone2;
-//    _passportNoController.text = passportNo;
-//    _bankAcctNoController.text = bankAcctNo;
-//    _bankNameController.text = bankName;
-//    _insuranceController.text = insurance;
-//    _insuranceNoController.text = insuranceNo;
-//    _insuranceCpyController.text = insuranceCpy;
-//    _tinController.text = tin;
-//    _cvStatusElecController.text = cvStatusElec;
-//    _dobController.text = dob;
-//    _nationalIDController.text = nationalID;
-//    _emergencyContactNameController.text = emergencyContactName;
-//    _emergencyContactPhoneController.text = emergencyContactPhone;
 
     return new Padding(
     padding: _padding,
@@ -807,6 +785,10 @@ class EditProfilePageState extends State<EditProfilePage> {
     ),
     );
     });
+} catch(_){
+  return Container(child: Text("Presence Of Malformed Data In Database",),);
+}
+
   }
 
   void showInSnackBar(String value, Color c) {

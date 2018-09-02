@@ -1,35 +1,27 @@
 {
   "project_info": {
-    "project_number": "151893032143",
-    "firebase_url": "https://emsrwanda-app.firebaseio.com",
-    "project_id": "emsrwanda-app",
-    "storage_bucket": "emsrwanda-app.appspot.com"
+    "project_number": "838460735520",
+    "firebase_url": "https://emsrwanda-app-30561.firebaseio.com",
+    "project_id": "emsrwanda-app-30561",
+    "storage_bucket": "emsrwanda-app-30561.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:151893032143:android:eb790f5c2d52ebc5",
+        "mobilesdk_app_id": "1:838460735520:android:eb790f5c2d52ebc5",
         "android_client_info": {
           "package_name": "com.example.flutterqrscan"
         }
       },
       "oauth_client": [
         {
-          "client_id": "151893032143-k3qg85mju3s45q9n4cmctulgahed56qh.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.flutterqrscan",
-            "certificate_hash": "4d190f1cef9b84fb2315925ab4fa7c8cb52c8f18"
-          }
-        },
-        {
-          "client_id": "151893032143-kfpaqtlfsu0vvi4i6as1tod4j7i7osai.apps.googleusercontent.com",
+          "client_id": "838460735520-5uvcem50l59k4ai9fnreluo7gc6js9re.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDa0gxMS4jQcg3weqpTAO7OZm0bN8g9800"
+          "current_key": "AIzaSyD6NRXtTO7HtfnfZWMpEfBOnFnV67O40IY"
         }
       ],
       "services": {
@@ -37,13 +29,8 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "151893032143-kfpaqtlfsu0vvi4i6as1tod4j7i7osai.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2

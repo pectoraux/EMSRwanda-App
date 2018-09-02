@@ -9,11 +9,12 @@ import 'animated_logo.dart';
 import 'my_login_dialog.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({Key key, this.title, this.auth, this.onSignIn}) : super(key: key);
+  LoginPage({Key key, this.title, this.auth, this.onSignIn, this.roles}) : super(key: key);
 
   final String title;
   final BaseAuth auth;
   final VoidCallback onSignIn;
+  final List<String> roles;
 
   @override
   _LoginPageState createState() => new _LoginPageState();
@@ -23,19 +24,11 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage>   with SingleTickerProviderStateMixin {
   AnimationController controller;
   Animation<double> animation;
-
-  initState() {
-    super.initState();
-    controller = new AnimationController(
-        duration: const Duration(milliseconds: 2000), vsync: this);
-    animation = new Tween(begin: 0.0, end: 300.0).animate(controller);
-    controller.forward();
-  }
-
   static final formKey = new GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
   var _login = GlobalKey(debugLabel: 'Login');
   final _emailController = TextEditingController();
+  final _roleController = TextEditingController();
   final _passwordController = TextEditingController();
   final _secretKey = GlobalKey(debugLabel: 'Secret Key');
   final _secretKeyController = TextEditingController();
@@ -43,7 +36,21 @@ class _LoginPageState extends State<LoginPage>   with SingleTickerProviderStateM
   String _authHint = 'Type in your details and press the Login button';
   String userId;
   String logingIn = "Login";
-  String your_password;
+  String your_password, _roleValue;
+  List<DropdownMenuItem> _roleMenuItems;
+  int _colorIndex = 0;
+  bool first = true;
+
+  initState() {
+    super.initState();
+    controller = new AnimationController(
+        duration: const Duration(milliseconds: 2000), vsync: this);
+    animation = new Tween(begin: 0.0, end: 300.0).animate(controller);
+    controller.forward();
+
+
+    _setDefaults();
+  }
 
   bool validateAndSave() {
     final form = formKey.currentState;
@@ -54,11 +61,90 @@ class _LoginPageState extends State<LoginPage>   with SingleTickerProviderStateM
     return false;
   }
 
+  void _createDropdownMenuItems(int idx, List<String> list) {
+    var newItems = <DropdownMenuItem>[];
+    for (var unit in list) {
+      newItems.add(DropdownMenuItem(
+        value: unit,
+        child: Container(
+          child: Text(
+            unit,
+            softWrap: true,
+          ),
+        ),
+      ));
+    }
+    setState(() {
+      if(idx == 2) {
+        _roleMenuItems = newItems;
+      }
+    });
+  }
+
+  void _setDefaults() {
+    setState(() {
+      _roleValue = "Staff Member Roles";
+    });
+  }
+
+  Widget _createDropdown(int idx, String currentValue, ValueChanged<dynamic>
+
+  onChanged)
+
+  {
+    return Container(
+      decoration: BoxDecoration(
+        // This sets the color of the [DropdownButton] itself
+        color: TodoColors.baseColors[_colorIndex],
+        border: Border.all(
+          color: TodoColors.baseColors[_colorIndex],
+          width: 1.0,
+        ),
+      ),
+      padding: EdgeInsets.symmetric(vertical: 8.0),
+      child: Theme(
+        // This sets the color of the [DropdownMenuItem]
+        data: Theme.of(context).copyWith(
+          canvasColor: Colors.grey[50],
+        ),
+        child: new SingleChildScrollView(
+          child: new ConstrainedBox(
+            constraints: new BoxConstraints(
+              minHeight: 8.0,
+            ),
+            child: DropdownButtonHideUnderline(
+              child: new Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    DropdownButton(
+                      value: currentValue,
+                      items: _roleMenuItems,
+                      onChanged: onChanged,
+                      style: TodoColors.textStyle2,
+                    ),]
+              ),),
+          ),
+        ),
+      ),);
+  }
+
+  void _updateRoleValue(dynamic name) {
+    setState(() {
+      _roleValue = name;
+    });
+  }
 
   void validateAndSubmit() async {
     if (validateAndSave()) {
         try {
-          String uid = await widget.auth.signIn(_emailController.text + '@laterite.com', 'Laterite');
+          String roleEncoded = "";
+          if(_roleValue.split(' ').length > 1){
+            roleEncoded = _roleValue.trim().replaceAll(' ', '-');
+          }else{
+            roleEncoded = _roleValue;
+          }
+          String uid = await widget.auth.signIn(_emailController.text+'@'+roleEncoded+'.com', 'Laterite');
           Firestore.instance.document('users/${uid}').get().then((doc){
               your_password = doc['password'];
 
@@ -124,105 +210,143 @@ class _LoginPageState extends State<LoginPage>   with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     int _colorIndex = 0;
-    return Scaffold(
-      key: scaffoldKey,
-      backgroundColor: TodoColors.baseColors[_colorIndex],
-      body: SafeArea(
-        child: ListView(
-          padding: EdgeInsets.symmetric(horizontal: 24.0),
-          children: <Widget>[
-            SizedBox(height: 80.0),
-            Column(
-              children: <Widget>[
-                SizedBox(height: 20.0),
-          AnimatedLogo(animation: animation, message: 'LATERITE', factor: 2.0, colorIndex: 0, loginPage: true,),
+    try {
+      if(first) {
+        _createDropdownMenuItems(2, widget.roles);
+        first = false;
+      }
+      return Scaffold(
+        key: scaffoldKey,
+        backgroundColor: TodoColors.baseColors[_colorIndex],
+        body: SafeArea(
+          child: ListView(
+            padding: EdgeInsets.symmetric(horizontal: 24.0),
+            children: <Widget>[
+              SizedBox(height: 80.0),
+              Column(
+                children: <Widget>[
+                  SizedBox(height: 20.0),
+                  AnimatedLogo(animation: animation,
+                    message: 'LATERITE',
+                    factor: 2.0,
+                    colorIndex: 0,
+                    loginPage: true,),
 
-              ],
-            ),
-            Form(
-              key: formKey,
-              child: new Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children:<Widget>[
-                  SizedBox(height: 12.0),
-                  PrimaryColorOverride(
-                    color: kShrineBrown900,
-                    child: TextFormField(
-                      key: new Key('Username'),
-                      autocorrect: false,
-                      controller: _emailController,
-                      validator: (val) => val.isEmpty ? 'Email can\'t be empty.' : null,
-                      onSaved: (val) => _emailController.text = val.split('@')[0],
-                      decoration: InputDecoration(
-                        labelText: 'Username',
-                        border: CutCornersBorder(),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12.0),
-                  new PrimaryColorOverride(
-                    color: kShrineBrown900,
-                    child: TextFormField(
-                      key: new Key('password'),
-                      obscureText: true,
-                      autocorrect: false,
-                      controller: _passwordController,
-                      validator: (val) => val.isEmpty ? 'Password can\'t be empty.' : null,
-                      onSaved: (val) => _passwordController.text = val,
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        border: CutCornersBorder(),
-                      ),
-                    ),
-                  ),
-                  InkWell(
-                    child: Text('Forgot Your Password', textAlign: TextAlign.end, style: TextStyle(color: TodoColors.primary),),
-                    onTap: () {
-                      showDialog(context: context, child: new MyLoginDialog(colorIndex: _colorIndex,));
-                      },
-                  ),
-                  ButtonBar(
-                    children: <Widget>[
-                      FlatButton(
-                        child: Text('CANCEL',),
-                        shape: BeveledRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(7.0)),
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            active = true;
-                          });
-                          _emailController.clear();
-                          _passwordController.clear();
-                        },
-                      ),
-                      RaisedButton(
-                          child: active ?
-                          Text('LOG IN', style: TextStyle(color: TodoColors.baseColors[0]),)
-                          : CircularProgressIndicator(
-                            valueColor: new AlwaysStoppedAnimation<Color>(TodoColors.baseColors[_colorIndex]),),
-                          elevation: 8.0,
-                          key: _login,
-                          shape: BeveledRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(7.0)),
-                          ),
-                          onPressed: (){
-                            setState(() {
-                              active = false;
-                              validateAndSubmit();
-                            });
-                          }
-                      )
-                    ],
-                  ),
                 ],
               ),
-            ),
-            hintText(),
-          ],
+              Form(
+                key: formKey,
+                child: new Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    const SizedBox(height: 12.0),
+                    _createDropdown(2, _roleValue, _updateRoleValue),
+
+                    SizedBox(height: 12.0),
+                    PrimaryColorOverride(
+                      color: kShrineBrown900,
+                      child: TextFormField(
+                        key: new Key('Username'),
+                        autocorrect: false,
+                        controller: _emailController,
+                        validator: (val) =>
+                        val.isEmpty
+                            ? 'Email can\'t be empty.'
+                            : null,
+                        onSaved: (val) =>
+                        _emailController.text = val.split('@')[0],
+                        decoration: InputDecoration(
+                          labelText: 'Username',
+                          border: CutCornersBorder(),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 12.0),
+                    new PrimaryColorOverride(
+                      color: kShrineBrown900,
+                      child: TextFormField(
+                        key: new Key('password'),
+                        obscureText: true,
+                        autocorrect: false,
+                        controller: _passwordController,
+                        validator: (val) =>
+                        val.isEmpty
+                            ? 'Password can\'t be empty.'
+                            : null,
+                        onSaved: (val) => _passwordController.text = val,
+                        decoration: InputDecoration(
+                          labelText: 'Password',
+                          border: CutCornersBorder(),
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                      child: Text(
+                        'Forgot Your Password', textAlign: TextAlign.end,
+                        style: TextStyle(color: TodoColors.primary),),
+                      onTap: () {
+                        showDialog(context: context,
+                            child: new MyLoginDialog(colorIndex: _colorIndex, roles: widget.roles));
+                      },
+                    ),
+                    ButtonBar(
+                      children: <Widget>[
+                        FlatButton(
+                          child: Text('CANCEL',),
+                          shape: BeveledRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                                Radius.circular(7.0)),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              active = true;
+                              _roleValue = widget.roles[0];
+                            });
+                            _emailController.clear();
+                            _passwordController.clear();
+                          },
+                        ),
+
+                        RaisedButton(
+                            child: active ?
+                            Text('LOG IN', style: TextStyle(
+                                color: TodoColors.baseColors[0]),)
+                                : CircularProgressIndicator(
+                              valueColor: new AlwaysStoppedAnimation<Color>(
+                                  TodoColors.baseColors[_colorIndex]),),
+                            elevation: 8.0,
+                            key: _login,
+                            shape: BeveledRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                  Radius.circular(7.0)),
+                            ),
+                            onPressed: () {
+                              if(_roleValue != widget.roles[0]) {
+                                setState(() {
+                                  active = false;
+                                  validateAndSubmit();
+                                });
+                              } else {
+                                setState(() {
+                                  _authHint = "Please Specify A Value For Role";
+                                });
+                              }
+                            }
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              hintText(),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    }catch(_){
+      return Container();
+    }
   }
 
   Widget padded({Widget child}) {

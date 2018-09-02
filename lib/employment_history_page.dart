@@ -50,8 +50,10 @@ class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
     super.initState();
     try {
       if (widget.projectDocumentID != null) {
+        print("=> => => projectId: ${widget.projectDocumentID}");
         setDefaults();
       }
+//      print("=> => => No projectId: ${widget.projectDocumentID}");
     } catch(_){
 
     }
@@ -221,14 +223,32 @@ class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
       showInSnackBar('Work Request Successfully Cancelled', Colors.redAccent);
       Navigator.of(context).pop();
   }
-
   void _acceptRequest(String gender){
-//    print('MMMMMMMMM => => => ${user.uid}  <= <= <= ${widget.projectDocumentID}');
+    Map<String, Object> data = <String, Object>{
+      'sex': gender,
+      'userId': user.uid,
+      'teamCount': int.parse(teamCount),
+      'currentGroup': int.parse(currentGroup),
+      'requestId': widget.requestId,
+      'projectId': widget.projectDocumentID,
+      'currentGroupCount': int.parse(currentGroupCount),
+    };
+    Firestore.instance.document('users/${user.uid}/pending_requests/${widget.requestId}').get().then((d) {
+      data['from'] = d['from'];
+    }).whenComplete((){
+      Firestore.instance.runTransaction((transaction) async {
+        DocumentReference reference = Firestore.instance.collection('accept-work-request').document();
+        await transaction.set(reference, data);
+      });
+    });
+    Navigator.of(context).pop();
+  }
+
+  void _acceptRequest2(String gender){
+    //write projectId in user's projects
     Firestore.instance.runTransaction((transaction) async {
       String mId;
-      Firestore.instance.document(
-          'users/${user.uid}/pending_requests/${widget.requestId}').get().then((
-          d) {
+      Firestore.instance.document('users/${user.uid}/pending_requests/${widget.requestId}').get().then((d) {
         if (d['page'] == 'project_details') {
           mId = d['from'];
         } else {
@@ -236,8 +256,7 @@ class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
         }
       }).whenComplete(() async {
         DocumentReference reference =
-        Firestore.instance.document(
-            'users/${mId}/projects/${widget.projectDocumentID}');
+        Firestore.instance.document('users/${mId}/projects/${widget.projectDocumentID}');
         await reference.setData({});
       });
     });
@@ -252,8 +271,7 @@ class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
         }
       }).whenComplete(() async {
         DocumentReference reference =
-        Firestore.instance.document(
-            'projects/${widget.projectDocumentID}/users/${mId}');
+        Firestore.instance.document('projects/${widget.projectDocumentID}/users/${mId}');
         await reference.setData({ // Inserting User's records in project
           'comments': [],
           'userGroup': (currentGroupCount == teamCount) ? int.parse(currentGroup)+1 : int.parse(currentGroup),

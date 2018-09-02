@@ -58,7 +58,7 @@ class UpdateProjectPageState extends State<UpdateProjectPage> with SingleTickerP
   String projectTitleStr ='', devicesPerRole = '', projectDescriptionStr = '', devicesPerRoleStr = '';
   List locationsList = List(), tagsList = List();
   DateTime startDateDd = DateTime.now(), endDateDd = DateTime.now();
-  String staffCount, teamCount;
+  int staffCount, teamCount;
   bool loaded = false;
 
   @override
@@ -527,8 +527,10 @@ class UpdateProjectPageState extends State<UpdateProjectPage> with SingleTickerP
                           devicesPerRoleStr = hasChanged[4] ? devicesWithRole.toString(): document['devicesPerRole'];
                           startDateDd = hasChanged[5] ? _fromDate: document['startDate'];
                           endDateDd = hasChanged[6] ? _toDate: document['endDate'];
-                          staffCount = hasChanged[7] ? _staffCountController.text: document['staffCount'];
-                          teamCount = hasChanged[8] ? _teamCountController.text: document['teamCount'];
+
+                          staffCount = hasChanged[7] ? int.parse(_staffCountController.text): int.parse(document['staffCount'].toString());
+                          teamCount = hasChanged[8] ? int.parse(_teamCountController.text): int.parse(document['teamCount'].toString());
+
 
                             Map<String, Object> project_data = <String, Object>{
                               'projectTitle': projectTitleStr,

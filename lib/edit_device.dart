@@ -387,6 +387,7 @@ class EditDevicePageState extends State<EditDevicePage> with SingleTickerProvide
 
   @override
   Widget build(BuildContext context) {
+    try{
     return new StreamBuilder<QuerySnapshot>(
         stream: Firestore.instance.collection('devices').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -414,6 +415,9 @@ class EditDevicePageState extends State<EditDevicePage> with SingleTickerProvide
             );
           }
         });
+    } catch(_){
+      return Container(child: Text("Presence Of Malformed Data In Database",),);
+    }
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.

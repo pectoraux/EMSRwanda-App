@@ -28,7 +28,7 @@ class SendWorkRequestPage extends StatefulWidget
 
 class _SendWorkRequestPageState extends State<SendWorkRequestPage>
 {
-  bool isDisabled = false, isStaff = false;
+  bool isDisabled = true, isStaff = false;
   FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseUser user;
   String authorId;
@@ -40,10 +40,12 @@ class _SendWorkRequestPageState extends State<SendWorkRequestPage>
     super.initState();
     if(widget.projectDocumentID != null) {
       setDefaults();
-      if(button_text.isEmpty){
-        button_text = 'SEND WORK REQUEST';
-      }
-    }
+    }//else{
+//      if(button_text.isEmpty){
+//        isDisabled = false;
+//        button_text = 'SEND WORK REQUEST';
+//      }
+//    }
   }
 
   Future setDefaults()async {
@@ -53,42 +55,47 @@ class _SendWorkRequestPageState extends State<SendWorkRequestPage>
           .getDocuments()
           .then((query) {
         query.documents.forEach((doc) {
-
-            if (doc['projectId'] == widget.projectDocumentID ){
-               if(doc['type'] == 'Made By You' && widget.userDocumentID == doc['to']){
-                 setState(() {
-                   isDisabled = true;
-                   button_text = 'Work Request Pending';
-                 });
-               } else if (doc['type'] == 'Made To You' && widget.userDocumentID == doc['from']){
-                 setState(() {
-                   isDisabled = true;
-                   button_text = 'User Awaits Your Response';
-                 });
-               } else {
-                 button_text = 'SEND WORK REQUEST';
-               }
+          print("=> => => HERE ");
+          if (doc['projectId'] == widget.projectDocumentID) {
+            if (doc['type'] == 'Made By You' &&
+                widget.userDocumentID == doc['to']) {
+              setState(() {
+                button_text = 'Work Request Pending';
+              });
+            } else if (doc['type'] == 'Made To You' &&
+                widget.userDocumentID == doc['from']) {
+              setState(() {
+                button_text = 'User Awaits Your Response';
+              });
             }
+          }
         });
-      }).whenComplete((){
+      }).whenComplete(() {
         print('=> => => button text = ${button_text.isEmpty} <= <= <=');
-
-        Firestore.instance.collection('projects/${widget.projectDocumentID}/users')
+        Firestore.instance.collection(
+            'projects/${widget.projectDocumentID}/users')
             .getDocuments()
             .then((query) {
           query.documents.forEach((doc) {
-            if (doc.documentID == widget.userDocumentID ){
+            if (doc.documentID == widget.userDocumentID) {
               setState(() {
-                isDisabled = true;
                 button_text = 'STAFF MEMBER';
                 userGroup = doc['userGroup'];
               });
             }
           });
+        }).whenComplete(() {
+          print('=> => => button text = ${button_text.isEmpty} <= <= <=');
+          if (button_text.isEmpty) {
+            setState(() {
+              isDisabled = false;
+              button_text = 'SEND WORK REQUEST';
+            });
+          };
+        });
       });
     });
-  });
-        }
+  }
 
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
@@ -155,7 +162,7 @@ class _SendWorkRequestPageState extends State<SendWorkRequestPage>
                   child:
                   InkWell
                     (
-                    onTap: isDisabled ? (){} : (){_sendWorkRequest();} ,
+                    onTap: isDisabled ? (){print("DISABLED !!!");} : (){_sendWorkRequest();} ,
                     child: Padding
                       (
                       padding: EdgeInsets.all(12.0),
@@ -195,43 +202,25 @@ class _SendWorkRequestPageState extends State<SendWorkRequestPage>
 
       setState(() {
         isDisabled = true;
+        button_text = 'Work Request Pending';
       });
 
       Firestore.instance.document('projects/${widget.projectDocumentID}')
           .get()
           .then((doc) {
-        Map<String, Object> made_by_you_data = <String, Object>{
-          'projectTitle': doc['projectTitle'],
+        Map<String, Object> request_data = <String, Object>{
           'projectId': widget.projectDocumentID,
+          'projectTitle': doc['projectTitle'],
           'to': widget.userDocumentID,
-          'type': 'Made By You',
-          'page': 'project_details',
-        };
+          'page': 'project_history',
+          'from': user.uid,};
 
-        String myId;
         Firestore.instance.runTransaction((transaction) async {
-          DocumentReference ref = Firestore.instance.collection(
-              'users/${user.uid}/pending_requests').document();
-          myId = ref.documentID;
-          DocumentReference reference =
-          Firestore.instance.document('users/${user.uid}/pending_requests/${myId}');
-          await reference.setData(made_by_you_data);
-        });
-        Map<String, Object> made_to_data = <String, Object>{
-          'projectTitle': doc['projectTitle'],
-          'projectId': widget.projectDocumentID,
-          'from': user.uid,
-          'type': 'Made To You',
-          'page': 'project_details',
-        };
-        Firestore.instance.runTransaction((transaction) async {
-
-          DocumentReference reference =
-          Firestore.instance.document(
-              'users/${widget.userDocumentID}/pending_requests/${myId}');
-          await reference.setData(made_to_data);
+          DocumentReference reference = Firestore.instance.collection('send-work-request').document();
+          await transaction.set(reference, request_data);
         });
       });
+      Navigator.of(context).pop();
     }
   }
 

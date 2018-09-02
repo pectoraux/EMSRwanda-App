@@ -578,33 +578,38 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
 
   @override
   Widget build(BuildContext context) {
-    return new StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('projects').snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (!snapshot.hasData) {
-            return new Center(
-                child: new BarLoadingScreen()
-            );
-          } else {
-            final converter = _buildListItem(
-                context, snapshot.data.documents.first);
+    try {
+      return new StreamBuilder<QuerySnapshot>(
+          stream: Firestore.instance.collection('projects').snapshots(),
+          builder: (BuildContext context,
+              AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (!snapshot.hasData) {
+              return new Center(
+                  child: new BarLoadingScreen()
+              );
+            } else {
+              final converter = _buildListItem(
+                  context, snapshot.data.documents.first);
 
-            return OrientationBuilder(
-              builder: (BuildContext context, Orientation orientation) {
-                if (orientation == Orientation.portrait) {
-                  return converter;
-                } else {
-                  return Center(
-                    child: Container(
-                      width: 450.0,
-                      child: converter,
-                    ),
-                  );
-                }
-              },
-            );
-          }
-        });
+              return OrientationBuilder(
+                builder: (BuildContext context, Orientation orientation) {
+                  if (orientation == Orientation.portrait) {
+                    return converter;
+                  } else {
+                    return Center(
+                      child: Container(
+                        width: 450.0,
+                        child: converter,
+                      ),
+                    );
+                  }
+                },
+              );
+            }
+          });
+    } catch(_){
+      return Container(child: Text("Presence Of Malformed Data In Database",),);
+    }
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.

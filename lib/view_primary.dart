@@ -608,7 +608,7 @@ class ViewPrimaryPageState extends State<ViewPrimaryPage>  with SingleTickerProv
                 'lastName': lastName,
                 'email1': email1,
                 'email2': email2,
-                'sex': sex,
+                'sex': sex == 'Sex' ? "" : sex,
                 'country': country,
                 'mainPhone': mainPhone,
                 'phone1': phone1,

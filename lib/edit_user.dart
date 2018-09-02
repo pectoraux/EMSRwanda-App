@@ -204,7 +204,7 @@ class EditUserPageState extends State<EditUserPage>  with SingleTickerProviderSt
                   _userNameController.clear();
                   _roleValue = widget.roles[0];
                 });
-//                createAllUsers();
+                createAllUsers();
 //            Firestore.instance.collection('musers').getDocuments().then((query){
 //              print("HHHHHHH => => => Number of Users ${query.documents.length}");
 //            });
@@ -222,19 +222,27 @@ class EditUserPageState extends State<EditUserPage>  with SingleTickerProviderSt
               onPressed: _connectionStatus == 'ConnectivityResult.none' ? () => onTap() : () {
 
                 if (_userNameController.value.text.trim() != "" && _roleValue != widget.roles[0]) {
-                  String email = _userNameController.text+'@'+_roleValue+'.com';
+                  String roleEncoded = "";
+                  if(_roleValue.split(' ').length > 1){
+                    roleEncoded = _roleValue.trim().replaceAll(' ', '-');
+                  }else{
+                    roleEncoded = _roleValue;
+                  }
+                  String email = _userNameController.text+'@'+roleEncoded+'.com';
                   String mrole = _roleValue;
                   widget.auth.createUser(email, defaultPassword).catchError((err){
                     showInSnackBar(
                         "Unable To Create User  $err", Colors.red);
                   });
+
                   showInSnackBar(
                       "User Created Successfully", TodoColors.baseColors[_colorIndex]);
                   setState(() {
                     _roleValue = widget.roles[0];
                     _userNameController.clear();
                   });
-
+                  widget.auth.signOut();
+                  widget.auth.signIn(oldEmail, widget.currentUserPassword);
                 }else{
                   showInSnackBar("Please Specify A Value For All Fields",
                       Colors.redAccent);
@@ -249,9 +257,8 @@ class EditUserPageState extends State<EditUserPage>  with SingleTickerProviderSt
 
   void createAllUsers() async {
     Firestore.instance.runTransaction((transaction) async {
-      for (List lst in TodoColors.names) {
-        String email = TodoColors.users[0][0] + '@laterite.com';
-        widget.auth.createUser(email, defaultPassword);
+      for (String eml in TodoColors.all_emails) {
+        widget.auth.createUser(eml, defaultPassword);
       }
     });
   }
@@ -288,41 +295,44 @@ class EditUserPageState extends State<EditUserPage>  with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
+    try {
+      return new StreamBuilder<QuerySnapshot>(
+          stream: Firestore.instance.collection('users').snapshots(),
+          builder: (BuildContext context,
+              AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (!snapshot.hasData) {
+              return new Center(
+                child: new BarLoadingScreen(),
+              );
+            } else {
+              print(
+                  "=> => => => ${_firebaseAuth.currentUser().then((user) async {
+                    setState(() {
+                      oldEmail = user.email;
+                    });
+                  })}");
+              final converter = _buildListItem(
+                  context, snapshot.data.documents.first);
 
-    return new StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('users').snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (!snapshot.hasData) {
-            return new Center(
-              child: new BarLoadingScreen(),
-            );
-          } else {
-
-            print("=> => => => ${_firebaseAuth.currentUser().then((user) async {
-
-              setState(() {
-                oldEmail = user.email;
-              });
-            })}");
-            final converter = _buildListItem(
-                context, snapshot.data.documents.first);
-
-            return OrientationBuilder(
-              builder: (BuildContext context, Orientation orientation) {
-                if (orientation == Orientation.portrait) {
-                  return converter;
-                } else {
-                  return Center(
-                    child: Container(
-                      width: 450.0,
-                      child: converter,
-                    ),
-                  );
-                }
-              },
-            );
-          }
-        });
+              return OrientationBuilder(
+                builder: (BuildContext context, Orientation orientation) {
+                  if (orientation == Orientation.portrait) {
+                    return converter;
+                  } else {
+                    return Center(
+                      child: Container(
+                        width: 450.0,
+                        child: converter,
+                      ),
+                    );
+                  }
+                },
+              );
+            }
+          });
+    } catch(_){
+      return Container(child: Text("Presence Of Malformed Data In Database",),);
+    }
   }
 
   void onTap(){

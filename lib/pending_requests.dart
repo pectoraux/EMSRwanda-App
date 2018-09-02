@@ -104,15 +104,15 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
           children: snapshot.data.documents.where((docSnap){
             if (widget.canRecruit){
               return docSnap['projectId'] == widget.projectDocumentID;
-//            print('DOCSNAP => => => ${docSnap['projectTitle']}');
             }
+            print('DOCSNAP => => => ${docSnap['projectId']}, userId => ${userId}, doc => ${docSnap.documentID}');
             return true;
           }).map((requests) {
 //                print(role.documentID + ': ' + role['roleName']);
 
     mTiles.add(StaggeredTile.extent(2, 110.0));
 
-
+    print('DOCSNAP2 => => => ${requests['projectId']}');
     return _buildTile(
               context,
               Padding

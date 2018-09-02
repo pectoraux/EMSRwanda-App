@@ -669,36 +669,17 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
       Firestore.instance.document('projects/${widget.projectDocumentID}')
           .get()
           .then((doc) {
-        Map<String, Object> made_by_you_data = <String, Object>{
-          'projectTitle': doc['projectTitle'],
+        Map<String, Object> request_data = <String, Object>{
           'projectId': widget.projectDocumentID,
+          'projectTitle': doc['projectTitle'],
           'to': authorId,
           'page': 'project_details',
-          'type': 'Made By You',
+          'from': user.uid,
         };
 
-        String myId;
         Firestore.instance.runTransaction((transaction) async {
-          DocumentReference ref = Firestore.instance.collection(
-              'users/${user.uid}/pending_requests').document();
-          myId = ref.documentID;
-          DocumentReference reference =
-          Firestore.instance.document('users/${user.uid}/pending_requests/${myId}');
-          await reference.setData(made_by_you_data);
-        }).whenComplete(() {
-          Map<String, Object> made_to_data = <String, Object>{
-            'projectTitle': doc['projectTitle'],
-            'projectId': widget.projectDocumentID,
-            'from': user.uid,
-            'page': 'project_details',
-            'type': 'Made To You',
-          };
-          Firestore.instance.runTransaction((transaction) async {
-            DocumentReference reference =
-            Firestore.instance.document(
-                'users/${authorId}/pending_requests/${myId}');
-            await reference.setData(made_to_data);
-          });
+          DocumentReference reference = Firestore.instance.collection('send-work-request').document();
+          await transaction.set(reference, request_data);
         });
       });
     }

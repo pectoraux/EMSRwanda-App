@@ -208,7 +208,7 @@ class _ProfilePageState extends State<ProfilePage> {
           numProjects = await Firestore.instance.collection('users/${userId}/projects').getDocuments().then((query) {
 return query.documents.length;
           });
-          int age =  DateTime.now().year - int.parse(doc['dob'].substring(0,4));
+          int age = doc['dob'] != "" ? DateTime.now().year - int.parse(doc['dob'].substring(0,4)): -1;
 //          print("oooottt => ${numProjects}");
           return [
             doc['userRole'],
@@ -223,7 +223,7 @@ return query.documents.length;
         });
 
         setState(() {
-          currentUserRole = results[0];
+          currentUserRole = results[0].trim();
           currentUserPassword = results[1];
           currentUserId = userId;
           firstName = results[2];
@@ -306,8 +306,7 @@ return query.documents.length;
               );
             } else {
               try {
-                DocumentSnapshot document = snapshot.data.documents.where((
-                    doc) {
+                DocumentSnapshot document = snapshot.data.documents.where((doc) {
                   return doc['roleName'] == currentUserRole;
                 }).first;
 //                print('=> => => OOOOO ${overAllRating}');

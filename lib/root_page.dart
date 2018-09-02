@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'auth.dart';
 import 'login_page.dart';
 import 'category_route.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RootPage extends StatefulWidget {
   RootPage({Key key, this.auth}) : super(key: key);
@@ -22,12 +22,29 @@ enum AuthStatus {
 class _RootPageState extends State<RootPage> {
 
   AuthStatus authStatus = AuthStatus.notSignedIn;
+  List<String> roles;
 
   initState() {
     super.initState();
     widget.auth.currentUser().then((userId) {
       setState(() {
         authStatus = userId != null ? AuthStatus.signedIn : AuthStatus.notSignedIn;
+      });
+    });
+    _setDefaults();
+  }
+
+
+  void _setDefaults() {
+    List<String> results = ['Staff Member Roles'];
+    Firestore.instance.collection('roles').getDocuments().then((query) {
+      query.documents.forEach((doc)  {
+        results.add(doc['roleName']);
+      });
+    }).whenComplete((){
+      setState(() {
+        print("=> => => ROLES ${results}");
+        roles = results;
       });
     });
   }
@@ -64,28 +81,28 @@ class _RootPageState extends State<RootPage> {
 
   @override
   Widget build(BuildContext context) {
-    Widget result;
-    switch (authStatus) {
-      case AuthStatus.notSignedIn:
-        result = LoginPage(
-          title: 'Login Page',
-          auth: widget.auth,
-          onSignIn: () => _updateAuthStatus(AuthStatus.signedIn),
-        );
-        break;
-      case AuthStatus.signedIn:
-        result =  new CategoryRoute(
+    try {
+      Widget result;
+      switch (authStatus) {
+        case AuthStatus.notSignedIn:
+          result = LoginPage(
+            title: 'Login Page',
             auth: widget.auth,
-            onSignOut: () => _updateAuthStatus(AuthStatus.notSignedIn)
-        );
-        break;
+            onSignIn: () => _updateAuthStatus(AuthStatus.signedIn),
+            roles: roles,
+          );
+          break;
+        case AuthStatus.signedIn:
+          result = new CategoryRoute(
+              auth: widget.auth,
+              onSignOut: () => _updateAuthStatus(AuthStatus.notSignedIn)
+          );
+          break;
+      }
+      return result;
+    }catch(_){
+      return Container();
     }
-//      return WillPopScope(
-//          onWillPop: _onBackPressed,
-//          child: result
-//      );
-  return result;
-  }
-
+    }
 
 }

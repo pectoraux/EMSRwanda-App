@@ -204,7 +204,7 @@ class EditUserPageState extends State<EditUserPage>  with SingleTickerProviderSt
                   _userNameController.clear();
                   _roleValue = widget.roles[0];
                 });
-                createAllUsers();
+//                createAllUsers();
 //            Firestore.instance.collection('musers').getDocuments().then((query){
 //              print("HHHHHHH => => => Number of Users ${query.documents.length}");
 //            });
@@ -255,13 +255,13 @@ class EditUserPageState extends State<EditUserPage>  with SingleTickerProviderSt
     );
   }
 
-  void createAllUsers() async {
-    Firestore.instance.runTransaction((transaction) async {
-      for (String eml in TodoColors.all_emails) {
-        widget.auth.createUser(eml, defaultPassword);
-      }
-    });
-  }
+//  void createAllUsers() async {
+//    Firestore.instance.runTransaction((transaction) async {
+//      for (String eml in TodoColors.all_emails) {
+//        widget.auth.createUser(eml, defaultPassword);
+//      }
+//    });
+//  }
 
   dispose() {
     controller.dispose();

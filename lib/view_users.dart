@@ -119,7 +119,7 @@ class ViewUsersPageState extends State<ViewUsersPage> {
                         (final_result['userStatus'] != null ? final_result['userStatus'] == user['userStatus']: true);
                   }
                   return true;
-                }).map((user) {
+                }).take(10).map((user) {
 
                   mTiles.add(StaggeredTile.extent(2, 110.0));
 
@@ -156,8 +156,9 @@ class ViewUsersPageState extends State<ViewUsersPage> {
                           SizedBox(width: 180.0,
                               child:Text(locations,
                                 style: TextStyle(color: TodoColors.baseColors[widget.colorIndex]),) ),
-
-                          Expanded(child:Text(userName, style: TodoColors.textStyle6), flex: 1,),
+                          (userName.length > 15) ?
+                          Expanded(child:Text(userName.substring(0,15)+'...', style: TodoColors.textStyle6), flex: 1,)
+                          :Expanded(child:Text(userName, style: TodoColors.textStyle6), flex: 1,),
                         ],
                       ),
                       Material

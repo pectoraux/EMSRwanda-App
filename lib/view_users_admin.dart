@@ -98,7 +98,7 @@ class ViewUsersAdminPageState extends State<ViewUsersAdminPage> {
                       (final_result['userStatus'] != null ? final_result['userStatus'] == user['userStatus']: true);
                 }
                 return true;
-              }).map((user) {
+              }).take(10).map((user) {
                 mTiles.add(StaggeredTile.extent(2, 110.0));
 
                 userName = "${user['firstName']} ${user['lastName']}";

@@ -28,7 +28,7 @@ class AnimatedLogo extends AnimatedWidget {
             children: <Widget>[
               Expanded(
                 child:
-                Image.asset('assets/diamond.png',),
+                Image.asset('assets/icons/launcher.png',),
                 flex: 1,
               ),
 //              SizedBox(height: 16.0),

@@ -31,11 +31,6 @@ dev_dependencies:
   firebase_analytics: ^0.3.3     # new
   firebase_auth:
   flutter_local_notifications:
-  flutter_launcher_icons: "^0.6.1"
-
-flutter_icons:
-  android: true
-  image_path: "assets/icon/launcher.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
@@ -67,6 +62,7 @@ flutter:
    - assets/diamond.png
    - assets/ipad.jpg
    - assets/icons/availability.png
+   - assets/icons/launcher.png
 
 
 

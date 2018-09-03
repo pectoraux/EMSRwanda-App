@@ -40,12 +40,7 @@ class _SendWorkRequestPageState extends State<SendWorkRequestPage>
     super.initState();
     if(widget.projectDocumentID != null) {
       setDefaults();
-    }//else{
-//      if(button_text.isEmpty){
-//        isDisabled = false;
-//        button_text = 'SEND WORK REQUEST';
-//      }
-//    }
+    }
   }
 
   Future setDefaults()async {

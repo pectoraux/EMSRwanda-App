@@ -11,11 +11,13 @@ class PendingRequestsPage extends StatefulWidget {
   final int colorIndex;
   final bool canRecruit;
   final String projectDocumentID;
+  final bool acceptRequest;
 
   const PendingRequestsPage({
     @required this.colorIndex,
     @required this.canRecruit,
     this.projectDocumentID,
+    this.acceptRequest,
   }) : assert(colorIndex != null), assert(canRecruit != null);
 
   @override
@@ -178,13 +180,16 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
           (
             child: child,
           // Do onTap() if it isn't null, otherwise do print()
-            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) =>
+            onTap: widget.acceptRequest != null ? (){
+              showInSnackBar2("This Request Has Already Been Accepted !!!", Colors.red);
+            } : () => Navigator.of(context).push(MaterialPageRoute(builder: (_) =>
             new EmploymentHistoryPage(colorIndex: widget.colorIndex, isMadeByYou: _madeByYou,
               noButton: false, documentID: userDocumentId, canRecruit: widget.canRecruit,
             projectDocumentID: projectId, requestId: requestId,),),),
         )
     );
   }
+
 
 
   void showTile(BuildContext context, String type, String title, String description){

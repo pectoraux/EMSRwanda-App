@@ -12,6 +12,7 @@ import 'supplemental/cut_corners_border.dart';
 import 'color_override.dart';
 import 'my_project_details_dialog.dart';
 import 'loading_screen.dart';
+import 'search_projects.dart';
 
 class ProjectDetailsPage extends StatefulWidget {
   final int colorIndex;
@@ -273,6 +274,7 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
         query.documents.forEach((doc) {
           if (doc['projectId'] == widget.projectDocumentID) {
             isDisabled = true;
+            button_message = 'WORK REQUEST PENDING';
           }
         });
       });
@@ -368,7 +370,11 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
       Firestore.instance.document('users/${project['author']}'). get().then((doc){
       setState(() {
       author = '${doc['firstName']}\n${doc['lastName']}';
-      button_message = isStaff ? 'STAFF MEMBER' : isUpcoming ? 'Send   Work   Request' : isOngoing ? '': 'Send   Payment   Request';
+      if(button_message.isEmpty) {
+        button_message = isStaff ? 'STAFF MEMBER' : isUpcoming
+            ? 'Send   Work   Request'
+            : isOngoing ? '' : 'Send   Payment   Request';
+      }
       });
       });
       });
@@ -664,6 +670,7 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
 
       setState(() {
         isDisabled = true;
+        button_message = 'WORK REQUEST PENDING';
       });
 
       Firestore.instance.document('projects/${widget.projectDocumentID}')
@@ -682,6 +689,10 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
           await transaction.set(reference, request_data);
         });
       });
+      Navigator.of(context).pop();
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => SearchProjectsPage(colorIndex: widget.colorIndex, canRecruit: widget.canRecruit, sendWorkRequest: true, )
+          ));
     }
   }
 

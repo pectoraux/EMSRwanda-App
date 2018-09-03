@@ -9,6 +9,8 @@ import 'new_review_item.dart';
 import 'constants.dart';
 import 'my_employment_dialog.dart';
 import 'loading_screen.dart';
+import 'pending_requests.dart';
+import 'category_route.dart';
 
 class EmploymentHistoryPage extends StatefulWidget
 {
@@ -213,7 +215,7 @@ class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
     Firestore.instance.runTransaction((transaction) async {
       String mId;
       Firestore.instance.document('users/${user.uid}/pending_requests/${widget.requestId}').get().then((d){
-        mId =  d['from'];
+        mId =  d['to'];
       }).whenComplete((){
         Firestore.instance.document('users/${user.uid}/pending_requests/${widget.requestId}').delete();
         Firestore.instance.document('users/${mId}/pending_requests/${widget.requestId}').delete();
@@ -223,7 +225,7 @@ class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
       showInSnackBar('Work Request Successfully Cancelled', Colors.redAccent);
       Navigator.of(context).pop();
   }
-  void _acceptRequest(String gender){
+  void _acceptRequest2(String gender){
     Map<String, Object> data = <String, Object>{
       'sex': gender,
       'userId': user.uid,
@@ -244,22 +246,7 @@ class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
     Navigator.of(context).pop();
   }
 
-  void _acceptRequest2(String gender){
-    //write projectId in user's projects
-    Firestore.instance.runTransaction((transaction) async {
-      String mId;
-      Firestore.instance.document('users/${user.uid}/pending_requests/${widget.requestId}').get().then((d) {
-        if (d['page'] == 'project_details') {
-          mId = d['from'];
-        } else {
-          mId = user.uid;
-        }
-      }).whenComplete(() async {
-        DocumentReference reference =
-        Firestore.instance.document('users/${mId}/projects/${widget.projectDocumentID}');
-        await reference.setData({});
-      });
-    });
+  void _acceptRequest(String gender){
 
     Firestore.instance.runTransaction((transaction) async {
       String mId;
@@ -270,9 +257,15 @@ class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
           mId = user.uid;
         }
       }).whenComplete(() async {
-        DocumentReference reference =
+        //write projectId in user's projects
+        DocumentReference reference1 =
+        Firestore.instance.document('users/${mId}/projects/${widget.projectDocumentID}');
+        await reference1.setData({});
+
+        // Inserting User's records in project
+        DocumentReference reference2 =
         Firestore.instance.document('projects/${widget.projectDocumentID}/users/${mId}');
-        await reference.setData({ // Inserting User's records in project
+        await reference2.setData({
           'comments': [],
           'userGroup': (currentGroupCount == teamCount) ? int.parse(currentGroup)+1 : int.parse(currentGroup),
           'communicationRating': -1.0,
@@ -304,8 +297,19 @@ class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
 
   showInSnackBar('Work Request Successfully Accepted', TodoColors.baseColors[widget.colorIndex]);
   Navigator.of(context).pop();
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => PendingRequestsPage(colorIndex: 2, canRecruit: false, acceptRequest: true,),
+            ));
   }
 
+  @override
+  void didChangeDependencies()  {
+    super.didChangeDependencies();
+    if (widget.projectDocumentID != null) {
+      print("=> => => projectId: ${widget.projectDocumentID}");
+      setDefaults();
+    }
+  }
 
   void _rejectRequest(){
     Firestore.instance.runTransaction((transaction) async {

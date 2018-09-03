@@ -9,10 +9,12 @@ import 'my_project_dialog.dart';
 class SearchProjectsPage extends StatefulWidget {
   final int colorIndex;
   final bool canRecruit;
+  final bool sendWorkRequest;
 
   const SearchProjectsPage({
     @required this.colorIndex,
     @required this.canRecruit,
+    this.sendWorkRequest,
   }) : assert(colorIndex != null), assert(canRecruit != null);
 
   @override
@@ -179,13 +181,21 @@ class SearchProjectsPageState extends State<SearchProjectsPage> {
         child: InkWell
           (
           // Do onTap() if it isn't null, otherwise do print()
-            onTap: () =>
+            onTap: widget.sendWorkRequest != null? (){
+              showInSnackBar("Your Work Request For This Project Is Being Created, Reload This Page To See It !!!", Colors.red);
+        } :() =>
                 Navigator.of(context).push(
                     MaterialPageRoute(builder: (_) =>
                         ProjectDetailsPage(colorIndex:widget.colorIndex, projectDocumentID: projectID, canRecruit: widget.canRecruit,))),
             child: child
         )
     );
+  }
+  void showInSnackBar(String value, Color c) {
+    Scaffold.of(context).showSnackBar(new SnackBar(
+      content: new Text(value),
+      backgroundColor: c,
+    ));
   }
 }
 

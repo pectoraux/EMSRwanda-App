@@ -72,9 +72,9 @@ class AnimatedPieChartPageState extends State<AnimatedPieChartPage> {
             new CircularStackEntry(
               <CircularSegmentEntry>[
                 new CircularSegmentEntry(
-                    totalFemale*1.0, Colors.red[200], rankKey: 'Q1'),
+                    totalMale*1.0, Colors.red[200], rankKey: 'Q1'),
                 new CircularSegmentEntry(
-                    totalMale*1.0, Colors.green[200], rankKey: 'Q2'),
+                    totalFemale*1.0, Colors.green[200], rankKey: 'Q2'),
               ],
               rankKey: 'Male Staff:\t${totalMale}\nFemale Staff:\t${totalFemale}',
             ),

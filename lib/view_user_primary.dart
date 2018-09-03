@@ -194,7 +194,7 @@ class ViewUserPrimaryPageState extends State<ViewUserPrimaryPage>  with SingleTi
                       ),
                     ),
                   ):Container(),
-                  widget.isStaff ?
+                  widget.isStaff && widget.colorIndex == 0 ?
                   RaisedButton(
                     child: Text('CHANGE USER GROUP'),
                     textColor: TodoColors.baseColors[widget.colorIndex],

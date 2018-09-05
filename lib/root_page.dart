@@ -22,7 +22,6 @@ enum AuthStatus {
 class _RootPageState extends State<RootPage> {
 
   AuthStatus authStatus = AuthStatus.notSignedIn;
-  List<String> roles;
 
   initState() {
     super.initState();
@@ -31,23 +30,8 @@ class _RootPageState extends State<RootPage> {
         authStatus = userId != null ? AuthStatus.signedIn : AuthStatus.notSignedIn;
       });
     });
-    _setDefaults();
   }
 
-
-  void _setDefaults() {
-    List<String> results = ['Staff Member Roles'];
-    Firestore.instance.collection('roles').getDocuments().then((query) {
-      query.documents.forEach((doc)  {
-        results.add(doc['roleName']);
-      });
-    }).whenComplete((){
-      setState(() {
-        print("=> => => ROLES ${results}");
-        roles = results;
-      });
-    });
-  }
 
   void _updateAuthStatus(AuthStatus status) {
     setState(() {
@@ -89,7 +73,6 @@ class _RootPageState extends State<RootPage> {
             title: 'Login Page',
             auth: widget.auth,
             onSignIn: () => _updateAuthStatus(AuthStatus.signedIn),
-            roles: roles,
           );
           break;
         case AuthStatus.signedIn:

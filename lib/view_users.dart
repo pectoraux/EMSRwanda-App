@@ -110,7 +110,7 @@ class ViewUsersPageState extends State<ViewUsersPage> {
           mainAxisSpacing: 12.0,
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 controller: controller,
-                children: snapshot.data.documents.where((user){
+                children: snapshot.data.documents.getRange(0, 3).where((user){
                   if(widget.res != null) {
                     Map final_result = widget.res[0];
                     return (final_result['firstName'] != null ? final_result['firstName'] == user['firstName']: true) &&
@@ -119,7 +119,7 @@ class ViewUsersPageState extends State<ViewUsersPage> {
                         (final_result['userStatus'] != null ? final_result['userStatus'] == user['userStatus']: true);
                   }
                   return true;
-                }).take(10).map((user) {
+                }).map((user) {
 
                   mTiles.add(StaggeredTile.extent(2, 110.0));
 

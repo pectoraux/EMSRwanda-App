@@ -9,6 +9,7 @@ import 'color_override.dart';
 /// QuickActions represents the horizontal list of rectangular buttons below the header
 class QuickRoleActions extends StatelessWidget {
   int _colorIndex = 0;
+  Map<String, Object> search_data = <String, Object>{};
 
   @override
   Widget build(BuildContext context) {
@@ -138,6 +139,8 @@ class QuickRoleActions extends StatelessWidget {
           MaterialPageRoute(builder: (_) => ViewRolesPage(colorIndex: 0,)));
     } else if (title == "Update\nRole") {
       showSearchDialog(context);
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => ViewRolesPage(colorIndex: 0, res: [search_data],)));
     }
   }
 
@@ -196,7 +199,10 @@ class QuickRoleActions extends StatelessWidget {
               shape: BeveledRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),
               ),
-              onPressed: () {},
+              onPressed: () {
+                search_data['roleName'] = _roleNameController.value.text;
+                Navigator.of(context).pop();
+              },
             ),
 
           ],

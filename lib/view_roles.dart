@@ -9,9 +9,11 @@ import 'loading_screen.dart';
 
 class ViewRolesPage extends StatefulWidget {
   final int colorIndex;
+  final List res;
 
   const ViewRolesPage({
     @required this.colorIndex,
+    this.res,
   }) : assert(colorIndex != null);
 
   @override
@@ -21,6 +23,7 @@ class ViewRolesPage extends StatefulWidget {
 class ViewRolesPageState extends State<ViewRolesPage> {
   static const _padding = EdgeInsets.all(5.0);
   List<String> roles;
+  Map<String, Object> search_data = <String, Object>{};
 
   @override
   Widget build(BuildContext context) {
@@ -116,13 +119,19 @@ class ViewRolesPageState extends State<ViewRolesPage> {
                                   borderRadius: BorderRadius.all(
                                       Radius.circular(7.0)),
                                 ),
-                                onPressed: () {},
+                                onPressed: () {
+                                  search_data['roleName'] = _roleNameController.value.text;
+                                  _roleNameController.clear();
+                                  Navigator.of(context).pop();
+                                },
                               ),
 
                             ],
                           );
                         },
                       );
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) => ViewRolesPage(colorIndex: 0, res: [search_data],)));
                     },
                   ),
                 ],
@@ -134,7 +143,7 @@ class ViewRolesPageState extends State<ViewRolesPage> {
             stream: Firestore.instance.collection('roles').getDocuments().asStream(),
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (!snapshot.hasData) {
-                print("SNAPSHOTn => => => ${snapshot.data.documents}");
+//                print("SNAPSHOTn => => => ${snapshot.data.documents}");
                 return new Center
                   (
                     child: new BarLoadingScreen(),
@@ -147,7 +156,13 @@ class ViewRolesPageState extends State<ViewRolesPage> {
           mainAxisSpacing: 12.0,
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           controller: controller,
-          children: snapshot.data.documents.map((role) {
+          children: snapshot.data.documents.where((role){
+            if(widget.res != null) {
+              Map final_result = widget.res[0];
+              return (final_result['roleName'] != "" ? final_result['roleName'] == role['roleName']: true);
+            }
+            return true;
+          }).map((role) {
 
                 print(role.documentID + ': ' + role['roleName']);
 

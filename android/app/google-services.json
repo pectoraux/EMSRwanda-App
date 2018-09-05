@@ -1,27 +1,27 @@
 {
   "project_info": {
-    "project_number": "838460735520",
-    "firebase_url": "https://emsrwanda-app-30561.firebaseio.com",
-    "project_id": "emsrwanda-app-30561",
-    "storage_bucket": "emsrwanda-app-30561.appspot.com"
+    "project_number": "726664476062",
+    "firebase_url": "https://emsrwanda-26fd6.firebaseio.com",
+    "project_id": "emsrwanda-26fd6",
+    "storage_bucket": "emsrwanda-26fd6.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:838460735520:android:eb790f5c2d52ebc5",
+        "mobilesdk_app_id": "1:726664476062:android:eb790f5c2d52ebc5",
         "android_client_info": {
           "package_name": "com.example.flutterqrscan"
         }
       },
       "oauth_client": [
         {
-          "client_id": "838460735520-5uvcem50l59k4ai9fnreluo7gc6js9re.apps.googleusercontent.com",
+          "client_id": "726664476062-u3tmj7ft4a0dq6hnkaadmnkm4gi4e9b8.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD6NRXtTO7HtfnfZWMpEfBOnFnV67O40IY"
+          "current_key": "AIzaSyB7Lpzrm8l1YF44bKsm4_ESlHh7L3JzdJQ"
         }
       ],
       "services": {

@@ -9,12 +9,11 @@ import 'animated_logo.dart';
 import 'my_login_dialog.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({Key key, this.title, this.auth, this.onSignIn, this.roles}) : super(key: key);
+  LoginPage({Key key, this.title, this.auth, this.onSignIn,}) : super(key: key);
 
   final String title;
   final BaseAuth auth;
   final VoidCallback onSignIn;
-  final List<String> roles;
 
   @override
   _LoginPageState createState() => new _LoginPageState();
@@ -28,7 +27,6 @@ class _LoginPageState extends State<LoginPage>   with SingleTickerProviderStateM
   final scaffoldKey = GlobalKey<ScaffoldState>();
   var _login = GlobalKey(debugLabel: 'Login');
   final _emailController = TextEditingController();
-  final _roleController = TextEditingController();
   final _passwordController = TextEditingController();
   final _secretKey = GlobalKey(debugLabel: 'Secret Key');
   final _secretKeyController = TextEditingController();
@@ -36,10 +34,8 @@ class _LoginPageState extends State<LoginPage>   with SingleTickerProviderStateM
   String _authHint = 'Type in your details and press the Login button';
   String userId;
   String logingIn = "Login";
-  String your_password, _roleValue;
-  List<DropdownMenuItem> _roleMenuItems;
+  String your_password;
   int _colorIndex = 0;
-  bool first = true;
 
   initState() {
     super.initState();
@@ -47,9 +43,6 @@ class _LoginPageState extends State<LoginPage>   with SingleTickerProviderStateM
         duration: const Duration(milliseconds: 2000), vsync: this);
     animation = new Tween(begin: 0.0, end: 300.0).animate(controller);
     controller.forward();
-
-
-    _setDefaults();
   }
 
   bool validateAndSave() {
@@ -61,93 +54,13 @@ class _LoginPageState extends State<LoginPage>   with SingleTickerProviderStateM
     return false;
   }
 
-  void _createDropdownMenuItems(int idx, List<String> list) {
-    var newItems = <DropdownMenuItem>[];
-    for (var unit in list) {
-      newItems.add(DropdownMenuItem(
-        value: unit,
-        child: Container(
-          child: Text(
-            unit,
-            softWrap: true,
-          ),
-        ),
-      ));
-    }
-    setState(() {
-      if(idx == 2) {
-        _roleMenuItems = newItems;
-      }
-    });
-  }
-
-  void _setDefaults() {
-    setState(() {
-      _roleValue = "Staff Member Roles";
-    });
-  }
-
-  Widget _createDropdown(int idx, String currentValue, ValueChanged<dynamic>
-
-  onChanged)
-
-  {
-    return Container(
-      decoration: BoxDecoration(
-        // This sets the color of the [DropdownButton] itself
-        color: TodoColors.baseColors[_colorIndex],
-        border: Border.all(
-          color: TodoColors.baseColors[_colorIndex],
-          width: 1.0,
-        ),
-      ),
-      padding: EdgeInsets.symmetric(vertical: 8.0),
-      child: Theme(
-        // This sets the color of the [DropdownMenuItem]
-        data: Theme.of(context).copyWith(
-          canvasColor: Colors.grey[50],
-        ),
-        child: new SingleChildScrollView(
-          child: new ConstrainedBox(
-            constraints: new BoxConstraints(
-              minHeight: 8.0,
-            ),
-            child: DropdownButtonHideUnderline(
-              child: new Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    DropdownButton(
-                      value: currentValue,
-                      items: _roleMenuItems,
-                      onChanged: onChanged,
-                      style: TodoColors.textStyle2,
-                    ),]
-              ),),
-          ),
-        ),
-      ),);
-  }
-
-  void _updateRoleValue(dynamic name) {
-    setState(() {
-      _roleValue = name;
-    });
-  }
 
   void validateAndSubmit() async {
     if (validateAndSave()) {
         try {
-          String roleEncoded = "";
-          if(_roleValue.split(' ').length > 1){
-            roleEncoded = _roleValue.trim().replaceAll(' ', '-');
-          }else{
-            roleEncoded = _roleValue;
-          }
-          String uid = await widget.auth.signIn(_emailController.text+'@'+roleEncoded+'.com', 'Laterite');
+          String uid = await widget.auth.signIn(_emailController.text+'@laterite.com', 'Laterite');
           Firestore.instance.document('users/${uid}').get().then((doc){
               your_password = doc['password'];
-
 
           if(_passwordController.text == doc['userPassword']) {
           setState(() {
@@ -211,10 +124,6 @@ class _LoginPageState extends State<LoginPage>   with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     int _colorIndex = 0;
     try {
-      if(first) {
-        _createDropdownMenuItems(2, widget.roles);
-        first = false;
-      }
       return Scaffold(
         key: scaffoldKey,
         backgroundColor: TodoColors.baseColors[_colorIndex],
@@ -239,8 +148,6 @@ class _LoginPageState extends State<LoginPage>   with SingleTickerProviderStateM
                 child: new Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    const SizedBox(height: 12.0),
-                    _createDropdown(2, _roleValue, _updateRoleValue),
 
                     SizedBox(height: 12.0),
                     PrimaryColorOverride(
@@ -287,7 +194,7 @@ class _LoginPageState extends State<LoginPage>   with SingleTickerProviderStateM
                         style: TextStyle(color: TodoColors.primary),),
                       onTap: () {
                         showDialog(context: context,
-                            child: new MyLoginDialog(colorIndex: _colorIndex, roles: widget.roles));
+                            child: new MyLoginDialog(colorIndex: _colorIndex));
                       },
                     ),
                     ButtonBar(
@@ -301,7 +208,6 @@ class _LoginPageState extends State<LoginPage>   with SingleTickerProviderStateM
                           onPressed: () {
                             setState(() {
                               active = true;
-                              _roleValue = widget.roles[0];
                             });
                             _emailController.clear();
                             _passwordController.clear();
@@ -322,16 +228,10 @@ class _LoginPageState extends State<LoginPage>   with SingleTickerProviderStateM
                                   Radius.circular(7.0)),
                             ),
                             onPressed: () {
-                              if(_roleValue != widget.roles[0]) {
                                 setState(() {
                                   active = false;
                                   validateAndSubmit();
                                 });
-                              } else {
-                                setState(() {
-                                  _authHint = "Please Specify A Value For Role";
-                                });
-                              }
                             }
                         )
                       ],

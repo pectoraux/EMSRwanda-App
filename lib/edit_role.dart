@@ -257,7 +257,7 @@ class EditRolesPageState extends State<EditRolesPage> with SingleTickerProviderS
       Widget build(BuildContext context) {
     try {
       return new StreamBuilder<QuerySnapshot>(
-          stream: Firestore.instance.collection('roles').snapshots(),
+          stream: Firestore.instance.collection('roles').limit(100).snapshots(),
           builder: (BuildContext context,
               AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {

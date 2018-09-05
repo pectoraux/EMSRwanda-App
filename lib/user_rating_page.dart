@@ -422,7 +422,7 @@ class UserRatingPageState extends State<UserRatingPage> {
   Widget build(BuildContext context) {
 
     return new StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('projects/${widget.projectDocumentID}/users').snapshots(),
+        stream: Firestore.instance.collection('projects/${widget.projectDocumentID}/users').limit(100).snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
             return new Center(

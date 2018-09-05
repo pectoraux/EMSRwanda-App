@@ -148,7 +148,7 @@ class UpdateTagPageState extends State<UpdateTagPage> with SingleTickerProviderS
   Widget build(BuildContext context) {
 
     return new StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('tags').snapshots(),
+        stream: Firestore.instance.collection('tags').limit(100).snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
             return new Center(

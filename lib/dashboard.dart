@@ -296,7 +296,7 @@ return query.documents.length;
     }
 
       return new StreamBuilder<QuerySnapshot>(
-          stream: Firestore.instance.collection('roles').snapshots(),
+          stream: Firestore.instance.collection('roles').limit(100).snapshots(),
           builder: (BuildContext context,
               AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {

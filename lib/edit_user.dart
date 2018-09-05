@@ -199,7 +199,7 @@ class EditUserPageState extends State<EditUserPage>  with SingleTickerProviderSt
               shape: BeveledRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),
               ),
-              onPressed: () async {
+              onPressed: () {
                 setState(() {
                   _userNameController.clear();
                   _roleValue = widget.roles[0];
@@ -222,18 +222,13 @@ class EditUserPageState extends State<EditUserPage>  with SingleTickerProviderSt
               onPressed: _connectionStatus == 'ConnectivityResult.none' ? () => onTap() : () {
 
                 if (_userNameController.value.text.trim() != "" && _roleValue != widget.roles[0]) {
-                  String roleEncoded = "";
-                  if(_roleValue.split(' ').length > 1){
-                    roleEncoded = _roleValue.trim().replaceAll(' ', '-');
-                  }else{
-                    roleEncoded = _roleValue;
-                  }
-                  String email = _userNameController.text+'@'+roleEncoded+'.com';
-                  String mrole = _roleValue;
-                  widget.auth.createUser(email, defaultPassword).catchError((err){
-                    showInSnackBar(
-                        "Unable To Create User  $err", Colors.red);
-                  });
+
+                  String email = _userNameController.text+'@'+_roleValue+'.com';
+//                  widget.auth.createUser(email, defaultPassword).catchError((err){
+//                    showInSnackBar(
+//                        "Unable To Create User  $err", Colors.red);
+//                  });
+
 
                   showInSnackBar(
                       "User Created Successfully", TodoColors.baseColors[_colorIndex]);
@@ -241,8 +236,8 @@ class EditUserPageState extends State<EditUserPage>  with SingleTickerProviderSt
                     _roleValue = widget.roles[0];
                     _userNameController.clear();
                   });
-                  widget.auth.signOut();
-                  widget.auth.signIn(oldEmail, widget.currentUserPassword);
+//                  widget.auth.signOut();
+//                  widget.auth.signIn(oldEmail, widget.currentUserPassword);
                 }else{
                   showInSnackBar("Please Specify A Value For All Fields",
                       Colors.redAccent);
@@ -297,7 +292,7 @@ class EditUserPageState extends State<EditUserPage>  with SingleTickerProviderSt
   Widget build(BuildContext context) {
     try {
       return new StreamBuilder<QuerySnapshot>(
-          stream: Firestore.instance.collection('users').snapshots(),
+          stream: Firestore.instance.collection('users').limit(100).snapshots(),
           builder: (BuildContext context,
               AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {

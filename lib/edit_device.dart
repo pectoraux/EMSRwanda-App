@@ -389,7 +389,7 @@ class EditDevicePageState extends State<EditDevicePage> with SingleTickerProvide
   Widget build(BuildContext context) {
     try{
     return new StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('devices').snapshots(),
+        stream: Firestore.instance.collection('devices').limit(100).snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
             return new Center(

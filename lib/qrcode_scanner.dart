@@ -43,7 +43,7 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
   }
 
   bool checkUserCredentials(String mUser){
-    Firestore.instance.collection('users').snapshots().firstWhere((query){
+    Firestore.instance.collection('users').limit(100).snapshots().firstWhere((query){
       var res = query.documents.where((doc){
         return  doc['firstName'] == mUser;
       });
@@ -57,7 +57,7 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
   }
 
   bool checkDeviceCredentials(String devName, bool fillStatus){
-    Firestore.instance.collection('devices').snapshots().firstWhere((query){
+    Firestore.instance.collection('devices').limit(100).snapshots().firstWhere((query){
       var res = query.documents.where((doc){
 //        print('SSSSSSSSS => => => ${doc['deviceName'].toLowerCase()} <= <= <= ${devName}');
         if(doc['deviceName'].toLowerCase() == devName.toLowerCase() && fillStatus) {
@@ -82,7 +82,7 @@ class QRCodeScanPageState extends State<QRCodeScanPage> {
     mBoolResults = List<bool>.generate(devNames.length, (int index) => (false));
     for(int j = 0; j < devNames.length; j++) {
     String devName = devNames[j];
-    Firestore.instance.collection('devices').snapshots().firstWhere((query) {
+    Firestore.instance.collection('devices').limit(100).snapshots().firstWhere((query) {
     var res = query.documents.where((doc) {
 //    print('SSSSSSSSS => => => ${doc['deviceName'].toLowerCase()} <= <= <= ${devName}');
     print('${doc['deviceName'].toLowerCase() == devName.toLowerCase()}');

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'supplemental/cut_corners_border.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
@@ -13,6 +15,7 @@ class QuickProjectActions extends StatelessWidget {
   final List<String> roles;
   final List<String> tags;
   final List<String> devices;
+  Map<String, Object> search_data = <String, Object>{};
 
   QuickProjectActions({Key key, this.roles, this.tags, this.devices}) : super(key: key);
 
@@ -58,7 +61,7 @@ class QuickProjectActions extends StatelessWidget {
                   "View\nProjects", () {}, Colors.blue, blueGradient,
                   new AssetImage("assets/images/microphone.png")),
               _buildAction(context,
-                  "Delete\nProject", () {}, Colors.purple, purpleGraient,
+                  "Update\nProject", () {}, Colors.purple, purpleGraient,
                   new AssetImage("assets/images/wallet.png")),
             ]
         ),
@@ -137,7 +140,7 @@ class QuickProjectActions extends StatelessWidget {
     );
   }
 
-  void onTap(BuildContext context, String title) {
+  Future onTap(BuildContext context, String title) async {
     final _padding = EdgeInsets.all(5.0);
     final _projectTitleController = TextEditingController();
     final _projectTitle = GlobalKey(debugLabel: 'Project Title');
@@ -149,11 +152,15 @@ class QuickProjectActions extends StatelessWidget {
     if (title == "View\nProjects") {
       Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => ViewProjectsPage(colorIndex: _colorIndex, roles: roles, tags: tags, devices: devices,),));
-    } else if (title == "Delete\nProject") {
+    } else if (title == "Updates\nProject") {
       new Container(
         width: 450.0,
       );
-      showDialog(context: context, child: new MyProjectDialog(colorIndex: _colorIndex,));
+      List mres = await showDialog(context: context, child: new MyProjectDialog(colorIndex: _colorIndex,));
+//      print("QUICKACTIONS MRES => => => ${mres.toString()}");
+
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => ViewProjectsPage(colorIndex: _colorIndex, roles: roles, tags: tags, devices: devices, res: mres),));
     }
   }
 }

@@ -11,11 +11,13 @@ class ViewDevicesPage extends StatefulWidget {
   final int colorIndex;
   final String documentID;
   final String folder;
+  final List res;
 
   const ViewDevicesPage({
     @required this.colorIndex,
     this.documentID,
     this.folder,
+    this.res,
   }) : assert(colorIndex != null);
 
   @override
@@ -93,11 +95,14 @@ class ViewDevicesPageState extends State<ViewDevicesPage> {
                     elevation: 200.0,
                     child: new Icon(Icons.search),
                     backgroundColor: TodoColors.baseColors[widget.colorIndex],
-                    onPressed: () {
+                    onPressed: () async {
                       new Container(
                         width: 450.0,
                       );
-                      showDialog(context: context, child: new MyDevicesDialog(colorIndex: widget.colorIndex,));
+                      List mres = await showDialog(context: context, child: new MyDevicesDialog(colorIndex: widget.colorIndex,));
+                      print("MRES ${mres.toString()}");
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) => ViewDevicesPage(colorIndex: widget.colorIndex, res: mres,)));
                     },
                   ),
                 ],
@@ -134,6 +139,15 @@ class ViewDevicesPageState extends State<ViewDevicesPage> {
                     if (!user_devices.contains('${device.documentID}')) {
                       return false;
                     }
+                  }
+                  return true;
+                }).where((device){
+                  if(widget.res != null) {
+                    Map final_result = widget.res[0];
+                    return (final_result['deviceName'] != null ? final_result['deviceName'].toString().toLowerCase().trim() == device['deviceName'].toString().toLowerCase().trim(): true) &&
+                        (final_result['deviceType'] != null ? final_result['deviceType'] == device['deviceType']: true) &&
+                        (final_result['deviceCondition'] != null ? final_result['deviceCondition'] == device['deviceCondition']: true) &&
+                        (final_result['deviceStatus'] != null ? final_result['deviceStatus'] == device['deviceStatus']: true);
                   }
                   return true;
                 }).map((device) {

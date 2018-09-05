@@ -141,7 +141,7 @@ class QuickTagActions extends StatelessWidget {
     if (title == "View\nTags") {
       Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => ViewTagsPage(colorIndex: 0,)));
-    } else if (title == "Update\nTag") {
+    } else if (title == "Updates\nTag") {
       new Container(
         width: 450.0,
       );

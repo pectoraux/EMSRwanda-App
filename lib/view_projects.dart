@@ -12,12 +12,15 @@ class ViewProjectsPage extends StatefulWidget {
   final List<String> roles;
   final List<String> tags;
   final List<String> devices;
+  final List res;
+
   const ViewProjectsPage({
     @required this.colorIndex,
   @required this.roles,
   @required this.tags,
   @required this.devices,
-  }) : assert(colorIndex != null), assert(roles != null), assert(tags != null), assert(devices != null);
+    this.res,
+  }) ;//: assert(colorIndex != null), assert(roles != null), assert(tags != null), assert(devices != null);
 
   @override
   ViewProjectsPageState createState() => ViewProjectsPageState();
@@ -66,11 +69,14 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
                     elevation: 200.0,
                     child: new Icon(Icons.search),
                     backgroundColor: TodoColors.baseColors[widget.colorIndex],
-                    onPressed: () {
+                    onPressed: () async {
                       new Container(
                         width: 450.0,
                       );
-                      showDialog(context: context, child: new MyProjectDialog(colorIndex: widget.colorIndex,));
+                      List mres = await showDialog(context: context, child: new MyProjectDialog(colorIndex: widget.colorIndex,));
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) => ViewProjectsPage(colorIndex: widget.colorIndex, roles: widget.roles, tags: widget.tags,
+                            devices: widget.devices, res: mres,),));
                     },
                   ),
                 ],
@@ -93,7 +99,15 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
           mainAxisSpacing: 12.0,
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           controller: controller,
-          children: snapshot.data.documents.map((project) {
+          children: snapshot.data.documents.where((project){
+            if(widget.res != null) {
+              Map final_result = widget.res[0];
+              return (final_result['projectTitle'] != null ? final_result['projectTitle'].toString().toLowerCase().trim() == project['projectTitle'].toString().toLowerCase().trim(): true) &&
+                  (final_result['locations'] != null ? hasElement(final_result['locations'], project['locations']): true) &&
+                  (final_result['tags'] != null ? hasElement(final_result['tags'], project['tags']): true);
+            }
+            return true;
+          }).map((project) {
 
 //                print(role.documentID + ': ' + role['roleName']);
 
@@ -150,6 +164,16 @@ class ViewProjectsPageState extends State<ViewProjectsPage> {
             }),
     );
   }
+
+  bool hasElement(List fromQuery, List fromDb){
+      for(String fromq in fromQuery){
+        if(fromDb.contains(fromq)){
+          return true;
+        }
+      }
+      return false;
+  }
+
 
   void onTap(String projectTitle, String projectID) {
     new Container(

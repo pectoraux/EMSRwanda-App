@@ -113,9 +113,9 @@ class ViewUsersPageState extends State<ViewUsersPage> {
                 children: snapshot.data.documents.getRange(0, 3).where((user){
                   if(widget.res != null) {
                     Map final_result = widget.res[0];
-                    return (final_result['firstName'] != null ? final_result['firstName'] == user['firstName']: true) &&
-                        (final_result['lastName'] != null ? final_result['lastName'] == user['lastName']: true) &&
-                        (final_result['userRole'] != null ? final_result['userRole'] == user['userRole']: true) &&
+                    return (final_result['firstName'] != null ? final_result['firstName'].toString().toLowerCase().trim() == user['firstName'].toString().toLowerCase().trim(): true) &&
+                        (final_result['lastName'] != null ? final_result['lastName'].toString().toLowerCase().trim() == user['lastName'].toString().toLowerCase().trim(): true) &&
+                        (final_result['userRole'] != null ? final_result['userRole'].toString().toLowerCase().trim() == user['userRole'].toString().toLowerCase().trim(): true) &&
                         (final_result['userStatus'] != null ? final_result['userStatus'] == user['userStatus']: true);
                   }
                   return true;

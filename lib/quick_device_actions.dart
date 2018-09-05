@@ -144,11 +144,13 @@ class QuickDeviceActions extends StatelessWidget {
     if (title == "View\nDevices") {
       Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => ViewDevicesPage(colorIndex: _colorIndex,)));
-    } else if (title == "Update\nDevice") {
+    } else if (title == "Updates\nDevice") {
       new Container(
         width: 450.0,
       );
       showDialog(context: context, child: new MyDevicesDialog(colorIndex: _colorIndex,));
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => ViewDevicesPage(colorIndex: _colorIndex,)));
     }
   }
 }

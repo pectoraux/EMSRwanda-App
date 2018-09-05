@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
 import 'color_override.dart';
+import 'view_projects.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MyProjectDialog extends StatefulWidget {
   final int colorIndex;
@@ -17,10 +19,10 @@ class MyProjectDialog extends StatefulWidget {
 class MyProjectDialogState extends State<MyProjectDialog> {
   final _projectTitleController = TextEditingController();
   final _projectTitle = GlobalKey(debugLabel: 'Project Title');
-
+  Set<String> selectedLocations = new Set(), selectedTags = new Set();
   List<DropdownMenuItem> _locationMenuItems, _tagMenuItems;
-  List<String> locations = [" Locations", " Gasabo", " Remera", " Kisimenti", " Gaculiro", " Kacyiru"];
-  List<String> tags = ["Tags", "Over18", "Male", "Female", "Education", "Sensitive"];
+  List<String> locations = ["Locations", "Kigali Only", "Kigali UpCountry"];
+  List<String> tags = ["Tags"];
   String _tagValue, _locationValue;
 
 
@@ -62,6 +64,18 @@ class MyProjectDialogState extends State<MyProjectDialog> {
       _locationValue = locations[0];
       _tagValue = tags[0];
     });
+
+      Firestore.instance.collection('tags').getDocuments().asStream()
+          .forEach((snap) {
+        for (var tag in snap.documents) {
+          tags.add(tag['tagName']);
+        }
+      }).whenComplete((){
+        setState(() {
+          _createDropdownMenuItems(1, tags);
+          _tagValue = tags[0];
+        });
+      });
   }
 
   Widget _createDropdown(int idx, String currentValue, ValueChanged<dynamic>
@@ -119,6 +133,8 @@ class MyProjectDialogState extends State<MyProjectDialog> {
   }
 
 
+
+
   Widget build(BuildContext context) {
     return new AlertDialog(
       title: new Text('Search Projects',
@@ -141,21 +157,57 @@ class MyProjectDialogState extends State<MyProjectDialog> {
               ),
             ),
 
-            const SizedBox(height: 12.0),
-            _createDropdown(0, _locationValue, _updateLocationValue),
+                          const SizedBox(height: 12.0),
+              _createDropdown(0, _locationValue, _updateLocationValue),
+              SizedBox(height: 3.0,),
 
-            RaisedButton(
-              child: Text('ADD LOCATION'),
-              textColor: TodoColors.baseColors[widget.colorIndex],
-              elevation: 8.0,
-              shape: BeveledRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(7.0)),
+              selectedLocations.isNotEmpty ? SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Chip(
+                  backgroundColor: TodoColors.baseColors[widget.colorIndex],
+                  label: new Text(selectedLocations.toString()
+                      .substring(selectedLocations.toString().indexOf('{') + 1,
+                      selectedLocations.toString().indexOf('}'))),
+                ),
+              ) : Container(),
+
+              RaisedButton(
+                child: Text('ADD LOCATION'),
+                textColor: TodoColors.baseColors[widget.colorIndex],
+                elevation: 8.0,
+                shape: BeveledRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(7.0)),
+                ),
+                onPressed: () {
+                  if (_locationValue != "Locations") {
+                    setState(() {
+                      selectedLocations.add(_locationValue);
+                      _locationValue = locations[0];
+                    });
+                    showInSnackBar("Location Added Successfully",
+                        TodoColors.baseColors[widget.colorIndex]);
+                  } else {
+                    showInSnackBar(
+                        "Please Specify A Location Before Clicking This Button",
+                        Colors.redAccent);
+                  }
+                },
               ),
-              onPressed: () {},
-            ),
-            const SizedBox(height: 12.0),
-            _createDropdown(1, _tagValue, _updateTagValue),
+              const SizedBox(height: 12.0),
+              _createDropdown(1, _tagValue, _updateTagValue),
 
+              SizedBox(height: 3.0,),
+              selectedTags.isNotEmpty ? SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Chip(
+                  backgroundColor: TodoColors.baseColors[widget.colorIndex],
+                  label: new Text(selectedTags.toString()
+                      .substring(selectedTags.toString().indexOf('{') + 1,
+                      selectedTags.toString().indexOf('}'))),
+                ),
+              ) : Container(),
+
+            SizedBox(height: 3.0,),
             RaisedButton(
               child: Text('ADD TAG'),
               textColor: TodoColors.baseColors[widget.colorIndex],
@@ -163,7 +215,21 @@ class MyProjectDialogState extends State<MyProjectDialog> {
               shape: BeveledRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),
               ),
-              onPressed: () {},
+              onPressed: () {
+                if (_tagValue != "Tags") {
+                  setState(() {
+                    selectedTags.add(_tagValue);
+                    _tagValue = tags[0];
+                  });
+
+                  showInSnackBar("Tag Added Successfully",
+                      TodoColors.baseColors[widget.colorIndex]);
+                } else {
+                  showInSnackBar(
+                      "Please Specify A Tag Before Clicking This Button",
+                      Colors.redAccent);
+                }
+              },
             ),
             SizedBox(height: 12.0,),
           ],
@@ -190,10 +256,33 @@ class MyProjectDialogState extends State<MyProjectDialog> {
           shape: BeveledRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(7.0)),
           ),
-          onPressed: () {},
+          onPressed: () {
+            Map<String, Object> search_data = <String, Object>{};
+            if (_projectTitleController.value.text.trim() != "") {
+              search_data['projectTitle'] = _projectTitleController.value.text;
+            }
+            if (selectedLocations.isNotEmpty) {
+              search_data['locations'] = selectedLocations.toList();
+            }
+            if (selectedTags.isNotEmpty) {
+              search_data['tags'] = selectedTags.toList();
+            }
+            Navigator.of(context).pop([search_data]);
+//            Navigator.of(context).pushReplacement(
+//                MaterialPageRoute(builder: (_) => ViewProjectsPage(colorIndex: widget.colorIndex, roles: null, tags: tags, devices: null, res: [search_data]),)
+//            );
+          },
         ),
 
       ],
     );
+  }
+
+
+  void showInSnackBar(String value, Color c) {
+    Scaffold.of(context).showSnackBar(new SnackBar(
+      content: new Text(value),
+      backgroundColor: c,
+    ));
   }
 }

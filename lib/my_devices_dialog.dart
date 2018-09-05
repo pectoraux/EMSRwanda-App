@@ -3,6 +3,7 @@ import 'supplemental/cut_corners_border.dart';
 import 'constants.dart';
 import 'color_override.dart';
 import 'star_rating.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MyDevicesDialog extends StatefulWidget {
   final int colorIndex;
@@ -19,16 +20,17 @@ class MyDevicesDialogState extends State<MyDevicesDialog> {
   final _deviceNameController = TextEditingController();
   final _deviceName = GlobalKey(debugLabel: 'Device Name');
 
-  List<String> deviceTypes = ["Device Type", "Ipad", "Microphone", "Phone", "Tablet", "Dictaphone", "Other"];
-  List<String> deviceConditions = ["Device Condition", "1", "2", "3", "4", "5"];
-  List<DropdownMenuItem> _deviceTypeMenuItems, _deviceConditionMenuItems;
-  String _deviceTypeValue, _deviceConditionValue;
+  List<String> deviceTypes = ["Device Type"];
+  List<String> deviceConditions = ["Device Condition", "Working", "Screen Broken But Working", "Screen Broken And Not Working", "Not Switching On"];
+  List<String> deviceStatus = ["Device Status", "Available", 'In Use'];
+  List<DropdownMenuItem> _deviceTypeMenuItems, _deviceConditionMenuItems, _deviceStatusMenuItems;
+  String _deviceTypeValue, _deviceConditionValue, _deviceStatusValue;
   double rating;
 
   @override
   void initState() {
     super.initState();
-    _createDropdownMenuItems(9, deviceTypes);
+    _createDropdownMenuItems(20, deviceStatus);
     _createDropdownMenuItems(14, deviceConditions);
     _setDefaults();
   }
@@ -41,8 +43,8 @@ class MyDevicesDialogState extends State<MyDevicesDialog> {
         value: unit,
         child: Container(
           child: Text(
-            unit,
-            softWrap: true,
+            unit.length > 15 ? unit.substring(0, 14)+'\n'+unit.substring(14) : unit,
+            softWrap: true, maxLines: null,
           ),
         ),
       ));
@@ -52,6 +54,8 @@ class MyDevicesDialogState extends State<MyDevicesDialog> {
         _deviceTypeMenuItems = newItems;
       } else if (idx == 14){
         _deviceConditionMenuItems = newItems;
+      } else if (idx == 20) {
+        _deviceStatusMenuItems = newItems;
       }
     });
   }
@@ -61,8 +65,20 @@ class MyDevicesDialogState extends State<MyDevicesDialog> {
   void _setDefaults() {
     setState(() {
       _deviceTypeValue = deviceTypes[0];
+      _deviceStatusValue = deviceStatus[0];
       _deviceConditionValue = deviceConditions[0];
       rating = 0.0;
+    });
+
+    Firestore.instance.collection('devices').getDocuments().asStream()
+        .forEach((snap) {
+      for (var device in snap.documents) {
+        deviceTypes.add(device['deviceType']);
+      }
+    }).whenComplete((){
+      setState(() {
+        _createDropdownMenuItems(9, deviceTypes);
+      });
     });
   }
 
@@ -98,7 +114,7 @@ class MyDevicesDialogState extends State<MyDevicesDialog> {
                   children: <Widget>[
                     DropdownButton(
                       value: currentValue,
-                      items: (idx == 14) ? _deviceConditionMenuItems : _deviceTypeMenuItems,
+                      items: (idx == 14) ? _deviceConditionMenuItems : (idx == 9) ? _deviceTypeMenuItems : _deviceStatusMenuItems,
                       onChanged: onChanged,
                       style: TodoColors.textStyle2,
                     ),]
@@ -117,7 +133,13 @@ class MyDevicesDialogState extends State<MyDevicesDialog> {
   void _updateDeviceConditionValue(dynamic name) {
     setState(() {
       _deviceConditionValue = name;
-      rating = double.parse(name);
+      rating = (deviceConditions.length - deviceConditions.indexOf(name) + 1)*1.0;
+    });
+  }
+
+  void _updateDeviceStatusValue(dynamic name) {
+    setState(() {
+      _deviceStatusValue = name;
     });
   }
 
@@ -148,6 +170,9 @@ class MyDevicesDialogState extends State<MyDevicesDialog> {
 
             const SizedBox(height: 12.0),
             _createDropdown(9, _deviceTypeValue, _updateDeviceTypeValue),
+
+            const SizedBox(height: 12.0),
+            _createDropdown(20, _deviceStatusValue, _updateDeviceStatusValue),
 
             const SizedBox(height: 12.0),
             _createDropdown(14, _deviceConditionValue, _updateDeviceConditionValue),
@@ -184,7 +209,23 @@ class MyDevicesDialogState extends State<MyDevicesDialog> {
           shape: BeveledRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(7.0)),
           ),
-          onPressed: () {},
+          onPressed: () {
+    Map<String, Object> search_data = <String, Object>{};
+    if (_deviceNameController.value.text.trim() != "") {
+    search_data['deviceName'] = _deviceNameController.value.text;
+    }
+    if (_deviceTypeValue != "Device Type") {
+    search_data['deviceType'] = _deviceTypeValue;
+    }
+    if (_deviceConditionValue != "Device Condition") {
+    search_data['deviceCondition'] = _deviceConditionValue;
+    }
+    if (_deviceStatusValue != "Device Status") {
+      search_data['deviceStatus'] = _deviceStatusValue;
+    }
+
+            Navigator.of(context).pop([search_data]);
+          },
         ),
 
       ],

@@ -580,7 +580,7 @@ class EditProjectPageState extends State<EditProjectPage> with SingleTickerProvi
   Widget build(BuildContext context) {
     try {
       return new StreamBuilder<QuerySnapshot>(
-          stream: Firestore.instance.collection('projects').limit(100).snapshots(),
+          stream: Firestore.instance.collection('projects').snapshots(),
           builder: (BuildContext context,
               AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {

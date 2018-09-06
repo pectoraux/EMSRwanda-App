@@ -223,8 +223,15 @@ class EditUserPageState extends State<EditUserPage>  with SingleTickerProviderSt
               onPressed: _connectionStatus == 'ConnectivityResult.none' ? () => onTap() : () async{
 
                 if (_userNameController.value.text.trim() != "" && _roleValue != widget.roles[0]) {
-
-                  String email = _userNameController.text+'@'+_roleValue;
+                  String roleEncoded = '';
+                  String role_fmt1 = _roleValue.trim().split(' ')[0];
+                  if(_roleValue.trim().split(' ').length > 1){
+                    String role_fmt2 = _roleValue.trim().split(' ')[1];
+                    roleEncoded = '${role_fmt1} ${role_fmt2[0].toUpperCase()}${role_fmt2.substring(1)}';
+                  }else{
+                    roleEncoded = role_fmt1.trim();
+                  }
+                  String email = _userNameController.text+'@'+_roleValue+'.com';
 
                   Firestore.instance.runTransaction((transaction) async {
                     CollectionReference reference =
@@ -302,12 +309,12 @@ class EditUserPageState extends State<EditUserPage>  with SingleTickerProviderSt
                 child: new BarLoadingScreen(),
               );
             } else {
-              print(
-                  "=> => => => ${_firebaseAuth.currentUser().then((user) async {
-                    setState(() {
-                      oldEmail = user.email;
-                    });
-                  })}");
+//              print(
+//                  "=> => => => ${_firebaseAuth.currentUser().then((user) async {
+//                    setState(() {
+//                      oldEmail = user.email;
+//                    });
+//                  })}");
               final converter = _buildListItem(
                   context, snapshot.data.documents.first);
 

@@ -8,13 +8,13 @@ import 'my_devices_dialog.dart';
 import 'device_rating_page.dart';
 import 'update_device.dart';
 
-class ViewDevicesPage extends StatefulWidget {
+class ViewUserDevicesPage extends StatefulWidget {
   final int colorIndex;
   final String documentID;
   final String folder;
   final List res;
 
-  const ViewDevicesPage({
+  const ViewUserDevicesPage({
     @required this.colorIndex,
     this.documentID,
     this.folder,
@@ -22,10 +22,10 @@ class ViewDevicesPage extends StatefulWidget {
   }) : assert(colorIndex != null);
 
   @override
-  ViewDevicesPageState createState() => ViewDevicesPageState();
+  ViewUserDevicesPageState createState() => ViewUserDevicesPageState();
 }
 
-class ViewDevicesPageState extends State<ViewDevicesPage> {
+class ViewUserDevicesPageState extends State<ViewUserDevicesPage> {
   List project_devices = [], user_devices = [];
   String deviceDocumentID = '', name = '';
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -42,6 +42,21 @@ class ViewDevicesPageState extends State<ViewDevicesPage> {
     List<StaggeredTile> mTiles = [];
     ScrollController controller = new ScrollController();
 
+        Firestore.instance.collection(
+            'users/${widget.documentID}/devices')
+            .getDocuments()
+            .then((query) {
+          List results = [];
+          setState(() {
+            for (DocumentSnapshot doc in query.documents) {
+              results.add(doc.documentID);
+            }
+            user_devices = results;
+          });
+        });
+
+    print('JJJJJJJJJJJJ => => => ${user_devices}');
+
     return Scaffold
       (
       key: _scaffoldKey,
@@ -50,7 +65,7 @@ class ViewDevicesPageState extends State<ViewDevicesPage> {
         leading: new BackButton(key: _bkey, color: Colors.black,),
         elevation: 2.0,
         backgroundColor: Colors.white,
-        title: Text('Devices', style: TodoColors.textStyle6),
+        title: Text('User Devices', style: TodoColors.textStyle6),
         actions: <Widget>
         [
           Container
@@ -73,7 +88,7 @@ class ViewDevicesPageState extends State<ViewDevicesPage> {
                     List mres = await showDialog(context: context, child: new MyDevicesDialog(colorIndex: widget.colorIndex,));
 //                    print("MRES ${mres.toString()}");
                     Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => ViewDevicesPage(colorIndex: widget.colorIndex, res: mres,)));
+                        MaterialPageRoute(builder: (_) => ViewUserDevicesPage(colorIndex: widget.colorIndex, documentID: widget.documentID, res: mres,)));
                   },
                 ),
               ],
@@ -90,7 +105,6 @@ class ViewDevicesPageState extends State<ViewDevicesPage> {
                 child: new BarLoadingScreen(),
               );
             }
-
             return StaggeredGridView.count(
               crossAxisCount: 2,
               crossAxisSpacing: 12.0,
@@ -98,14 +112,21 @@ class ViewDevicesPageState extends State<ViewDevicesPage> {
               controller: controller,
               padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               children: snapshot.data.documents.where((device){
-                if(widget.res != null) {
+                if(user_devices.isEmpty){
+                  return false;
+                }else if (!user_devices.contains(device.documentID)) {
+//                      print(device.documentID + ': ' + device['deviceName']);
+                  return false;
+                }else if(widget.res != null) {
                   Map final_result = widget.res[0];
                   return (final_result['deviceName'] != null ? final_result['deviceName'].toString().toLowerCase().trim() == device['deviceName'].toString().toLowerCase().trim(): true) &&
                       (final_result['deviceType'] != null ? final_result['deviceType'] == device['deviceType']: true) &&
                       (final_result['deviceCondition'] != null ? final_result['deviceCondition'] == device['deviceCondition']: true) &&
                       (final_result['deviceStatus'] != null ? final_result['deviceStatus'] == device['deviceStatus']: true);
+                }else {
+//                  print("AMs HERE ${widget.res.toString()}");
+                  return true;
                 }
-                return true;
               }).map((device) {
 
                 mTiles.add(StaggeredTile.extent(2, 110.0));
@@ -297,7 +318,10 @@ class ViewDevicesPageState extends State<ViewDevicesPage> {
         child: InkWell
           (
           // Do onTap() if it isn't null, otherwise do print()
-            onTap: () => onTap(dName, dID),
+            onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) =>
+                    DeviceRatingPage(colorIndex: widget.colorIndex,
+                      deviceRatingDocumentID: dID,))),
             child: child
         )
     );

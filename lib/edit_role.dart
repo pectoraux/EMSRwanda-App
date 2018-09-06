@@ -205,8 +205,18 @@ class EditRolesPageState extends State<EditRolesPage> with SingleTickerProviderS
                 onPressed: _connectionStatus == 'ConnectivityResult.none' ? () => onTap() :() {
                   if (_roleNameController.value.text.trim() != "") {
       if(!allFalse(changed)) {
+        String roleNameFmt = "";
+        var role_arr = roleName.replaceAll('-', ' ').split(' ');
+        if(role_arr.length > 1){
+          roleNameFmt = role_arr[0][0].toUpperCase()+role_arr[0].substring(1);
+          for(var i = 1; i< role_arr.length; i++){
+            roleNameFmt += ' '+role_arr[i][0].toUpperCase()+role_arr[1].substring(1);
+          }
+        }else {
+          roleNameFmt = roleName;
+        }
         Map<String, Object> role_data = <String, Object>{
-          'roleName': roleName,
+          'roleName': roleNameFmt,
           'canCreateUser': _createUserPermission,
           'canCreateProject': _createProjectPermission,
           'canCreateTag':_createTagPermission,
@@ -257,7 +267,7 @@ class EditRolesPageState extends State<EditRolesPage> with SingleTickerProviderS
       Widget build(BuildContext context) {
     try {
       return new StreamBuilder<QuerySnapshot>(
-          stream: Firestore.instance.collection('roles').limit(100).snapshots(),
+          stream: Firestore.instance.collection('roles').snapshots(),
           builder: (BuildContext context,
               AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {

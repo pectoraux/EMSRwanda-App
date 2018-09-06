@@ -14,22 +14,22 @@ import 'my_project_details_dialog.dart';
 import 'loading_screen.dart';
 import 'search_projects.dart';
 
-class ProjectDetailsPage extends StatefulWidget {
+class ClosedProjectDetailsPage extends StatefulWidget {
   final int colorIndex;
   final String projectDocumentID;
   final bool canRecruit;
 
-  const ProjectDetailsPage({
+  const ClosedProjectDetailsPage({
     @required this.colorIndex,
     @required this.projectDocumentID,
     @required this.canRecruit,
   }) : assert(colorIndex != null), assert(projectDocumentID != null), assert(canRecruit != null);
 
   @override
-  ProjectDetailsPageState createState() => ProjectDetailsPageState();
+  ClosedProjectDetailsPageState createState() => ClosedProjectDetailsPageState();
 }
 
-class ProjectDetailsPageState extends State<ProjectDetailsPage> {
+class ClosedProjectDetailsPageState extends State<ClosedProjectDetailsPage> {
 
   String locations;
   String title = '';
@@ -254,31 +254,19 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
   String actualDropdown = chartDropdownItems[0];
   int actualChart = 0;
   String button_message = '';
-  bool isUpcoming, isOngoing = true;
   final _raisedButton = GlobalKey(debugLabel: 'Raised Button');
   FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseUser user;
 
-  @override
+@override
   void initState() {
+    // TODO: implement initState
     super.initState();
-    setDefaults();
-  } //  int last_index = actualChart;
+    _setDefaults();
+  }
 
-  Future setDefaults()async {
+  Future _setDefaults()async {
     user = await _auth.currentUser();
-    Firestore.instance.runTransaction((transaction) async {
-      Firestore.instance.collection('users/${user.uid}/pending_requests')
-          .getDocuments()
-          .then((query) {
-        query.documents.forEach((doc) {
-          if (doc['projectId'] == widget.projectDocumentID) {
-            isDisabled = true;
-            button_message = 'WORK REQUEST PENDING';
-          }
-        });
-      });
-    });
   }
 
   @override
@@ -315,16 +303,12 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
                       textDirection: TextDirection.ltr,
                       children: <Widget>
                       [
-                        !isOngoing ?
-                  !isDisabled ?
                         RaisedButton(
                           key: _raisedButton,
                           padding: EdgeInsets.all(18.0),
-                          onPressed: isDisabled ? () => showInSnackBar('You Already Sent A Work Request', Colors.redAccent) : (){_sendWorkRequest();},
+                          onPressed:(){},
                           child:   Text(button_message, style: TodoColors.textStyle4,),
-                        )
-    : Center(child:Text(button_message, style: TodoColors.textStyle4, textDirection: TextDirection.ltr,) )
-        :Container()
+                        ),
                       ],
                     ),
                   )
@@ -347,10 +331,6 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
       return doc.documentID == widget.projectDocumentID;
     }).first;
 
-
-      isUpcoming = !(project['startDate'].isBefore(DateTime.now()) || project['endDate'].isBefore(DateTime.now()));
-      isOngoing = !(project['startDate'].isAfter(DateTime.now()) || project['endDate'].isBefore(DateTime.now()));
-
       Firestore.instance.collection('users/${user.uid}/projects').getDocuments().then((query) {
         List results = [];
         setState(() {
@@ -371,9 +351,7 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
       setState(() {
       author = '${doc['firstName']}\n${doc['lastName']}';
       if(button_message.isEmpty) {
-          button_message = isStaff ? 'STAFF MEMBER' : isUpcoming
-              ? 'Send   Work   Request'
-              : isOngoing ? '' : 'Send   Payment   Request';
+          button_message = 'Send   Payment   Request';
       }
       });
       });
@@ -425,8 +403,7 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
                                       child: Padding
                                         (
                                         padding: const EdgeInsets.all(16.0),
-                                        child: Icon(isUpcoming ? Icons.group_work
-                                        :isOngoing ? Icons.work:
+                                        child: Icon(
                                             Icons.close, color: Colors.white,
                                             size: 30.0),
                                       )
@@ -665,36 +642,6 @@ class ProjectDetailsPageState extends State<ProjectDetailsPage> {
     );
   }
 
-  void _sendWorkRequest() async {
-    if(!isDisabled) {
-
-      setState(() {
-        isDisabled = true;
-        button_message = 'WORK REQUEST PENDING';
-      });
-
-      Firestore.instance.document('projects/${widget.projectDocumentID}')
-          .get()
-          .then((doc) {
-        Map<String, Object> request_data = <String, Object>{
-          'projectId': widget.projectDocumentID,
-          'projectTitle': doc['projectTitle'],
-          'to': authorId,
-          'page': 'project_details',
-          'from': user.uid,
-        };
-
-        Firestore.instance.runTransaction((transaction) async {
-          DocumentReference reference = Firestore.instance.collection('send-work-request').document();
-          await transaction.set(reference, request_data);
-        });
-      });
-      Navigator.of(context).pop();
-      Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => SearchProjectsPage(colorIndex: widget.colorIndex, canRecruit: widget.canRecruit, sendWorkRequest: true, )
-          ));
-    }
-  }
 
   Widget _buildTile2(Widget child, String locations, String title, String description, DateTime startDate, DateTime endDate) {
     return Material(

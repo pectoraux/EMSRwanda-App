@@ -119,8 +119,6 @@ class UpcomingProjectsPageState extends State<UpcomingProjectsPage> {
                 child: new BarLoadingScreen(),
               );
             }
-
-
             try {
               return StaggeredGridView.count(
                 crossAxisCount: 2,
@@ -131,13 +129,7 @@ class UpcomingProjectsPageState extends State<UpcomingProjectsPage> {
                 children: snapshot.data.documents.where((project){
                   bool isUpcoming = !(project['startDate'].isBefore(DateTime.now()) || project['endDate'].isBefore(DateTime.now()));
                   bool isStaff = user_projects.contains(project.documentID);
-//                  print('=> => => ${user_projects} <= <= <= ${project.documentID}');
                   return isUpcoming && isStaff;
-                }).where((project){
-                  bool isOngoing = !(project['startDate'].isAfter(DateTime.now()) || project['endDate'].isBefore(DateTime.now()));
-                  bool isStaff = user_projects.contains(project.documentID);
-//                  print('=> => => ${user_projects} <= <= <= ${project.documentID}');
-                  return isOngoing && isStaff;
                 }).where((project){
                   if(widget.res != null) {
                     Map final_result = widget.res[0];

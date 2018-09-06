@@ -255,7 +255,7 @@ class UpdateRolePageState extends State<UpdateRolePage>  with SingleTickerProvid
   @override
   Widget build(BuildContext context) {
     return new StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('roles').limit(100).snapshots(),
+        stream: Firestore.instance.collection('roles').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
             return new Center(

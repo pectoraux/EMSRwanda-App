@@ -337,7 +337,7 @@ class _EmploymentHistoryPageState extends State<EmploymentHistoryPage>
   @override
   Widget build(BuildContext context) {
     return new StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('users').limit(100).snapshots(),
+        stream: Firestore.instance.collection('users').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
             return new Center(

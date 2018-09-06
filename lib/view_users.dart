@@ -110,7 +110,7 @@ class ViewUsersPageState extends State<ViewUsersPage> {
           mainAxisSpacing: 12.0,
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 controller: controller,
-                children: snapshot.data.documents.getRange(0, 3).where((user){
+                children: snapshot.data.documents.where((user){
                   if(widget.res != null) {
                     Map final_result = widget.res[0];
                     return (final_result['firstName'] != null ? final_result['firstName'].toString().toLowerCase().trim() == user['firstName'].toString().toLowerCase().trim(): true) &&
@@ -205,7 +205,7 @@ class ViewUsersPageState extends State<ViewUsersPage> {
             onTap: () {
               bool isStaff = false;
 
-              Firestore.instance.collection('users/${userID}/projects').getDocuments().then((query) {
+              Firestore.instance.collection('users/${userID}/projects').limit(100).getDocuments().then((query) {
                   for (DocumentSnapshot doc in query.documents) {
                     if (doc.documentID == widget.projectDocumentId) {
                       isStaff = true;

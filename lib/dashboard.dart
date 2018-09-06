@@ -19,11 +19,13 @@ import 'package:firebase_storage/firebase_storage.dart';
 class ProfilePage extends StatefulWidget {
   final BaseAuth auth;
   final int colorIndex;
+  final VoidCallback onSignOut;
 
 
   const ProfilePage({
     @required this.colorIndex,
     @required this.auth,
+    this.onSignOut,
   }) : assert(colorIndex != null),
         assert(auth != null);
 
@@ -73,7 +75,7 @@ class _ProfilePageState extends State<ProfilePage> {
             padding: const EdgeInsets.all(0.0),
             children: <Widget>[
               new ProfileHeader(profile),
-              new QuickActions(currentUserId: currentUserId,),
+              new QuickActions(currentUserId: currentUserId, onSignOut: widget.onSignOut,),
               new MainMenu(currentUserId: currentUserId, storage: storage),
             ],
           ),
@@ -150,7 +152,7 @@ class _ProfilePageState extends State<ProfilePage> {
             padding: const EdgeInsets.all(0.0),
             children: <Widget>[
               new ProfileHeader(profile),
-              new QuickActions(),
+              new QuickActions(onSignOut: widget.onSignOut,),
               new MainMenu(currentUserId: currentUserId, ),
             ],
           ),
@@ -296,7 +298,7 @@ return query.documents.length;
     }
 
       return new StreamBuilder<QuerySnapshot>(
-          stream: Firestore.instance.collection('roles').limit(100).snapshots(),
+          stream: Firestore.instance.collection('roles').snapshots(),
           builder: (BuildContext context,
               AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {

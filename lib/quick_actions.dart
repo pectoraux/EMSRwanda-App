@@ -1,15 +1,18 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'constants.dart';
 import 'profile_fonts.dart';
 import 'edit_password.dart';
 import 'edit_profile.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 /// QuickActions represents the horizontal list of rectangular buttons below the header
 class QuickActions extends StatelessWidget {
   final String currentUserId;
-  QuickActions({Key key, this.currentUserId}): super(key: key);
+  final VoidCallback onSignOut;
+  QuickActions({Key key, this.currentUserId, this.onSignOut }): super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -184,7 +187,17 @@ class QuickActions extends StatelessWidget {
                 shape: BeveledRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(7.0)),
                 ),
-                onPressed: () {},
+                onPressed: () async {
+                  FirebaseAuth _auth = FirebaseAuth.instance;
+                  FirebaseUser currUser = await _auth.currentUser();
+                  Firestore.instance.runTransaction((transaction) async {
+                    CollectionReference reference =
+                    Firestore.instance.collection('users-disabled-from-app').reference();
+                    await reference.add({"userEmail": currUser.email, "userId": currUser.uid});
+                  });
+                  onSignOut();
+                  Navigator.of(context).pop();
+                },
               ),
 
             ],

@@ -151,7 +151,7 @@ class _CategoryRouteState extends State<CategoryRoute> {
         title: 'Dashboard',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(primarySwatch: Colors.blue),
-        home: ProfilePage(colorIndex: 0, auth: widget.auth,),
+        home: ProfilePage(colorIndex: 0, auth: widget.auth, onSignOut: widget.onSignOut),
       );
 
     }else

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'project_details.dart';
+import 'closed_project_details.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'constants.dart';
 import 'loading_screen.dart';
@@ -243,7 +243,8 @@ class ClosedProjectsPageState extends State<ClosedProjectsPage> {
           // Do onTap() if it isn't null, otherwise do print()
             onTap: () =>
                 Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => ProjectDetailsPage(colorIndex:widget.colorIndex, projectDocumentID: projectID, canRecruit: widget.canRecruit,))),
+                    MaterialPageRoute(builder: (_) => ClosedProjectDetailsPage(colorIndex:widget.colorIndex,
+                      projectDocumentID: projectID, canRecruit: widget.canRecruit,))),
             child: child
         )
     );

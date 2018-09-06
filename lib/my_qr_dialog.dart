@@ -57,7 +57,7 @@ class MyQRDialogState extends State<MyQRDialog> {
 
               DocumentReference projRef = Firestore.instance.document(
                   'projects/${widget.projectDocumentId}/devices/$currentDeviceId');
-              await projRef.setData({});
+              await projRef.setData({'currentUser': userdocId});
             });
           });
         }});

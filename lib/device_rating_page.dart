@@ -176,7 +176,7 @@ class DeviceRatingPageState extends State<DeviceRatingPage> {
   @override
   Widget build(BuildContext context) {
     return new StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('devices').limit(100).snapshots(),
+        stream: Firestore.instance.collection('devices').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
             return new Center(

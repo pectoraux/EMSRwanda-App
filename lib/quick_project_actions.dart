@@ -152,15 +152,15 @@ class QuickProjectActions extends StatelessWidget {
     if (title == "View\nProjects") {
       Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => ViewProjectsPage(colorIndex: _colorIndex, roles: roles, tags: tags, devices: devices,),));
-    } else if (title == "Updates\nProject") {
+    } else if (title == "Update\nProject") {
       new Container(
         width: 450.0,
       );
-      List mres = await showDialog(context: context, child: new MyProjectDialog(colorIndex: _colorIndex,));
+//      List mres = await showDialog(context: context, child: new MyProjectDialog(colorIndex: _colorIndex,));
 //      print("QUICKACTIONS MRES => => => ${mres.toString()}");
 
       Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => ViewProjectsPage(colorIndex: _colorIndex, roles: roles, tags: tags, devices: devices, res: mres),));
+          MaterialPageRoute(builder: (_) => ViewProjectsPage(colorIndex: _colorIndex, roles: roles, tags: tags, devices: devices,),));
     }
   }
 }

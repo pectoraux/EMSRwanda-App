@@ -136,19 +136,19 @@ class ViewUserPrimaryPageState extends State<ViewUserPrimaryPage>  with SingleTi
           children: <Widget>[
             SizedBox(height: 20.0),
             Center(
-              child: new Container(
-                width: 70.0, height: 60.0,
-                decoration: new BoxDecoration(
-                  image: new DecorationImage(
-                      image: Image.network(document['photoUrl']).image,
-                      fit: BoxFit.cover),
-                  borderRadius: new BorderRadius.all(new Radius.circular(20.0)),
-                  boxShadow: <BoxShadow>[
-                    new BoxShadow(
-                        color: Colors.black26, blurRadius: 5.0, spreadRadius: 1.0),
-                  ],
-                ),
-              ),
+//              child: new Container(
+//                width: 70.0, height: 60.0,
+//                decoration: new BoxDecoration(
+//                  image: new DecorationImage(
+//                      image: Image.network(document['photoUrl']).image,
+//                      fit: BoxFit.cover),
+//                  borderRadius: new BorderRadius.all(new Radius.circular(20.0)),
+//                  boxShadow: <BoxShadow>[
+//                    new BoxShadow(
+//                        color: Colors.black26, blurRadius: 5.0, spreadRadius: 1.0),
+//                  ],
+//                ),
+//              ),
             ),
             Form(
               key: formKey,
@@ -719,16 +719,18 @@ class ViewUserPrimaryPageState extends State<ViewUserPrimaryPage>  with SingleTi
   @override
   Widget build(BuildContext context) {
     final padding = Padding(padding: _padding);
-
+    print("++++ HERE");
+  try {
     return new StreamBuilder<DocumentSnapshot>(
-        stream: Firestore.instance.document('users/${widget.currentUserId}').snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-          if (!snapshot.hasData)
-          {
+        stream: Firestore.instance.document('users/${widget.currentUserId}')
+            .snapshots(),
+        builder: (BuildContext context,
+            AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (!snapshot.hasData) {
             return new Center(
               child: new BarLoadingScreen(),
             );
-          }else if (snapshot.data != null) {
+          } else if (snapshot.data != null) {
 //            DocumentSnapshot document = snapshot.data.documents.where((doc){
 //    return (doc['userName'] == widget.currentUserId) ? true : false;
 //              }).first;
@@ -748,7 +750,7 @@ class ViewUserPrimaryPageState extends State<ViewUserPrimaryPage>  with SingleTi
                     return Center(
                       child: Container(
                         width: 450.0,
-                        child:converter,
+                        child: converter,
                       ),
                     );
                   }
@@ -757,8 +759,10 @@ class ViewUserPrimaryPageState extends State<ViewUserPrimaryPage>  with SingleTi
               ),
             );
           }
-
         });
+  }catch(_){
+    return Container();
+  }
   }
 
 

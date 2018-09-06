@@ -351,7 +351,7 @@ class EditTagPageState extends State<EditTagPage> with SingleTickerProviderState
   Widget build(BuildContext context) {
     try {
       return new StreamBuilder<QuerySnapshot>(
-          stream: Firestore.instance.collection('tags').limit(100).snapshots(),
+          stream: Firestore.instance.collection('tags').snapshots(),
           builder: (BuildContext context,
               AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {

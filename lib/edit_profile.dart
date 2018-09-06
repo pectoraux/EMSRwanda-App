@@ -726,7 +726,7 @@ class EditProfilePageState extends State<EditProfilePage> {
     final padding = Padding(padding: _padding);
 try{
     return new StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('users').limit(100).snapshots(),
+        stream: Firestore.instance.collection('users').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot)
     {
     if (!snapshot.hasData) return

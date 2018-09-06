@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'profile_icons.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -27,6 +30,19 @@ class ViewUsersAdminPageState extends State<ViewUsersAdminPage> {
   List project_users = [];
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
+  String currUser;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _setDefaults();
+  }
+
+  Future _setDefaults()async {
+    FirebaseAuth _auth = FirebaseAuth.instance;
+    currUser = (await _auth.currentUser()).uid;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -165,13 +181,14 @@ class ViewUsersAdminPageState extends State<ViewUsersAdminPage> {
   }
 
   void updateUser(){
+
     Navigator.of(context).push(
         MaterialPageRoute(builder: (_) => UpdateUserPage(userDocumentID: userDocumentID, colorIndex: widget.colorIndex,),)
     );
   }
 
   void gotoUserHistory(){
-
+    print("===> User Doc ID ${userDocumentID}");
     Navigator.of(context).push(
         MaterialPageRoute(builder: (_) =>
             UserHistoryPage(colorIndex: widget.colorIndex,
@@ -216,7 +233,10 @@ class ViewUsersAdminPageState extends State<ViewUsersAdminPage> {
               shape: BeveledRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),
               ),
-              onPressed: deleteUser,
+              onPressed:() {
+                deleteUser();
+                Navigator.of(context).pop();
+              }
             ),
 
           ],
@@ -252,11 +272,12 @@ class ViewUsersAdminPageState extends State<ViewUsersAdminPage> {
                 title: new Text("Update ${name}'s Information"),
                 onTap: updateUser,
               ),
-              new ListTile(
-                  leading: new Icon(Icons.delete, color: Colors.red,),
-                  title: new Text('Delete User ${name}'),
-                  onTap: showDeleteDialog
-              ),
+//              currUser == userDocumentID ? Container():
+//              new ListTile(
+//                  leading: new Icon(Icons.delete, color: Colors.red,),
+//                  title: new Text('Delete User ${name}'),
+//                  onTap: showDeleteDialog
+//              ),
             ],
           ));
     });

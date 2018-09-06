@@ -141,12 +141,13 @@ class QuickUserActionsState extends State<QuickUserActions>  {
     if (title == "View\nUsers") {
       Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => ViewUsersAdminPage(colorIndex: _colorIndex, )));
-    } else if (title == "Updates\nUser") {
+    } else if (title == "Update\nUser") {
       new Container(
         width: 450.0,
       );
-
-      showDialog(context: context, child: new MyUserDialog(colorIndex: _colorIndex,));
+//      showDialog(context: context, child: new MyUserDialog(colorIndex: _colorIndex,));
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => ViewUsersAdminPage(colorIndex: _colorIndex, )));
     }
   }
 }

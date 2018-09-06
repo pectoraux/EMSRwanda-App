@@ -138,7 +138,7 @@ class UpdateUserPageState extends State<UpdateUserPage> with SingleTickerProvide
           Column(
             children: <Widget>[
               AnimatedLogo(animation: animation,
-                message: 'Update ${document['firstName']} ${document['lastName']} Information',
+                message: 'Update ${document['firstName']} ${document['lastName']}\'s Information',
                 factor: 1.0,
                 colorIndex: widget.colorIndex,),
             ],
@@ -175,7 +175,6 @@ class UpdateUserPageState extends State<UpdateUserPage> with SingleTickerProvide
                   borderRadius: BorderRadius.all(Radius.circular(7.0)),
                 ),
                 onPressed: () {
-                  _userRoleController.clear();
                   Navigator.of(context).pop();
                 },
               ),
@@ -216,14 +215,19 @@ class UpdateUserPageState extends State<UpdateUserPage> with SingleTickerProvide
   Widget build(BuildContext context) {
 
     return new StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('users').limit(100).snapshots(),
+        stream: Firestore.instance.collection('users').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
             return new Center(
                 child: new BarLoadingScreen(),
             );
           } else {
+
             DocumentSnapshot document = snapshot.data.documents.where((doc){
+//              if(doc.documentID.trim().toLowerCase() == widget.userDocumentID.trim().toLowerCase()) {
+//                print('+++ HERE  => => => ${doc.documentID ==
+//                    widget.userDocumentID} <= <= ${doc.documentID} => => ${widget.userDocumentID}');
+//              }
               return doc.documentID == widget.userDocumentID;}).first;
 
 

@@ -11,10 +11,12 @@ import 'my_project_dialog.dart';
 class UpcomingProjectsPage extends StatefulWidget {
   final int colorIndex;
 final bool canRecruit;
+final List res;
 
   const UpcomingProjectsPage({
     @required this.colorIndex,
     @required this.canRecruit,
+    this.res,
   }) : assert(colorIndex != null), assert(canRecruit != null);
 
   @override
@@ -37,6 +39,15 @@ class UpcomingProjectsPageState extends State<UpcomingProjectsPage> {
     setState(() {
       currentUserId = user.uid;
     });
+  }
+
+  bool hasElement(List fromQuery, List fromDb){
+    for(String fromq in fromQuery){
+      if(fromDb.contains(fromq)){
+        return true;
+      }
+    }
+    return false;
   }
 
   @override
@@ -85,11 +96,13 @@ class UpcomingProjectsPageState extends State<UpcomingProjectsPage> {
                   elevation: 200.0,
                   child: new Icon(Icons.search),
                   backgroundColor: TodoColors.baseColors[widget.colorIndex],
-                  onPressed: () {
+                  onPressed: () async {
                     new Container(
                       width: 450.0,
                     );
-                    showDialog(context: context, child: new MyProjectDialog(colorIndex: widget.colorIndex,));
+                    List mres = await showDialog(context: context, child: new MyProjectDialog(colorIndex: widget.colorIndex,));
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => UpcomingProjectsPage(colorIndex: widget.colorIndex, canRecruit: widget.canRecruit, res: mres,),));
                   },
                 ),
               ],
@@ -120,6 +133,19 @@ class UpcomingProjectsPageState extends State<UpcomingProjectsPage> {
                   bool isStaff = user_projects.contains(project.documentID);
 //                  print('=> => => ${user_projects} <= <= <= ${project.documentID}');
                   return isUpcoming && isStaff;
+                }).where((project){
+                  bool isOngoing = !(project['startDate'].isAfter(DateTime.now()) || project['endDate'].isBefore(DateTime.now()));
+                  bool isStaff = user_projects.contains(project.documentID);
+//                  print('=> => => ${user_projects} <= <= <= ${project.documentID}');
+                  return isOngoing && isStaff;
+                }).where((project){
+                  if(widget.res != null) {
+                    Map final_result = widget.res[0];
+                    return (final_result['projectTitle'] != null ? final_result['projectTitle'].toString().toLowerCase().trim() == project['projectTitle'].toString().toLowerCase().trim(): true) &&
+                        (final_result['locations'] != null ? hasElement(final_result['locations'], project['locations']): true) &&
+                        (final_result['tags'] != null ? hasElement(final_result['tags'], project['tags']): true);
+                  }
+                  return true;
                 }).map((project) {
 
                   mTiles.add(StaggeredTile.extent(2, 110.0));

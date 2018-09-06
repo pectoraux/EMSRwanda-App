@@ -11,6 +11,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'auth.dart';
 import 'animated_logo.dart';
 import 'loading_screen.dart';
+import 'dart:convert';
+import 'dart:io';
 
 class EditUserPage extends StatefulWidget {
   EditUserPage({Key key, this.auth, this.currentUserPassword, this.roles}) : super(key: key);
@@ -83,7 +85,6 @@ class EditUserPageState extends State<EditUserPage>  with SingleTickerProviderSt
         _connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
           setState(() => _connectionStatus = result.toString());
         });
-
   }
 
   /// Sets the default values for the 'from' and 'to' [Dropdown]s, and the
@@ -219,29 +220,17 @@ class EditUserPageState extends State<EditUserPage>  with SingleTickerProviderSt
               shape: BeveledRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(7.0)),
               ),
-              onPressed: _connectionStatus == 'ConnectivityResult.none' ? () => onTap() : () {
+              onPressed: _connectionStatus == 'ConnectivityResult.none' ? () => onTap() : () async{
 
                 if (_userNameController.value.text.trim() != "" && _roleValue != widget.roles[0]) {
 
-                  String email = _userNameController.text+'@'+_roleValue+'.com';
-//                  widget.auth.createUser(email, defaultPassword).catchError((err){
-//                    showInSnackBar(
-//                        "Unable To Create User  $err", Colors.red);
-//                    });
-                  Map<String, dynamic> jsonMap = {
-                    'emailWithRole': email,
-                  };
-//                  String jsonString = json.encode(jsonMap); // encode map to json
-//                  String paramName = 'param'; // give the post param a name
-//                  String formBody = paramName + '=' + Uri.encodeQueryComponent(jsonString);
-//                  List<int> bodyBytes = utf8.encode(formBody); // utf8 encode
-//                  HttpClientRequest request =
-//                      await _httpClient.post(_host, _port, '/a/b/c');
-//                  // it's polite to send the body length to the server
-//                  request.headers.set('Content-Length', bodyBytes.length.toString());
-//                  // todo add other headers here
-//                  request.add(bodyBytes);
-//                  return await request.close();
+                  String email = _userNameController.text+'@'+_roleValue;
+
+                  Firestore.instance.runTransaction((transaction) async {
+                    CollectionReference reference =
+                    Firestore.instance.collection('users-created-from-app').reference();
+                    await reference.add({'emailWithRole': email});
+                  });
 
                   showInSnackBar(
                       "User Created Successfully", TodoColors.baseColors[_colorIndex]);

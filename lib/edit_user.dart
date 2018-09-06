@@ -227,8 +227,21 @@ class EditUserPageState extends State<EditUserPage>  with SingleTickerProviderSt
 //                  widget.auth.createUser(email, defaultPassword).catchError((err){
 //                    showInSnackBar(
 //                        "Unable To Create User  $err", Colors.red);
-//                  });
-
+//                    });
+                  Map<String, dynamic> jsonMap = {
+                    'emailWithRole': email,
+                  };
+//                  String jsonString = json.encode(jsonMap); // encode map to json
+//                  String paramName = 'param'; // give the post param a name
+//                  String formBody = paramName + '=' + Uri.encodeQueryComponent(jsonString);
+//                  List<int> bodyBytes = utf8.encode(formBody); // utf8 encode
+//                  HttpClientRequest request =
+//                      await _httpClient.post(_host, _port, '/a/b/c');
+//                  // it's polite to send the body length to the server
+//                  request.headers.set('Content-Length', bodyBytes.length.toString());
+//                  // todo add other headers here
+//                  request.add(bodyBytes);
+//                  return await request.close();
 
                   showInSnackBar(
                       "User Created Successfully", TodoColors.baseColors[_colorIndex]);

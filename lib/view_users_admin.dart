@@ -280,8 +280,7 @@ class ViewUsersAdminPageState extends State<ViewUsersAdminPage> {
 
   void deleteUser() async {
     DocumentReference userRef = Firestore.instance.document('users/${userDocumentID}');
-//    await userRef.delete();
-
+    await userRef.delete();
     Navigator.of(context).pop();
   }
 

@@ -208,7 +208,7 @@ class UpdateRolePageState extends State<UpdateRolePage>  with SingleTickerProvid
                 roleNameStr = hasChanged[0] ? _roleNameController.text : document['roleName'];
                 userPermission = hasChanged[1] ? _createUserPermission: document['canCreateUser'];
                 projectPermission = hasChanged[2] ? _createProjectPermission: document['canCreateProject'];
-                rolePermission = hasChanged[3] ? _createRolePermission: document['canCreateTag'];
+                rolePermission = hasChanged[3] ? _createRolePermission: document['canCreateRole'];
                 tagPermission = hasChanged[4] ? _createTagPermission: document['canCreateTag'];
                 grantPermission = hasChanged[5] ? _grantUserPermission: document['canGrantPermission'];
                 devicePermission = hasChanged[6] ? _createDevicePermission: document['canCreateDevice'];

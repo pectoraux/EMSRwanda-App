@@ -4,6 +4,7 @@ import 'constants.dart';
 import 'color_override.dart';
 import 'star_rating.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'loading_screen.dart';
 
 class MyDevicesDialog extends StatefulWidget {
   final int colorIndex;
@@ -145,90 +146,94 @@ class MyDevicesDialogState extends State<MyDevicesDialog> {
 
 
   Widget build(BuildContext context) {
+try {
+  return new AlertDialog(
+    title: new Text('Search  Devices',
+      style: TodoColors.textStyle.apply(
+          color: TodoColors.baseColors[widget.colorIndex]),),
+    content: new SingleChildScrollView(
+      child: new ListBody(
+        children: <Widget>[
 
-    return new AlertDialog(
-      title: new Text('Search  Devices',
-        style: TodoColors.textStyle.apply(
-            color: TodoColors.baseColors[widget.colorIndex]),),
-      content: new SingleChildScrollView(
-        child: new ListBody(
-          children: <Widget>[
-
-            SizedBox(height: 12.0),
-            PrimaryColorOverride(
-              color: TodoColors.baseColors[widget.colorIndex],
-              child: TextField(
-                key: _deviceName,
-                controller: _deviceNameController,
-                decoration: InputDecoration(
-                  labelText: 'Device Name',
-                  labelStyle: TodoColors.textStyle2,
-                  border: CutCornersBorder(),
-                ),
+          SizedBox(height: 12.0),
+          PrimaryColorOverride(
+            color: TodoColors.baseColors[widget.colorIndex],
+            child: TextField(
+              key: _deviceName,
+              controller: _deviceNameController,
+              decoration: InputDecoration(
+                labelText: 'Device Name',
+                labelStyle: TodoColors.textStyle2,
+                border: CutCornersBorder(),
               ),
             ),
+          ),
 
-            const SizedBox(height: 12.0),
-            _createDropdown(9, _deviceTypeValue, _updateDeviceTypeValue),
+          const SizedBox(height: 12.0),
+          _createDropdown(9, _deviceTypeValue, _updateDeviceTypeValue),
 
-            const SizedBox(height: 12.0),
-            _createDropdown(20, _deviceStatusValue, _updateDeviceStatusValue),
+          const SizedBox(height: 12.0),
+          _createDropdown(20, _deviceStatusValue, _updateDeviceStatusValue),
 
-            const SizedBox(height: 12.0),
-            _createDropdown(14, _deviceConditionValue, _updateDeviceConditionValue),
+          const SizedBox(height: 12.0),
+          _createDropdown(
+              14, _deviceConditionValue, _updateDeviceConditionValue),
 
-            SizedBox(height: 12.0),
-            PrimaryColorOverride(
-              color: TodoColors.baseColors[widget.colorIndex],
-              child: new StarRating(
-                rating: rating,
-                onRatingChanged: (rating) => setState(() => rating = rating),
-              ),
+          SizedBox(height: 12.0),
+          PrimaryColorOverride(
+            color: TodoColors.baseColors[widget.colorIndex],
+            child: new StarRating(
+              rating: rating,
+              onRatingChanged: (rating) => setState(() => rating = rating),
             ),
-          ],
-        ),
-
+          ),
+        ],
       ),
 
-      actions: <Widget>[
-        FlatButton(
-          child: Text('CANCEL'),
-          textColor: TodoColors.baseColors[widget.colorIndex],
-          shape: BeveledRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(7.0)),
-          ),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+    ),
+
+    actions: <Widget>[
+      FlatButton(
+        child: Text('CANCEL'),
+        textColor: TodoColors.baseColors[widget.colorIndex],
+        shape: BeveledRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(7.0)),
         ),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      ),
 
-        RaisedButton(
-          child: Text('SEARCH'),
-          textColor: TodoColors.baseColors[widget.colorIndex],
-          elevation: 8.0,
-          shape: BeveledRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(7.0)),
-          ),
-          onPressed: () {
-    Map<String, Object> search_data = <String, Object>{};
-    if (_deviceNameController.value.text.trim() != "") {
-    search_data['deviceName'] = _deviceNameController.value.text;
-    }
-    if (_deviceTypeValue != "Device Type") {
-    search_data['deviceType'] = _deviceTypeValue;
-    }
-    if (_deviceConditionValue != "Device Condition") {
-    search_data['deviceCondition'] = _deviceConditionValue;
-    }
-    if (_deviceStatusValue != "Device Status") {
-      search_data['deviceStatus'] = _deviceStatusValue;
-    }
-
-            Navigator.of(context).pop([search_data]);
-          },
+      RaisedButton(
+        child: Text('SEARCH'),
+        textColor: TodoColors.baseColors[widget.colorIndex],
+        elevation: 8.0,
+        shape: BeveledRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(7.0)),
         ),
+        onPressed: () {
+          Map<String, Object> search_data = <String, Object>{};
+          if (_deviceNameController.value.text.trim() != "") {
+            search_data['deviceName'] = _deviceNameController.value.text;
+          }
+          if (_deviceTypeValue != "Device Type") {
+            search_data['deviceType'] = _deviceTypeValue;
+          }
+          if (_deviceConditionValue != "Device Condition") {
+            search_data['deviceCondition'] = _deviceConditionValue;
+          }
+          if (_deviceStatusValue != "Device Status") {
+            search_data['deviceStatus'] = _deviceStatusValue;
+          }
 
-      ],
-    );
+          Navigator.of(context).pop([search_data]);
+        },
+      ),
+
+    ],
+  );
+}catch(_){
+  return BarLoadingScreen();
+}
   }
 }

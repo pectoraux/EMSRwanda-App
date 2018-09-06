@@ -29,6 +29,9 @@ class UpdateUserPageState extends State<UpdateUserPage> with SingleTickerProvide
   final _userRole = GlobalKey(debugLabel: 'User Role');
   int _colorIndex = 0;
   List<bool> hasChanged = [false, false, false, false, false, false, false];
+  List<DropdownMenuItem> _roleMenuItems;
+  String _roleValue;
+  List<String> roles = ['Staff Member Roles'];
 
   initState() {
     super.initState();
@@ -36,8 +39,94 @@ class UpdateUserPageState extends State<UpdateUserPage> with SingleTickerProvide
         duration: const Duration(milliseconds: 2000), vsync: this);
     animation = new Tween(begin: 0.0, end: 300.0).animate(controller);
     controller.forward();
+
+    _createDropdownMenuItems(2, roles);
+    _setDefaults();
   }
 
+  void _setDefaults() {
+    Firestore.instance.collection('roles').getDocuments().asStream()
+        .forEach((snap) {
+      for (var role in snap.documents) {
+        roles.add(role['roleName']);
+      }
+    }).whenComplete((){
+      setState(() {
+        _createDropdownMenuItems(2, roles);
+        _roleValue = roles[0];
+      });
+    });
+  }
+
+
+  Widget _createDropdown(int idx, String currentValue, ValueChanged<dynamic>
+
+  onChanged) {
+
+    return Container(
+      decoration: BoxDecoration(
+        // This sets the color of the [DropdownButton] itself
+        color: TodoColors.baseColors[_colorIndex],
+        border: Border.all(
+          color: TodoColors.baseColors[_colorIndex],
+          width: 1.0,
+        ),
+      ),
+      padding: EdgeInsets.symmetric(vertical: 8.0),
+      child: Theme(
+        // This sets the color of the [DropdownMenuItem]
+        data: Theme.of(context).copyWith(
+          canvasColor: Colors.grey[50],
+        ),
+        child: DropdownButtonHideUnderline(
+            child: new SingleChildScrollView(
+                child: new ConstrainedBox(
+                    constraints: new BoxConstraints(
+                      minHeight: 8.0,
+                    ),
+                    child: DropdownButtonHideUnderline(
+                        child: new Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: <Widget>[
+                            DropdownButton(
+                              value: currentValue,
+                              items: _roleMenuItems,
+                              onChanged: onChanged,
+                              style: TodoColors.textStyle2,
+                            ),],))))
+        ),
+      ),
+    );
+  }
+
+  void _updateRoleValue(dynamic name) {
+    setState(() {
+      _roleValue = name;
+      hasChanged[0] = true;
+    });
+  }
+
+  /// Creates fresh list of [DropdownMenuItem] widgets, given a list of [Unit]s.
+  void _createDropdownMenuItems(int idx, List<String> list) {
+    var newItems = <DropdownMenuItem>[];
+    for (var unit in list) {
+      newItems.add(DropdownMenuItem(
+        value: unit,
+        child: Container(
+          child: Text(
+            unit,
+            softWrap: true,
+          ),
+        ),
+      ));
+    }
+    setState(() {
+      if (idx == 2) {
+        _roleMenuItems = newItems;
+      }
+    });
+  }
 
 
     Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
@@ -56,26 +145,26 @@ class UpdateUserPageState extends State<UpdateUserPage> with SingleTickerProvide
           ),
 
           SizedBox(height: 12.0),
-          PrimaryColorOverride(
-            color: TodoColors.baseColors[widget.colorIndex],
-            child: TextFormField(
-              key: _userRole,
-              initialValue: document['userRole'],
-              onSaved: (text) {
-                _userRoleController.text = text;
-                hasChanged[0] = true;
-              },
-              onFieldSubmitted: (text) {
-                _userRoleController.text = text;
-                hasChanged[0] = true;
-              },
-              decoration: InputDecoration(
-                labelText: 'User Role',
-                hintText: document['userRole'],
-                border: CutCornersBorder(),
-              ),
+          InputDecorator(
+            key: _userRole,
+            child:Theme(
+      data: ThemeData(
+//      accentColor: Colors.yellow,
+      ),
+      child: Text(
+      document['userRole'],
+      style: TodoColors.textStyle2,
+      ),
+      ),
+            decoration: InputDecoration(
+              labelText: 'User Role',
+              labelStyle: TodoColors.textStyle2,
+              border: CutCornersBorder(),
             ),
           ),
+
+          const SizedBox(height: 12.0),
+          _createDropdown(2, _roleValue, _updateRoleValue),
 
           ButtonBar(
             children: <Widget>[
@@ -98,13 +187,17 @@ class UpdateUserPageState extends State<UpdateUserPage> with SingleTickerProvide
                   borderRadius: BorderRadius.all(Radius.circular(7.0)),
                 ),
                 onPressed: () {
-                  if (_userRoleController.value.text.trim() != "") {
+                  if (hasChanged[0] && _roleValue != roles[0]) {
+                    Firestore.instance.runTransaction((transaction) async {
+                      DocumentSnapshot freshSnap =
+                      await transaction.get(document.reference);
+                      await transaction.update(freshSnap.reference, ({
+                        'userRole': _roleValue, }));
+                    });
                     showInSnackBar(
-                        "User Updated Successfully", TodoColors.accent);
-                  } else {
-                    showInSnackBar("Please Specify A Value For All Fields",
-                        Colors.redAccent);
+                        "User Role Updated Successfully", TodoColors.baseColors[widget.colorIndex]);
                   }
+                 Navigator.of(context).pop();
                 },
               ),
             ],

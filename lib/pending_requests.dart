@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'constants.dart';
 import 'employment_history_page.dart';
-import 'my_project_dialog.dart';
+import 'my_pending_dialog.dart';
 import 'loading_screen.dart';
 
 class PendingRequestsPage extends StatefulWidget {
@@ -12,12 +12,14 @@ class PendingRequestsPage extends StatefulWidget {
   final bool canRecruit;
   final String projectDocumentID;
   final bool acceptRequest;
+  final List res;
 
   const PendingRequestsPage({
     @required this.colorIndex,
     @required this.canRecruit,
     this.projectDocumentID,
     this.acceptRequest,
+    this.res,
   }) : assert(colorIndex != null), assert(canRecruit != null);
 
   @override
@@ -37,6 +39,15 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
         userId = user.uid;
       });
     });
+  }
+
+  bool hasElement(List fromQuery, List fromDb){
+    for(String fromq in fromQuery){
+      if(fromDb.contains(fromq)){
+        return true;
+      }
+    }
+    return false;
   }
 
   @override
@@ -76,11 +87,13 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
                     elevation: 200.0,
                     child: new Icon(Icons.search),
                     backgroundColor: TodoColors.baseColors[widget.colorIndex],
-                    onPressed: () {
+                    onPressed: () async {
                       new Container(
                         width: 450.0,
                       );
-                      showDialog(context: context, child: new MyProjectDialog(colorIndex: widget.colorIndex,));
+                      List mres = await showDialog(context: context, child: new MyPendingDialog(colorIndex: widget.colorIndex,));
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) => PendingRequestsPage(colorIndex: widget.colorIndex, canRecruit: widget.canRecruit, res: mres,),));
                     },
                   ),
                 ],
